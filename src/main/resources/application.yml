@@ -1,0 +1,38 @@
+logging:
+  level:
+    .org:
+      springframework: INFO
+    .com:
+      mkyong: INFO
+      zaxxer: DEBUG
+      root: ERROR
+---
+spring:
+  flyway:
+    enabled: false
+  datasource:
+    url: jdbc:postgresql://192.168.1.155:5432/miniblog
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+---
+spring:
+  profiles: generatesql
+  flyway:
+    enabled: false
+  jpa:
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              action: create
+              create-target: src/main/resources/ddl_jpa_creation.sql
