@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      layout:decorate="~{layout.html}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<section layout:fragment="content">
     <h1>Admin Dashboard</h1>
 
     <p>this is top secreto</p>
@@ -12,6 +14,6 @@
     <form class="form-signin" method="get" action="/logout">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Logout</button>
     </form>
-
+</section>
 </body>
 </html>

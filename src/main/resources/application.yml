@@ -22,6 +22,8 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+  jackson:
+    default-property-inclusion: non_null
 ---
 spring:
   profiles: generatesql
@@ -36,3 +38,12 @@ spring:
             scripts:
               action: create
               create-target: src/main/resources/ddl_jpa_creation.sql
+---
+server:
+  port: 8443
+  ssl:
+    key-store-type: JKS
+    key-store: classpath:keystore/ssl-server.jks
+    key-store-password: merlee
+    key-store-provider: SUN
+    key-alias: selfsigned_localhost_sslserver
