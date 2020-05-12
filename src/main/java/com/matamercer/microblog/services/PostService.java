@@ -2,6 +2,7 @@ package com.matamercer.microblog.services;
 
 
 import com.matamercer.microblog.models.entities.Post;
+import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,5 +24,9 @@ public class PostService {
 
     public Page<Post> getAllPostsByPageSortedByCreatedAt(int page, int pageSize){
         return postRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"));
+    }
+
+    public Page<Post> getAllPostsByPageByUserSortedByCreated(User user, int page, int pageSize){
+        return postRepository.findByUser(user, PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"));
     }
 }

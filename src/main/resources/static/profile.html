@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout.html}"
+>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+
+    <link rel="stylesheet" href="/stylesheets/index.css" />
+    <title th:text="${profileUser?.username}">Title</title>
+  </head>
+  <body layout:fragment="content">
+
+    <section id="cover-photo" class="hero">
+      <div class="hero-body">
+
+      </div>
+    </section>
+
+    <div class="columns">
+
+      
+      <div id="side-bar" class="column is-2 container is-fluid">
+
+        <!-- <div class="buttons are-small">
+          <a class="button">Java (104)</a>
+          <a class="button">Clojure (74)</a>
+          <a class="button">Github (65)</a>
+          <a class="button">Git (45)</a>
+          <a class="button">C (40)</a>
+          <a class="button">C++ (39)</a>
+          <a class="button">C# (21)</a>
+          <a class="button">Ruby (1)</a>
+        </div> -->
+
+        <aside class="menu">
+          <p class="menu-label">
+            Tags
+          </p>
+          <ul class="menu-list">
+            <a >Java (104)</a>
+            <a >Clojure (74)</a>
+            <a >Github (65)</a>
+            <a >Git (45)</a>
+            <a >C (40)</a>
+            <a >C++ (39)</a>
+            <a >C# (21)</a>
+            <a >Ruby (1)</a>
+          </ul>
+
+
+
+        </aside>
+
+        
+
+      </div>
+      <div class="column container is-fluid">
+        <div class="tabs is-fullwidth">
+          <ul>
+            <li class="is-active"><a>Posts</a></li>
+            <li><a>Media</a></li>
+            <li><a>Replies</a></li>
+            <li><a>Likes</a></li>
+          </ul>
+        </div>
+
+<!--        <div th:each="post: ${posts}">-->
+<!--          <div class="card">-->
+<!--            <div class="content" th:text="${post.content}"></div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+        <div class="card" th:each="post: ${posts}">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img src="img/image-placeholder.jpg" alt="Placeholder image" />
+            </figure>
+          </div>
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <figure class="image is-48x48">
+                  <img
+                    src="img/placeholder-user-400x400.png"
+                    alt="Placeholder image"
+                  />
+                </figure>
+              </div>
+              <div class="media-content">
+                <p class="title is-4" th:text="${profileUser?.username}">johnDoeBlog</p>
+              </div>
+            </div>
+
+            <div class="content" th:text="${post.content}">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
+              nec iaculis mauris. <a>@bulmaio</a>. <a href="#">#css</a>
+              <a href="#">#responsive</a>
+              <br />
+              <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column is-2 container is-fluid">
+        <h4 class="title is-4">Recently Viewed</h4>
+        <div class="card">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img
+                src="https://bulma.io/images/placeholders/1280x960.png"
+                alt="Placeholder image"
+              />
+            </figure>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
+              nec iaculis mauris. <a>@bulmaio</a>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="container"></div>
+  </body>
+  <script src="dist/main.js"></script>
+</html>

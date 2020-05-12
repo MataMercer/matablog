@@ -29,3 +29,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### JS ###
+/src/main/resources/static/node_modules/
+/src/main/resources/static/dist/
+/src/main/resources/static/stylesheets/

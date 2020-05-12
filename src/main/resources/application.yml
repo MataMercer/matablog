@@ -24,6 +24,10 @@ spring:
             non_contextual_creation: true
   jackson:
     default-property-inclusion: non_null
+  thymeleaf:
+    check-template: true
+    check-template-location: true
+    prefix: classpath:static/
 ---
 spring:
   profiles: generatesql

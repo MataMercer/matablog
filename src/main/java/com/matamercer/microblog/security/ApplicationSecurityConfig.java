@@ -43,7 +43,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .and()
                 .authorizeRequests()
-                .antMatchers("/", "index", "/css/*", "/js/*")
+                .antMatchers("/", "index", "/dist/*", "/stylesheets/*", "/img/*")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
