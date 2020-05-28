@@ -27,15 +27,19 @@ public class PostController {
 
     private static final int PAGE_SIZE = 20;
 
-    @GetMapping("/")
-    public String allPostsByPage(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Post> posts = postService.getAllPostsByPageSortedByCreatedAt(page, PAGE_SIZE);
-        model.addAttribute("totalPages", posts.getTotalPages());
-        model.addAttribute("page", page);
-        model.addAttribute("posts", posts);
-
-        return "posts";
-    }
+//    @GetMapping("/")
+//    public String allPostsByPage(@RequestParam(defaultValue = "0") int page, Model model) {
+//        Page<Post> posts = postService.getAllPostsByPageSortedByCreatedAt(page, PAGE_SIZE);
+//        model.addAttribute("totalPages", posts.getTotalPages());
+//        model.addAttribute("page", page);
+//        model.addAttribute("posts", posts);
+//
+//        return "posts";
+//    }
+@GetMapping("/home")
+public String getHomeView(){
+    return "home";
+}
 
     @GetMapping("/newpost")
     public String createPostForm(Model model){

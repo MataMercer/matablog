@@ -1,6 +1,6 @@
 package com.matamercer.microblog.controllers.api.webfinger;
 
-import com.matamercer.microblog.errors.NotFoundException;
+import com.matamercer.microblog.Exceptions.NotFoundException;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.utilities.EnvironmentUtil;

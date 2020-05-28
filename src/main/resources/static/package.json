@@ -4,24 +4,34 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "sass --watch sass:stylesheets",
-    "build": "webpack --mode production",
+    "dev": "concurrently \"npm run devbuild\" \"npm run sass\"",
+    "sass": "sass --watch sass:stylesheets",
+    "devbuild": "webpack --watch --mode development",
+    "devwp": "webpack --watch --mode development",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bulma": "^0.8.2",
-    "prettier": "^2.0.5",
+    "rbx": "^2.2.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "sass": "^1.26.3"
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-react": "^7.9.4",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "babel-loader": "^8.1.0",
+    "concurrently": "^5.2.0",
+    "prettier": "^2.0.5",
+    "react-hot-loader": "^4.12.21",
+    "sass": "^1.26.5",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^7.0.4",
+    "typescript": "^3.9.3",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   }

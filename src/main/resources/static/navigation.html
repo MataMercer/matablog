@@ -1,122 +1,94 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
-<head>
-    <meta charset="UTF-8">
-    <title >Title</title>
-</head>
-<body>
-<div th:fragment="navigation">
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+  </head>
+  <body>
+    <div th:fragment="navigation">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <img src="/img/icon-b.png" />
+          </a>
 
-            <a class="navbar-item" href="/">
-                <img src="img/icon-b.png" />
-            </a>
-
-            <a
-                    role="button"
-                    class="navbar-burger burger"
-                    aria-label="menu"
-                    aria-expanded="false"
-                    data-target="navbarBasicExample"
-            >
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-            </a>
+          <a
+            role="button"
+            class="navbar-burger burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
         </div>
 
         <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
+          <div class="navbar-start">
 
 
-                <a class="navbar-item" th:if="${profileUser}">
-                    <img src="img/placeholder-user-400x400.png"/>
+
+
+            <form class="navbar-item">
+              <div class="field has-addons">
+                <div class="control">
+                  <div class="select">
+                    <select>
+                      <option>All</option>
+                      <option>Text</option>
+                      <option>Media</option>
+                      <option>Replies</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="control">
+                  <input class="input" type="text" placeholder="Search posts" />
+                </div>
+                <div class="control">
+                  <a class="button is-info">
+                    Search
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="navbar-end">
+            <div class="navbar-item" sec:authorize="${!isAuthenticated()}">
+              <div class="buttons">
+                <a class="button is-primary" href="/login">
+                  <strong>Login / Register</strong>
                 </a>
-
-                <a class="navbar-item" th:if="${profileUser} != null" th:text="${profileUser?.username}">
-                    Username
-                </a>
-
-                <a class="navbar-item" th:if="${profileUser}">
-                    Archive
-                </a>
-
-
-                <form class="navbar-item">
-                    <div class="field has-addons">
-                        <div class="control">
-                            <div class="select">
-                                <select>
-                                    <option>All</option>
-                                    <option>Text</option>
-                                    <option>Media</option>
-                                    <option>Replies</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="control">
-                            <input class="input" type="text" placeholder="Search posts"/>
-                        </div>
-                        <div class="control">
-                            <a class="button is-info">
-                                Search
-                            </a>
-                        </div>
-                    </div>
-                </form>
+              </div>
             </div>
 
-            <div class="navbar-end">
-                <div class="navbar-item" sec:authorize="${!isAuthenticated()}">
-                    <div class="buttons">
-                        <a class="button is-primary" href="/login">
-                            <strong>Login / Register</strong>
-                        </a>
-                    </div>
-                </div>
 
-                <div class="navbar-item" sec:authorize="isAuthenticated()">
-                    <div class="buttons">
-                        <a class="button is-primary" href="/newpost">
-                            <strong>New Post</strong>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="navbar-item has-dropdown is-hoverable" sec:authorize="isAuthenticated()">
-                    <a class="navbar-link">
-                        My Account
-                    </a>
-
-                    <div class="navbar-dropdown">
-                        <a class="navbar-item">
-                            Analytics
-                        </a>
-                        <a class="navbar-item"> </a>
-                        <a class="navbar-item">
-                            Settings
-                        </a>
-                        <hr class="navbar-divider"/>
-<!--                        <form class="form-signin" method="get" action="/logout">-->
-<!--                            <button class="btn btn-sm btn-primary btn-block" type="submit">Logout</button>-->
-<!--                        </form>-->
-                        <form method="get" action="/logout">
-                            <button class="navbar-item" type="submit">
-                                Log out
-                            </button>
-                        </form>
-
-                    </div>
-                </div>
+            <div class="navbar-item" sec:authorize="isAuthenticated()">
+              <div class="buttons">
+                <a href="/posts/newpost" class="button is-primary"><strong>New Post</strong></a>
+              </div>
             </div>
+
+            <div
+                    class="navbar-item"
+              id="NavbarAccountDropdown"
+              sec:authorize="isAuthenticated()"
+              username="username"
+              th:attr="username=${#authentication.getPrincipal().getUsername()}"
+            ></div>
+
+
+          </div>
         </div>
-    </nav>
-</div>
-</body>
+      </nav>
+    </div>
+  </body>
 </html>

@@ -1,4 +1,4 @@
-package com.matamercer.microblog.errors;
+package com.matamercer.microblog.Exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
