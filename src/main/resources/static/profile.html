@@ -74,20 +74,11 @@
           </ul>
         </div>
 
-<!--        <div th:each="post: ${posts}">-->
-<!--          <div class="card">-->
-<!--              <div class="column">-->
-<!--                <div class="content" th:text="${post.content}">-->
-<!--                </div>-->
-<!--              </div>-->
-<!--          </div>-->
-<!--        </div>-->
+
 
         <th:block th:with="colCount=${4}">
           <div th:each="r : ${#numbers.sequence(0, posts.size(), colCount)}"  class="columns">
-            <div th:each="c : ${#numbers.sequence(0, colCount - 1)}" th:if="${r + c &lt; posts.size()}"  class="column" >
-
-
+            <div th:each="c : ${#numbers.sequence(0, colCount - 1)}" th:if="${r + c &lt; posts.size()}"  class="column is-one-quarter" >
 
               <div class="card-image">
                 <figure class="image is-4by3">
