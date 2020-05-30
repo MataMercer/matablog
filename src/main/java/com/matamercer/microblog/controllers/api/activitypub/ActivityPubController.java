@@ -4,7 +4,7 @@ import com.matamercer.microblog.controllers.api.activitypub.render.KeyRender;
 import com.matamercer.microblog.controllers.api.activitypub.render.PersonRender;
 import com.matamercer.microblog.Exceptions.NotFoundException;
 import com.matamercer.microblog.models.entities.User;
-import com.matamercer.microblog.models.repositories.UserKeyPairRepository;
+import com.matamercer.microblog.models.repositories.activitypub.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.utilities.EnvironmentUtil;
 import org.springframework.beans.factory.annotation.Autowired;

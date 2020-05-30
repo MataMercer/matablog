@@ -1,5 +1,7 @@
-package com.matamercer.microblog.models.entities;
+package com.matamercer.microblog.models.entities.activitypub;
 
+import com.matamercer.microblog.models.entities.BaseModel;
+import com.matamercer.microblog.models.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +11,7 @@ import javax.persistence.*;
 @Table(name = "UserKeyPairs")
 @Getter
 @Setter
-public class UserKeyPair extends BaseModel{
+public class UserKeyPair extends BaseModel {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

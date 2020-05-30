@@ -2,9 +2,9 @@ package com.matamercer.microblog.services;
 
 import com.matamercer.microblog.models.entities.Authority;
 import com.matamercer.microblog.models.entities.User;
-import com.matamercer.microblog.models.entities.UserKeyPair;
+import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
 import com.matamercer.microblog.models.repositories.AuthorityRepository;
-import com.matamercer.microblog.models.repositories.UserKeyPairRepository;
+import com.matamercer.microblog.models.repositories.activitypub.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
