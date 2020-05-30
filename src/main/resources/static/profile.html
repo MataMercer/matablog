@@ -76,41 +76,63 @@
 
 <!--        <div th:each="post: ${posts}">-->
 <!--          <div class="card">-->
-<!--            <div class="content" th:text="${post.content}"></div>-->
+<!--              <div class="column">-->
+<!--                <div class="content" th:text="${post.content}">-->
+<!--                </div>-->
+<!--              </div>-->
 <!--          </div>-->
 <!--        </div>-->
 
-        <div class="card" th:each="post: ${posts}">
-          <div class="card-image">
-            <figure class="image is-4by3">
-              <img src="img/image-placeholder.jpg" alt="Placeholder image" />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="media">
-              <div class="media-left">
-                <figure class="image is-48x48">
-                  <img
-                    src="img/placeholder-user-400x400.png"
-                    alt="Placeholder image"
-                  />
+        <th:block th:with="colCount=${4}">
+          <div th:each="r : ${#numbers.sequence(0, posts.size(), colCount)}"  class="columns">
+            <div th:each="c : ${#numbers.sequence(0, colCount - 1)}" th:if="${r + c &lt; posts.size()}"  class="column" >
+
+
+
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <img src="img/image-placeholder.jpg" alt="Placeholder image" />
                 </figure>
               </div>
-              <div class="media-content">
-                <p class="title is-4" th:text="${profileUser?.username}">johnDoeBlog</p>
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-left">
+                    <figure class="image is-24x24">
+                      <img
+                              src="img/placeholder-user-400x400.png"
+                              alt="Placeholder image"
+                      />
+                    </figure>
+                  </div>
+                  <div class="media-content">
+                    <p class="title is-4" th:text="${profileUser?.username}">johnDoeBlog</p>
+                  </div>
+                </div>
+
+                <div class="content" th:text="${posts.get(r + c).content}">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
+                  nec iaculis mauris. <a>@bulmaio</a>. <a href="#">#css</a>
+                  <a href="#">#responsive</a>
+                  <br />
+                  <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                </div>
               </div>
+
+
+
+
+
             </div>
 
-            <div class="content" th:text="${post.content}">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-              nec iaculis mauris. <a>@bulmaio</a>. <a href="#">#css</a>
-              <a href="#">#responsive</a>
-              <br />
-              <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-            </div>
           </div>
+        </th:block>
+
+        <div class="card" th:each="post: ${posts}">
+
         </div>
       </div>
+
+
 
       <div class="column is-2 container is-fluid">
         <h4 class="title is-4">Recently Viewed</h4>

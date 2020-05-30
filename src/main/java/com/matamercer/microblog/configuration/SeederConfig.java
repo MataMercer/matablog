@@ -25,9 +25,9 @@ public class SeederConfig {
     public CommandLineRunner seedData(UserRepository userRepository, AuthorityRepository authorityRepository, PasswordEncoder passwordEncoder, UserService userService) {
         return (args) -> {
 
-            //refactor this for userservices
+            //Admin account
             User adminUser = new User(
-                    "adminuser",
+                    "a",
                     passwordEncoder.encode("1"),
                     true,
                     true,

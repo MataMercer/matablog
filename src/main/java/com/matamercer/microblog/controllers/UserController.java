@@ -46,7 +46,7 @@ public class UserController {
         Page<Post> posts = postService.getAllPostsByPageSortedByCreatedAt(page, PAGE_SIZE);
         model.addAttribute("totalPages", posts.getTotalPages());
         model.addAttribute("page", page);
-        model.addAttribute("posts", posts);
+        model.addAttribute("posts", posts.toList());
 
         return "profile";
     }
