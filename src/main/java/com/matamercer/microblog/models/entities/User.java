@@ -14,7 +14,7 @@ import java.util.HashSet;
 
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 @Getter
 @Setter
 public class User extends BaseModel implements UserDetails {
@@ -24,6 +24,9 @@ public class User extends BaseModel implements UserDetails {
 
     @Column(unique = true)
     private String username;
+
+    @Column(unique = true)
+    private String email;
 
     @Column(nullable = false)
     private String password;

@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Authorities")
+@Table(name = "authorities")
 @Getter
 @Setter
 public class Authority extends BaseModel implements GrantedAuthority {

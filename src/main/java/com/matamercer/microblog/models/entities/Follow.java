@@ -7,7 +7,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Follows")
+@Table(name = "follows")
 @Getter
 @Setter
 public class Follow extends BaseModel {

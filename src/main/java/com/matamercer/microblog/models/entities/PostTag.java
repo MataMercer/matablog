@@ -7,7 +7,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "PostTags")
+@Table(name = "post_tags")
 @Getter
 @Setter
 public class PostTag extends BaseModel {

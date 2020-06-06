@@ -3,6 +3,7 @@ package com.matamercer.microblog.security;
 
 import com.matamercer.microblog.models.entities.LoginToken;
 import com.matamercer.microblog.models.repositories.LoginTokenRepository;
+import com.matamercer.microblog.models.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -18,13 +19,16 @@ public class PersistentLoginTokenRepository implements PersistentTokenRepository
     @Autowired
     private LoginTokenRepository loginTokenRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public void createNewToken(PersistentRememberMeToken persistentRememberMeToken) {
 
         loginTokenRepository.save(
                 new LoginToken(
                         persistentRememberMeToken.getSeries(),
-                        persistentRememberMeToken.getUsername(),
+                        userRepository.findByUsername(persistentRememberMeToken.getUsername()),
                         persistentRememberMeToken.getTokenValue(),
                         persistentRememberMeToken.getDate()
                 )
@@ -48,7 +52,7 @@ public class PersistentLoginTokenRepository implements PersistentTokenRepository
         LoginToken loginToken = loginTokenRepository.findBySeries(seriesId);
         if (loginToken != null) {
             return new PersistentRememberMeToken(
-                    loginToken.getUsername(),
+                    loginToken.getUser().getUsername(),
                     loginToken.getSeries(),
                     loginToken.getToken(),
                     loginToken.getLastUsed()
