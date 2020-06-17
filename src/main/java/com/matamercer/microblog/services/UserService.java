@@ -7,6 +7,7 @@ import com.matamercer.microblog.models.repositories.AuthorityRepository;
 import com.matamercer.microblog.models.repositories.activitypub.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.security.UserRole;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService implements UserDetailsService {
+
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -32,7 +36,6 @@ public class UserService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthorityRepository authorityRepository;
-
 
     @Transactional
     public void createUser(User user, UserRole userRole){
@@ -51,20 +54,11 @@ public class UserService implements UserDetailsService {
             for(String authority: authorities){
                 authorityRepository.save(new Authority(authority, user));
             }
-
-
         }catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return;
         }
-
-
-
-
-
     }
-
-
 
     @Transactional(readOnly = true)
     @Override
@@ -76,7 +70,7 @@ public class UserService implements UserDetailsService {
             builder.disabled(!user.isEnabled());
             builder.password(user.getPassword());
             String[] authorities = user.getAuthorities()
-                    .stream().map(a -> a.getAuthority()).toArray(String[]::new);
+                    .stream().map(Authority::getAuthority).toArray(String[]::new);
             builder.authorities(authorities);
         } else {
             throw new UsernameNotFoundException("User not found.");
@@ -84,10 +78,4 @@ public class UserService implements UserDetailsService {
         return builder.build();
     }
 
-
-
-//    public User createUser(User user) {
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        return userRepository.save(user);
-//    }
 }

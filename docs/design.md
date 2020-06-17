@@ -26,16 +26,13 @@ Webfinger - A protocol over HTTP for looking up users. (at least for the purpose
 
 This site is to provide an open source blogging platform following ActivityPub protocol. Users will be able to register accounts and post however they like. They can follow other users they are interested in. 
 
-Many blogging platforms generally follow a specific niche. This blog is designed for illustrators. Illustrators can upload up to 25 images and post up to 5000 characters. This allows creators to post comics and longer form works. 
-
-The front page of the site will help users find popular artists by ranking or tags. Furthermore, if e-commerce is added, this will market to users better. 
 
 
 
 
 ## Audience
 
-The audience is for illustrators and art consumers. Given the site is open source, an illustrator could run this on their own server for their own personal website. 
+Anyone who wants a flexible blog to host with a small number of users. 
 
 ## Technology
 

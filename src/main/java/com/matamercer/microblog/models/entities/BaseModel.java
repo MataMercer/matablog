@@ -1,14 +1,16 @@
 package com.matamercer.microblog.models.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class BaseModel implements Comparable<BaseModel>{
+public abstract class BaseModel implements Comparable<BaseModel>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,5 +47,7 @@ public abstract class BaseModel implements Comparable<BaseModel>{
     }
 
 
-
+    public int hashCode() {
+        return new HashCodeBuilder().append(getId()).toHashCode();
+    }
 }

@@ -16,7 +16,7 @@ class NavbarAccountDropdown extends Component<NavbarAccountDropdownProps> {
       <Navbar.Item dropdown>
         <Navbar.Link>Docdss</Navbar.Link>
         <Navbar.Dropdown>
-          <Navbar.Item href={`/${this.props.username}`}>{this.props.username}</Navbar.Item>
+          <Navbar.Item href={`/profile/${this.props.username}`}>{this.props.username}</Navbar.Item>
           <Navbar.Item href="/analytics">Analytics</Navbar.Item>
           <Navbar.Item href="/settings">Settings</Navbar.Item>
           <Navbar.Divider />

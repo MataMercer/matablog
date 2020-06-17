@@ -25,9 +25,15 @@ spring:
   jackson:
     default-property-inclusion: non_null
   thymeleaf:
+    cache: false
     check-template: true
     check-template-location: true
     prefix: classpath:static/
+  cache:
+    type: redis
+  redis:
+    host: 192.168.1.155
+    port: 6379
 ---
 spring:
   profiles: generatesql

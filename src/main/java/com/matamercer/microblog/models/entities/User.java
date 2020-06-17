@@ -11,6 +11,7 @@ import javax.persistence.*;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -21,6 +22,12 @@ public class User extends BaseModel implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Authority> authorities = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "user_blog",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "blog_id") })
+    private Set<Blog> blogs = new HashSet<Blog>();
 
     @Column(unique = true)
     private String username;

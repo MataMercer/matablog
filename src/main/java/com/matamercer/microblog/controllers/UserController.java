@@ -25,25 +25,27 @@ public class UserController {
     @Autowired
     private PostService postService;
 
-    private static final int PAGE_SIZE = 20;
+    private static final int PAGE_SIZE = 40;
 
-    @GetMapping("login")
+    @GetMapping("/login")
     public String getLoginView(){
+
         return "login";
     }
 
-    @GetMapping("home")
+    @GetMapping("/home")
     public String getHomeView(){
+
         return "home";
     }
 
-    @GetMapping("{username}")
+    @GetMapping("/profile/{username}")
     public String getProfile(Model model, @PathVariable("username") String username, @RequestParam(defaultValue = "0") int page){
 
         User user = userRepository.findByUsername(username);
         model.addAttribute("profileUser", user);
 
-        Page<Post> posts = postService.getAllPostsByPageSortedByCreatedAt(page, PAGE_SIZE);
+        Page<Post> posts = postService.getAllPostsByPageByUserSortedByCreated(user, page, PAGE_SIZE);
         model.addAttribute("totalPages", posts.getTotalPages());
         model.addAttribute("page", page);
         model.addAttribute("posts", posts.toList());
@@ -63,6 +65,12 @@ public class UserController {
         Post post = new Post();
         post.setContent(createPostForm.getContent());
         post.setUser(userRepository.findByUsername(principal.getName()));
+
+        Post post2 = new Post();
+        post2.setContent("abababsbaba");
+        post2.setUser(userRepository.findByUsername(principal.getName()));
+        System.out.println(post.equals(post2));
+
         postService.createPost(post);
         return "redirect:/";
     }
