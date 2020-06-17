@@ -65,12 +65,6 @@ public class UserController {
         Post post = new Post();
         post.setContent(createPostForm.getContent());
         post.setUser(userRepository.findByUsername(principal.getName()));
-
-        Post post2 = new Post();
-        post2.setContent("abababsbaba");
-        post2.setUser(userRepository.findByUsername(principal.getName()));
-        System.out.println(post.equals(post2));
-
         postService.createPost(post);
         return "redirect:/";
     }
