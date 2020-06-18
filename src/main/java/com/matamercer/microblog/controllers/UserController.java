@@ -1,8 +1,10 @@
 package com.matamercer.microblog.controllers;
 
 import com.matamercer.microblog.forms.CreatePostForm;
+import com.matamercer.microblog.models.entities.Blog;
 import com.matamercer.microblog.models.entities.Post;
 import com.matamercer.microblog.models.entities.User;
+import com.matamercer.microblog.models.repositories.BlogRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
+    private BlogRepository blogRepository;
+
+    @Autowired
     private PostService postService;
 
     private static final int PAGE_SIZE = 40;
@@ -39,13 +44,13 @@ public class UserController {
         return "home";
     }
 
-    @GetMapping("/profile/{username}")
-    public String getProfile(Model model, @PathVariable("username") String username, @RequestParam(defaultValue = "0") int page){
+    @GetMapping("/profile/{blogname}")
+    public String getProfile(Model model, @PathVariable("blogname") String blogname, @RequestParam(defaultValue = "0") int page){
 
-        User user = userRepository.findByUsername(username);
-        model.addAttribute("profileUser", user);
+        Blog blog = blogRepository.findByBlogname(blogname);
+        model.addAttribute("profileBlog", blog);
 
-        Page<Post> posts = postService.getAllPostsByPageByUserSortedByCreated(user, page, PAGE_SIZE);
+        Page<Post> posts = postService.getAllPostsByPageByBlogSortedByCreated(blog, page, PAGE_SIZE);
         model.addAttribute("totalPages", posts.getTotalPages());
         model.addAttribute("page", page);
         model.addAttribute("posts", posts.toList());
@@ -64,7 +69,7 @@ public class UserController {
     public String createPostForm(Model model, @Valid CreatePostForm createPostForm, Principal principal){
         Post post = new Post();
         post.setContent(createPostForm.getContent());
-        post.setUser(userRepository.findByUsername(principal.getName()));
+        post.setBlog(userRepository.findByUsername(principal.getName()).getActiveBlog());
         postService.createPost(post);
         return "redirect:/";
     }

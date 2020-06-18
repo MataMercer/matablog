@@ -5,15 +5,16 @@ import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "post_tags")
 @Getter
 @Setter
 public class PostTag extends BaseModel {
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy="postTags")
+    private Set<Post> posts = new HashSet<Post>();
 
     @Type(type = "text")
     @Column(nullable = false)

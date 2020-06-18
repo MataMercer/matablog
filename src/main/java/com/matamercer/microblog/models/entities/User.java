@@ -2,6 +2,7 @@ package com.matamercer.microblog.models.entities;
 
 import com.matamercer.microblog.models.entities.Authority;
 import com.matamercer.microblog.models.entities.BaseModel;
+import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -21,7 +20,10 @@ import java.util.Set;
 public class User extends BaseModel implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Collection<Authority> authorities = new HashSet<>();
+    private List<Authority> authorities = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserKeyPair> userKeyPairs = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "user_blog",
@@ -50,8 +52,9 @@ public class User extends BaseModel implements UserDetails {
     @Column(nullable = false)
     private boolean isEnabled;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-//    private Collection<Post> posts = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "blog_id")
+    private Blog activeBlog;
 
     public User() {}
 
@@ -68,6 +71,21 @@ public class User extends BaseModel implements UserDetails {
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;
         this.isEnabled = isEnabled;
+    }
+
+    public void addAuthority(Authority a){
+        a.setUser(this);
+        this.authorities.add(a);
+    }
+
+    public void addBlog(Blog b) {
+        this.blogs.add(b);
+        b.getUsers().add(this);
+    }
+
+    public void removeProduct(Blog b) {
+        this.blogs.remove(b);
+        b.getUsers().remove(this);
     }
 
 

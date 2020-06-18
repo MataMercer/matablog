@@ -19,13 +19,7 @@ import java.security.Principal;
 @Controller
 @RequestMapping(value = "posts")
 public class PostController {
-    @Autowired
-    private PostService postService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    private static final int PAGE_SIZE = 20;
 
 //    @GetMapping("/")
 //    public String allPostsByPage(@RequestParam(defaultValue = "0") int page, Model model) {
@@ -36,25 +30,25 @@ public class PostController {
 //
 //        return "posts";
 //    }
-@GetMapping("/home")
-public String getHomeView(){
-    return "home";
-}
-
-    @GetMapping("/newpost")
-    public String createPostForm(Model model){
-        CreatePostForm createPostForm = new CreatePostForm();
-        model.addAttribute("createPostForm", createPostForm);
-        return "createPostForm";
-    }
-
-    @PostMapping("/newpost")
-    public String createPostForm(Model model, @Valid CreatePostForm createPostForm, Principal principal){
-        Post post = new Post();
-        post.setContent(createPostForm.getContent());
-        post.setUser(userRepository.findByUsername(principal.getName()));
-        postService.createPost(post);
-        return "redirect:/posts/";
-    }
+//@GetMapping("/home")
+//public String getHomeView(){
+//    return "home";
+//}
+//
+//    @GetMapping("/newpost")
+//    public String createPostForm(Model model){
+//        CreatePostForm createPostForm = new CreatePostForm();
+//        model.addAttribute("createPostForm", createPostForm);
+//        return "createPostForm";
+//    }
+//
+//    @PostMapping("/newpost")
+//    public String createPostForm(Model model, @Valid CreatePostForm createPostForm, Principal principal){
+//        Post post = new Post();
+//        post.setContent(createPostForm.getContent());
+//        post.setUser(userRepository.findByUsername(principal.getName()));
+//        postService.createPost(post);
+//        return "redirect:/posts/";
+//    }
 
 }

@@ -1,9 +1,11 @@
 package com.matamercer.microblog.services;
 
 import com.matamercer.microblog.models.entities.Authority;
+import com.matamercer.microblog.models.entities.Blog;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
 import com.matamercer.microblog.models.repositories.AuthorityRepository;
+import com.matamercer.microblog.models.repositories.BlogRepository;
 import com.matamercer.microblog.models.repositories.activitypub.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.security.UserRole;
@@ -33,6 +35,8 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserKeyPairRepository userKeyPairRepository;
     @Autowired
+    private BlogRepository blogRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthorityRepository authorityRepository;
@@ -40,10 +44,20 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void createUser(User user, UserRole userRole){
         try{
+            //add a default blog to user, so they can add posts to it.
+            Blog blog = new Blog();
+            //by default, the default blog will have just the user's username. this can be changed by the user later on.
+            blog.setBlogname(user.getUsername());
+            blog.setPreferredBlogName(user.getUsername());
+            blog.setSensitive(false);
+            blogRepository.save(blog);
+            user.addBlog(blog);
+            user.setActiveBlog(blog);
             userRepository.save(user);
 
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048); KeyPair keyPair = keyPairGenerator.generateKeyPair();
+            keyPairGenerator.initialize(2048);
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
             UserKeyPair userKeyPair = new UserKeyPair();
             userKeyPair.setUser(user);
             userKeyPair.setPrivateKey(Base64.getMimeEncoder().encodeToString( keyPair.getPrivate().getEncoded()));

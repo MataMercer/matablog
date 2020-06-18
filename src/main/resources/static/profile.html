@@ -16,7 +16,7 @@
     <!-- Bootstrap CSS -->
 
     <link rel="stylesheet" href="/stylesheets/index.css" />
-    <title th:text="${profileUser?.username}">Title</title>
+    <title th:text="${profileBlog?.blogname}">Title</title>
   </head>
   <body layout:fragment="content">
 
@@ -96,7 +96,7 @@
                     </figure>
                   </div>
                   <div class="media-content">
-                    <p class="title is-4" th:text="${profileUser?.username}">johnDoeBlog</p>
+                    <p class="title is-4" th:text="${profileBlog?.blogname}">johnDoeBlog</p>
                   </div>
                 </div>
 

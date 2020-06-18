@@ -49,7 +49,7 @@ public class SeederConfig {
                 for(int i = 0; i< 2; i++){
                     Post post = new Post();
                     post.setContent("Test Post " + i);
-                    post.setUser(userRepository.findByUsername(adminUser.getUsername()));
+                    post.setBlog(userRepository.findByUsername(adminUser.getUsername()).getActiveBlog());
                     postService.createPost(post);
                 }
 

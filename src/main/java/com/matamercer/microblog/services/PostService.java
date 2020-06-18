@@ -1,6 +1,7 @@
 package com.matamercer.microblog.services;
 
 
+import com.matamercer.microblog.models.entities.Blog;
 import com.matamercer.microblog.models.entities.Post;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.PostRepository;
@@ -56,9 +57,9 @@ public class PostService {
 //    }
 
     @Cacheable(value = CACHE_NAME_PAGE, key = "T(java.lang.String).valueOf(#page).concat('-').concat(#pageSize)")
-    public Page<Post> getAllPostsByPageByUserSortedByCreated(User user, int page, int pageSize){
+    public Page<Post> getAllPostsByPageByBlogSortedByCreated(Blog blog, int page, int pageSize){
         System.out.println("Getting posts by user...");
         log.debug("Getting posts with username");
-        return postRepository.findByUser(user, PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"));
+        return postRepository.findByBlog(blog, PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"));
     }
 }
