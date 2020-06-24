@@ -1,17 +1,57 @@
 <!DOCTYPE html>
-<html lang="en"
-      layout:decorate="~{layout.html}">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="en" layout:decorate="~{layout.html}">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="columns">
+                <div class="column is-2 container is-fluid"></div>
 
-<div layout:fragment="content">
-    <form action="#" th:action="@{/newpost}" th:object="${createPostForm}" method="post">
-        <p>Content: <input type="text" th:field="*{content}" /></p>
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-</div>
-</body>
+                <div class="column container is-fluid">
+                    <h1 class="title">Create a New Post</h1>
+                    <div id="createPostForm"></div>
+                    <!-- <form
+                        action="#"
+                        th:action="@{/newpost}"
+                        th:object="${createPostForm}"
+                        method="post"
+                    >
+                        <div class="field">
+                            <label class="label">Title</label>
+                            <div class="control">
+                                <input
+                                    class="input"
+                                    type="text"
+                                    placeholder="Text input"
+                                    th:field="*{title}"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Content</label>
+                            <div class="control">
+                                <input
+                                    class="input"
+                                    type="text"
+                                    placeholder="Text input"
+                                    th:field="*{content}"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <button class="button is-link" value="Submit">
+                                Submit
+                            </button>
+                        </div>
+                    </form> -->
+                </div>
+
+                <div class="column is-2 container is-fluid"></div>
+            </div>
+        </div>
+    </body>
 </html>

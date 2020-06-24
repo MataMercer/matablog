@@ -1,0 +1,63 @@
+*{
+  box-sizing: border-box
+}
+
+
+.container{
+  margin: 0 auto;
+  max-width: 600px
+}
+
+.tags-input{
+  display: inline-flex;
+  margin: 0 auto;
+  padding: 5px;
+  width: 600px;
+  font-size: 14px;
+  border: #cecece solid 1px;
+  border-radius: 3px;
+
+
+.tag{
+    margin-right: 5px;
+}
+
+ .input{
+    width: 100%;
+    border: none;
+    outline: none;
+ }
+}
+
+.tag{
+  display: inline-flex;
+  padding: 2px 5px;
+  background-color: #cecece;
+  border-radius: 3px;
+}
+
+button.delete{
+  display: inline-block;
+  margin-left: 5px;
+  padding: 0;
+  width: 15px;
+  height: 15px;
+  background-color: rgba(0,0,0,.3);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 50px;
+  border: none;
+  outline: none;
+  user-select: none;
+
+
+  &:after{
+    content: 'X';
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+}
+}

@@ -37,4 +37,29 @@ public class Post extends BaseModel {
     @Type(type = "boolean")
     @Column(nullable = false)
     private boolean isSensitive;
+
+    public Post(Blog blog, String title, String content, boolean isCommunityTaggingEnabled,
+            boolean isSensitive) {
+        this.blog = blog;
+        this.title = title;
+        this.content = content;
+        this.isCommunityTaggingEnabled = isCommunityTaggingEnabled;
+        this.isSensitive = isSensitive;
+    }
+
+    public Post(){
+
+    }
+
+    public void addPostTag(PostTag pt) {
+        this.postTags.add(pt);
+        pt.getPosts().add(this);
+    }
+
+    public void removePostTag(PostTag pt) {
+        this.postTags.remove(pt);
+        pt.getPosts().remove(this);
+    }
+
+    
 }

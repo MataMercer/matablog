@@ -46,12 +46,12 @@ public class SeederConfig {
 
                 userService.createUser(adminUser, UserRole.ADMIN);
 
-                for(int i = 0; i< 2; i++){
-                    Post post = new Post();
-                    post.setContent("Test Post " + i);
-                    post.setBlog(userRepository.findByUsername(adminUser.getUsername()).getActiveBlog());
-                    postService.createPost(post);
-                }
+//                for(int i = 0; i< 2; i++){
+//                    Post post = new Post();
+//                    post.setContent("Test Post " + i);
+//                    post.setBlog(userRepository.findByUsername(adminUser.getUsername()).getActiveBlog());
+//                    postService.createPost(post);
+//                }
 
 
 

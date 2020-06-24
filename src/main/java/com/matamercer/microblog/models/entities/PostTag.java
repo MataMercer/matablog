@@ -17,6 +17,21 @@ public class PostTag extends BaseModel {
     private Set<Post> posts = new HashSet<Post>();
 
     @Type(type = "text")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
+
+    public PostTag(Set<Post> posts, String name) {
+        this.posts = posts;
+        this.name = name;
+    }
+
+    public PostTag(String name) {
+        this.name = name;
+    }
+
+    public PostTag(){
+
+    }
+
+    
 }

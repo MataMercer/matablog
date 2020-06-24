@@ -13,10 +13,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/qs": "^6.9.3",
+    "@types/react-tag-autocomplete": "^5.12.0",
+    "axios": "^0.19.2",
     "bulma": "^0.8.2",
+    "qs": "^6.9.4",
     "rbx": "^2.2.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-tag-autocomplete": "^5.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
