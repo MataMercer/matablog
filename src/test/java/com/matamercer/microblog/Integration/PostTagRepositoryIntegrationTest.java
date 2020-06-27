@@ -28,6 +28,8 @@ public class PostTagRepositoryIntegrationTest {
     @Autowired
     private PostTagRepository postTagRepository;
 
+
+    //TODO: prove that posts that are not among the top get left out.
     @Test
     public void whenFindByBlogSortedByMostUsed_thenReturnListOfPostTags() throws Exception{
         String testTagName1 = "tag1";

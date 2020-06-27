@@ -25,7 +25,7 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
     //join version
     //SELECT name FROM "post_tags" INNER JOIN (SELECT posttag_id FROM (SELECT * FROM "posts" WHERE blog_id=1) AS blogposts INNER JOIN "post_posttag" ON blogposts.id="post_posttag".post_id GROUP BY posttag_id ORDER BY count(posttag_id) DESC LIMIT 4) AS topPostTagIds ON "post_tags".id=topPostTagIds.posttag_id;
 
-
+//TODO: Redundancy in ordering this. Fix it!
     //reference jpql @Query("SELECT l FROM LoginToken l INNER JOIN l.user u WHERE u.username = :username")
     @Query("SELECT pt as postTag, COUNT(pt.id) as postTagCount FROM PostTag pt INNER JOIN pt.posts p WHERE p.blog = :blog GROUP BY pt.id")
 //    @Query(
