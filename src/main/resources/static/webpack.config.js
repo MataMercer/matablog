@@ -1,7 +1,15 @@
 const path = require('path');
 module.exports = {
-    mode: "production",
-    entry: path.resolve(__dirname, 'src'),
+    mode: "development",
+    entry: {
+        main: './src/index.tsx'
+    },
+    output: {
+        filename: '[name].bundle.js',
+        chunkFilename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: 'dist/'
+    },
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
 
@@ -9,7 +17,6 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".ts", ".tsx", ".js", ".jsx"]
     },
-
     module: {
         rules: [
             {
