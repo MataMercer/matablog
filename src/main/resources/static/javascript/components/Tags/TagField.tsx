@@ -41,7 +41,8 @@ class TagField extends Component<TagFieldProps, TagFieldState> {
     }
 
     handleRemoveTag(e: React.ChangeEvent<HTMLInputElement>) {
-        const tag = e.target.parentNode?.textContent?.trim();
+        const tag = e.target.previousSibling?.textContent?.trim();
+        console.log(tag);
         let index = this.props.value.indexOf(tag as string);
         this.props.value.splice(index, 1);
         this.setState({ newTag: '' });
@@ -56,8 +57,10 @@ class TagField extends Component<TagFieldProps, TagFieldState> {
                                 <Tag.Group gapless>
                                     <Tag color="dark" size="medium">{name}</Tag>
                                     <Tag
+                                        size="medium"
                                         delete
                                         onClick={this.handleRemoveTag}
+                                        value={name}
                                     />
                                 </Tag.Group>
                             </Control>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="columns">
+        <div class="column is-2 container is-fluid"></div>
+        <div class="column container is-fluid">
+            <p th:text="${post.content}" >
+            </p>
+        </div>
+        <div class="column is-2 container is-fluid"></div>
+    </div>
+</div>
+</body>
+</html>

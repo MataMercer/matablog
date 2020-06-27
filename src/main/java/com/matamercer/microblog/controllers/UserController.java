@@ -67,6 +67,8 @@ public class UserController {
         model.addAttribute("page", page);
         model.addAttribute("posts", posts.toList());
 
+        model.addAttribute("mostUsedTags", postTagService.getTopTagsByPosts(blog, 0, 10));
+
         return "profile";
     }
 
@@ -92,6 +94,14 @@ public class UserController {
         postTags.forEach(post::addPostTag);
         postService.createPost(post);
         return "redirect:/";
+    }
+
+    @GetMapping("/posts/{postId}")
+    public String getPostPage(Model model, @PathVariable("postId") long postId){
+        Post post = postService.getPost(postId);
+        model.addAttribute("post", post);
+
+        return "post";
     }
 
     @GetMapping("admin")

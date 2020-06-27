@@ -1,6 +1,7 @@
 package com.matamercer.microblog.services;
 
 
+import com.matamercer.microblog.Exceptions.NotFoundException;
 import com.matamercer.microblog.models.entities.Blog;
 import com.matamercer.microblog.models.entities.Post;
 import com.matamercer.microblog.models.entities.User;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -61,5 +64,18 @@ public class PostService {
         System.out.println("Getting posts by user...");
         log.debug("Getting posts with username");
         return postRepository.findByBlog(blog, PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"));
+    }
+
+    @Cacheable(CACHE_NAME)
+    public Post getPost(Long postId) {
+        log.debug("Get post " + postId);
+
+        Optional<Post> post = postRepository.findById(postId);
+
+        if (!post.isPresent()) {
+            throw new NotFoundException("Post with id " + postId + " is not found.");
+        }else{
+            return post.get();
+        }
     }
 }

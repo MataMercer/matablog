@@ -42,14 +42,9 @@
                         Tags
                     </p>
                     <ul class="menu-list">
-                        <a>Java (104)</a>
-                        <a>Clojure (74)</a>
-                        <a>Github (65)</a>
-                        <a>Git (45)</a>
-                        <a>C (40)</a>
-                        <a>C++ (39)</a>
-                        <a>C# (21)</a>
-                        <a>Ruby (1)</a>
+                        <div th:each="tag: ${mostUsedTags}">
+                            <a><div th:text="${tag.getKey().getName() + ' (' + tag.getValue()} + ')'"></div></a>
+                        </div>
                     </ul>
                 </aside>
             </div>
@@ -68,10 +63,11 @@
                         th:each="r : ${#numbers.sequence(0, posts.size(), colCount)}"
                         class="columns"
                     >
-                        <div
+                        <a
                             th:each="c : ${#numbers.sequence(0, colCount - 1)}"
                             th:if="${r + c &lt; posts.size()}"
                             class="column is-one-quarter"
+                            th:href="@{'/posts/' + ${posts.get(r + c).id}}"
                         >
                             <div class="card-image">
                                 <figure class="image is-4by3">
@@ -116,7 +112,7 @@
                                     >
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </th:block>
 
