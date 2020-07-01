@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -80,7 +81,11 @@ public class UserController {
     }
 
     @PostMapping("/newpost")
-    public String createPostForm(Model model, @Valid CreatePostForm createPostForm, Principal principal) {
+    public String createPostForm(@Valid CreatePostForm createPostForm, Errors errors, Model model, Principal principal ) {
+
+        if(errors.hasErrors()){
+            return "createPostForm";
+        }
 
         Set<PostTag> postTags = createPostForm.getPostTags().stream().map(postTagName -> postTagService.findOrCreateByName(postTagName)).collect(Collectors.toSet());
 
@@ -92,8 +97,8 @@ public class UserController {
                 createPostForm.isSensitive());
 
         postTags.forEach(post::addPostTag);
-        postService.createPost(post);
-        return "redirect:/";
+        post = postService.createPost(post);
+        return "redirect:/posts/" + post.getId();
     }
 
     @GetMapping("/posts/{postId}")

@@ -3,7 +3,6 @@ logging:
     .org:
       springframework: INFO
     .com:
-      mkyong: INFO
       zaxxer: DEBUG
       root: ERROR
 ---

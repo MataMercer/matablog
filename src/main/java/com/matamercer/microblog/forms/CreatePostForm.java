@@ -8,12 +8,16 @@ import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 public class CreatePostForm {
-    @NotEmpty
+    @NotNull
+    @Size(min=1, max=500, message = "Length should be between 1 and 500 characters.")
     private String content;
-    
+
+    @Size(min=0, max=100, message = "Length should be between 1 and 100 characters.")
     private String title;
 
     private List<String> postTags;

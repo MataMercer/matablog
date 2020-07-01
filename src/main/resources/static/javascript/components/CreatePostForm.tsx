@@ -12,7 +12,7 @@ import {
 } from 'rbx';
 import TagField from './Tags/TagField';
 import axios from 'axios';
-import qs from 'qs';
+import qs, { stringify } from 'qs';
 
 type CreatePostFormState = {
     title: string;
@@ -23,8 +23,16 @@ type CreatePostFormState = {
     suggestions: string[];
 };
 
-class CreatePostForm extends Component<{}, CreatePostFormState> {
-    constructor(props: {}) {
+type CreatePostFormProps = {
+    csrfParameterName: string | null;
+    csrfToken: string | null;
+};
+
+class CreatePostForm extends Component<
+    CreatePostFormProps,
+    CreatePostFormState
+> {
+    constructor(props: CreatePostFormProps) {
         super(props);
 
         this.state = {
@@ -63,18 +71,22 @@ class CreatePostForm extends Component<{}, CreatePostFormState> {
     }
 
     handleOnSubmit = async (e: React.SyntheticEvent) => {
-        e.preventDefault();
+        interface FormData {
+            [data: string]: string | Array<string> | boolean;//indexer
+        }
 
-        const formData = {
-            title: this.state.title,
-            content: this.state.content,
-            postTags: this.state.tags,
-            sensitive: this.state.isSensitive,
-            communityTaggingEnabled: this.state.isCommunityTaggingEnabled,
+        let formData : FormData = {
+            'title': this.state.title,
+            'content': this.state.content,
+            'postTags': this.state.tags,
+            'sensitive': this.state.isSensitive,
+            'communityTaggingEnabled': this.state.isCommunityTaggingEnabled,
         };
 
-
-        console.log(qs.stringify(formData))
+        if(this.props.csrfParameterName && this.props.csrfToken){
+            formData[this.props.csrfParameterName] = this.props.csrfToken;
+        }
+        
         axios({
             method: 'post',
             url: '/newpost',
@@ -86,13 +98,15 @@ class CreatePostForm extends Component<{}, CreatePostFormState> {
             })
             .catch(function (response) {
                 //handle error
+                
                 console.log(response);
             });
+
     };
 
     public render() {
         return (
-            <form onSubmit={this.handleOnSubmit}>
+            <form method="post" action="/newpost">
                 <Field>
                     <Label>Title</Label>
                     <Control>

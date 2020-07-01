@@ -82,7 +82,7 @@
               id="NavbarAccountDropdown"
               sec:authorize="isAuthenticated()"
               username="username"
-              th:attr="username=${#authentication.getPrincipal().getUsername()}"
+              th:attr="data-username=${#authentication.getPrincipal().getUsername()}"
             ></div>
 
 
