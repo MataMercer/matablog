@@ -1,6 +1,7 @@
 package com.matamercer.microblog.models.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 @Table(name = "authorities")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Authority extends BaseModel implements GrantedAuthority {
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -27,7 +29,6 @@ public class Authority extends BaseModel implements GrantedAuthority {
         return authorityString;
     }
 
-    public Authority(){}
 
     public Authority(String authorityString, User user){
         this.authorityString = authorityString;

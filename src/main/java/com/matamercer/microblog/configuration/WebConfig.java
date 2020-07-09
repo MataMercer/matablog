@@ -1,9 +1,12 @@
 package com.matamercer.microblog.configuration;
 
+import com.matamercer.microblog.storage.StorageService;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class WebConfig {
+
+    //HTTPS
     @Bean
     public ServletWebServerFactory servletContainer() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
@@ -36,4 +41,14 @@ public class WebConfig {
         connector.setRedirectPort(8443);
         return connector;
     }
+
+    //File Storage
+    @Bean
+    CommandLineRunner init(@Qualifier("fileSystemStorage") StorageService storageService){
+        return (args) -> {
+          storageService.deleteAll();
+          storageService.init();
+        };
+    }
+
 }

@@ -12,7 +12,7 @@
         <div class="column container is-fluid">
             <h1 class="title">Create a New Post</h1>
             <!--                    <div id="createPostForm" th:attr="data-csrfParameterName=${_csrf.parameterName}, data-csrfToken=${_csrf.token}"></div>-->
-            <form method="post" th:action="@{/newpost}" th:object="${createPostForm}">
+            <form method="post" th:action="@{/newpost}" enctype="multipart/form-data" th:object="${createPostForm}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="field">
@@ -42,6 +42,18 @@
                                   th:field="${createPostForm.content}"></textarea>
                     </div>
                 </div>
+
+                <div class="field">
+                    <label class="label">Images
+                    </label>
+                    <div class="control">
+                        <input type="file"
+                               name="file" />
+                    </div>
+                </div>
+
+
+
 
                 <div class="field">
                     <label class="label">Tags</label>

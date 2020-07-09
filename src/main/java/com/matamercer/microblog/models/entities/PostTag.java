@@ -1,6 +1,7 @@
 package com.matamercer.microblog.models.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @Table(name = "post_tags")
 @Getter
 @Setter
+@NoArgsConstructor
 public class PostTag extends BaseModel {
     @ManyToMany(mappedBy="postTags")
     private Set<Post> posts = new HashSet<Post>();
@@ -29,9 +31,4 @@ public class PostTag extends BaseModel {
         this.name = name;
     }
 
-    public PostTag(){
-
-    }
-
-    
 }

@@ -1,19 +1,23 @@
 package com.matamercer.microblog.models.entities;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "posts")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Post extends BaseModel {
     @ManyToOne
-    @JoinColumn(name = "blog_id")
+    @JoinColumn(name = "blog_id", nullable = false)
     private Blog blog;
 
     @ManyToMany
@@ -22,6 +26,19 @@ public class Post extends BaseModel {
         inverseJoinColumns = { @JoinColumn(name = "posttag_id" ) }
     )
     private Set<PostTag> postTags = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name="file_id")
+    private List<File> attachments = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name="post_id")
+    private Post parentPost;
+
+    @OneToMany(mappedBy = "parentPost")
+    private List<Post> replies = new ArrayList<>();
+
+
 
     @Type(type = "text")
     private String title;
@@ -45,10 +62,6 @@ public class Post extends BaseModel {
         this.content = content;
         this.isCommunityTaggingEnabled = isCommunityTaggingEnabled;
         this.isSensitive = isSensitive;
-    }
-
-    public Post(){
-
     }
 
     public void addPostTag(PostTag pt) {

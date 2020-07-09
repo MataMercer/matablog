@@ -3,6 +3,7 @@ package com.matamercer.microblog.models.entities.activitypub;
 import com.matamercer.microblog.models.entities.BaseModel;
 import com.matamercer.microblog.models.entities.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Table(name = "user_key_pairs")
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserKeyPair extends BaseModel {
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -22,9 +24,6 @@ public class UserKeyPair extends BaseModel {
     @Column(nullable = false, length = 2048)
     private String privateKey;
 
-    public UserKeyPair(){
-
-    }
 
     public UserKeyPair(User user, String publicKey, String privateKey) {
         this.user = user;

@@ -7,6 +7,7 @@ import com.matamercer.microblog.models.entities.PostTag;
 import com.matamercer.microblog.models.repositories.BlogRepository;
 import com.matamercer.microblog.models.repositories.PostTagRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
+import com.matamercer.microblog.services.FileService;
 import com.matamercer.microblog.services.PostService;
 import com.matamercer.microblog.services.PostTagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -27,22 +29,22 @@ import java.util.stream.Collectors;
 @RequestMapping("/")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BlogRepository blogRepository;
-
-    @Autowired
-    private PostTagRepository postTagRepository;
-
-    @Autowired
-    private PostService postService;
-
-    @Autowired
-    private PostTagService postTagService;
+    private final UserRepository userRepository;
+    private final BlogRepository blogRepository;
+    private final PostService postService;
+    private final PostTagService postTagService;
+    private final FileService fileService;
 
     private static final int PAGE_SIZE = 40;
+
+    @Autowired
+    public UserController(UserRepository userRepository, BlogRepository blogRepository, PostTagRepository postTagRepository, PostService postService, PostTagService postTagService, FileService fileService) {
+        this.userRepository = userRepository;
+        this.blogRepository = blogRepository;
+        this.postService = postService;
+        this.postTagService = postTagService;
+        this.fileService = fileService;
+    }
 
     @GetMapping("/login")
     public String getLoginView() {
@@ -81,7 +83,7 @@ public class UserController {
     }
 
     @PostMapping("/newpost")
-    public String createPostForm(@Valid CreatePostForm createPostForm, Errors errors, Model model, Principal principal ) {
+    public String createPostForm(@Valid CreatePostForm createPostForm, Errors errors, @RequestParam("file") MultipartFile file, Model model, Principal principal ) {
 
         if(errors.hasErrors()){
             return "createPostForm";
@@ -90,11 +92,15 @@ public class UserController {
         Set<PostTag> postTags = createPostForm.getPostTags().stream().map(postTagName -> postTagService.findOrCreateByName(postTagName)).collect(Collectors.toSet());
 
 
-        Post post = new Post(userRepository.findByUsername(principal.getName()).getActiveBlog(),
+        Blog blog = userRepository.findByUsername(principal.getName()).getActiveBlog();
+        Post post = new Post(
+                blog,
                 createPostForm.getTitle(),
                 createPostForm.getContent(),
                 createPostForm.isCommunityTaggingEnabled(),
                 createPostForm.isSensitive());
+
+        post.getAttachments().add(fileService.createFile(file, blog));
 
         postTags.forEach(post::addPostTag);
         post = postService.createPost(post);

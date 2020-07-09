@@ -2,6 +2,7 @@ package com.matamercer.microblog.models.entities;
 
 import com.matamercer.microblog.models.entities.BaseModel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Table(name= "login_tokens")
 @Getter
 @Setter
+@NoArgsConstructor
 public class LoginToken extends BaseModel {
 
     @Column(nullable = false)
@@ -26,8 +28,6 @@ public class LoginToken extends BaseModel {
 
     @Column(nullable = false)
     private Date lastUsed;
-
-    public LoginToken(){}
 
     public LoginToken(String series, User user, String token, Date lastUsed) {
         this.series = series;

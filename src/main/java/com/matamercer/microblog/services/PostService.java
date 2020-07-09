@@ -28,8 +28,14 @@ public class PostService {
     public static final String CACHE_NAME = "cache.posts";
     public static final String CACHE_NAME_PAGE = CACHE_NAME + ".page";
 
+    private final PostRepository postRepository;
+    private final FileService fileService;
+
     @Autowired
-    private PostRepository postRepository;
+    public PostService(PostRepository postRepository, FileService fileService){
+        this.postRepository = postRepository;
+        this.fileService = fileService;
+    }
 
     @Caching(evict = {
             @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true),

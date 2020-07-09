@@ -71,10 +71,7 @@
                         >
                             <div class="card-image">
                                 <figure class="image is-4by3">
-                                    <img
-                                        src="/img/image-placeholder.jpg"
-                                        alt="Placeholder image"
-                                    />
+                                    <img th:src="${'/files/' + posts.get(r + c).getAttachments().get(0).getId() + '/' + posts.get(r + c).getAttachments().get(0).getName()}"/>
                                 </figure>
                             </div>
                             <div class="card-content">

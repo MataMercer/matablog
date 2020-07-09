@@ -2,6 +2,7 @@ package com.matamercer.microblog.forms;
 
 import com.matamercer.microblog.models.entities.PostTag;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,4 +26,5 @@ public class CreatePostForm {
     private boolean communityTaggingEnabled;
 
     private boolean sensitive;
+
 }

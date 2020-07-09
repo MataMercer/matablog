@@ -7,6 +7,10 @@ logging:
       root: ERROR
 ---
 spring:
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
   flyway:
     enabled: false
   datasource:
