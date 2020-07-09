@@ -100,7 +100,9 @@ public class UserController {
                 createPostForm.isCommunityTaggingEnabled(),
                 createPostForm.isSensitive());
 
-        post.getAttachments().add(fileService.createFile(file, blog));
+        if(!file.isEmpty()){
+            post.getAttachments().add(fileService.createFile(file, blog));
+        }
 
         postTags.forEach(post::addPostTag);
         post = postService.createPost(post);
