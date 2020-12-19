@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  backend:
+    build: .
+    ports:
+      - "127.0.0.1:8443:8443"
+    volumes:
+    - .:/app
+    networks:
+      - internal_network
+      - external_network
+    command: mvn spring-boot:run
+
+  redis:
+    restart: always
+    image: "redis:alpine"
+    networks:
+      - internal_network
+  db:
+    restart: always
+    image: "postgres:alpine"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: microblog
+    networks:
+      - internal_network
+networks:
+  internal_network:
+    internal: true
+  external_network:
+
+

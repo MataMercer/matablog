@@ -83,7 +83,7 @@ public class User extends BaseModel implements UserDetails {
         b.getUsers().add(this);
     }
 
-    public void removeProduct(Blog b) {
+    public void removeBlog(Blog b) {
         this.blogs.remove(b);
         b.getUsers().remove(this);
     }

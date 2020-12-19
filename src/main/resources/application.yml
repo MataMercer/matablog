@@ -14,7 +14,7 @@ spring:
   flyway:
     enabled: false
   datasource:
-    url: jdbc:postgresql://192.168.1.155:5432/miniblog
+    url: jdbc:postgresql://db:5432/microblog
     username: postgres
     password: password
   jpa:
@@ -35,8 +35,15 @@ spring:
   cache:
     type: redis
   redis:
-    host: 192.168.1.155
+    host: redis
     port: 6379
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: 4f55d5da9e6f66fdd842
+            client-secret: 03300ce199a222a968c17e7fbf3f4cb4af0001ab
 ---
 spring:
   profiles: generatesql
