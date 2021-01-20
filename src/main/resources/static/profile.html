@@ -43,7 +43,11 @@
                     </p>
                     <ul class="menu-list">
                         <div th:each="tag: ${mostUsedTags}">
-                            <a><div th:text="${tag.getKey().getName() + ' (' + tag.getValue()} + ')'"></div></a>
+                            <a
+                                ><div
+                                    th:text="${tag.getKey().getName() + ' (' + tag.getValue()} + ')'"
+                                ></div
+                            ></a>
                         </div>
                     </ul>
                 </aside>
@@ -69,9 +73,14 @@
                             class="column is-one-quarter"
                             th:href="@{'/posts/' + ${posts.get(r + c).id}}"
                         >
-                            <div class="card-image" th:if="${posts.get(r + c).getAttachments().size()>0}">
+                            <div
+                                class="card-image"
+                                th:if="${posts.get(r + c).getAttachments().size()>0}"
+                            >
                                 <figure class="image is-4by3">
-                                    <img th:src="${'/files/' + posts.get(r + c).getAttachments().get(0).getId() + '/' + posts.get(r + c).getAttachments().get(0).getName()}"/>
+                                    <img
+                                        th:src="${'/files/' + posts.get(r + c).getAttachments().get(0).getId() + '/' + posts.get(r + c).getAttachments().get(0).getName()}"
+                                    />
                                 </figure>
                             </div>
                             <div class="card-content">
@@ -139,5 +148,4 @@
 
         <div id="container"></div>
     </body>
-    <script src="dist/main.js"></script>
 </html>

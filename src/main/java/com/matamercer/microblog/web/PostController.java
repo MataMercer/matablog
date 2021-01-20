@@ -1,20 +1,7 @@
-package com.matamercer.microblog.controllers;
+package com.matamercer.microblog.web;
 
-import com.matamercer.microblog.forms.CreatePostForm;
-import com.matamercer.microblog.models.entities.Post;
-import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.services.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.validation.Valid;
-import java.security.Principal;
 
 @Controller
 @RequestMapping(value = "posts")

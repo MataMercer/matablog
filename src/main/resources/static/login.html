@@ -1,127 +1,141 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layout.html}">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+<html
+    lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    layout:decorate="~{layout.html}"
+>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
 
-    <!-- Bootstrap CSS -->
+        <!-- Bootstrap CSS -->
 
-    <link rel="stylesheet" type="text/css" href="/stylesheets/index.css" />
-    <title>Hello, world!</title>
-  </head>
-  <body layout:fragment="content">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/index.css" />
+        <title>Hello, world!</title>
+    </head>
+    <body layout:fragment="content">
+        <div class="columns">
+            <div id="side-bar" class="column is-2 container is-fluid"></div>
+            <div class="column container is-8 is-fluid">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Login
+                        </p>
+                        <a
+                            href="#"
+                            class="card-header-icon"
+                            aria-label="more options"
+                        >
+                            <span class="icon">
+                                <i
+                                    class="fas fa-angle-down"
+                                    aria-hidden="true"
+                                ></i>
+                            </span>
+                        </a>
+                    </header>
+                    <form method="post" action="/login">
+                        <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
 
-    <div class="columns">
+                        <div class="card-content">
+                            <div th:if="${param.error != null}">
+                                <div
+                                    class="alert"
+                                    th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"
+                                >
+                                    error
+                                </div>
+                            </div>
 
-      
-      <div id="side-bar" class="column is-2 container is-fluid">
+                            <div class="field">
+                                <p
+                                    class="control has-icons-left has-icons-right"
+                                >
+                                    <input
+                                        class="input"
+                                        id="username"
+                                        placeholder="Username"
+                                        name="username"
+                                    />
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <span class="icon is-small is-right">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="field">
+                                <p class="control has-icons-left">
+                                    <input
+                                        class="input"
+                                        type="password"
+                                        placeholder="Password"
+                                        id="password"
+                                        name="password"
+                                    />
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                </p>
+                            </div>
 
-        
-
-      </div>
-      <div class="column container is-8 is-fluid">
-
-        <div class="card">
-            <header class="card-header">
-              <p class="card-header-title">
-                Login
-              </p>
-              <a href="#" class="card-header-icon" aria-label="more options">
-                <span class="icon">
-                  <i class="fas fa-angle-down" aria-hidden="true"></i>
-                </span>
-              </a>
-            </header>
-          <form method="post" action="/login" >
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-            <div class="card-content">
-
-              <div th:if="${param.error}">
-                <div class="alert">
-                  Invalid username or password.
+                            <div class="field">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="remember-me" />
+                                    Remember me
+                                </label>
+                            </div>
+                            <div>
+                                Don't have an account? Register
+                                <a href="/register">here</a>.
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <button
+                                class="button is-primary card-footer-item"
+                                type="submit"
+                            >
+                                Log in
+                            </button>
+                        </footer>
+                    </form>
                 </div>
-              </div>
-
-                <div class="field">
-                    <p class="control has-icons-left has-icons-right">
-                      <input class="input" id="username" placeholder="Username" name="username">
-                      <span class="icon is-small is-left">
-                        <i class="fas fa-envelope"></i>
-                      </span>
-                      <span class="icon is-small is-right">
-                        <i class="fas fa-check"></i>
-                      </span>
-                    </p>
-                  </div>
-                  <div class="field">
-                    <p class="control has-icons-left">
-                      <input class="input" type="password" placeholder="Password" id="password" name="password">
-                      <span class="icon is-small is-left">
-                        <i class="fas fa-lock"></i>
-                      </span>
-                    </p>
-                  </div>
-
-                  <div class="field">
-                    <label class="checkbox">
-                        <input type="checkbox" name="remember-me">
-                        Remember me
-                      </label>
-                  </div>
-
-                  
             </div>
-            <footer class="card-footer">
-              <button class="button is-primary card-footer-item" type="submit">Log in</button>
-            </footer>
-          </form>
-          </div>
 
+            <div class="column is-2 container is-fluid"></div>
+        </div>
+    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get all "navbar-burger" elements
+            const $navbarBurgers = Array.prototype.slice.call(
+                document.querySelectorAll('.navbar-burger'),
+                0
+            );
 
+            // Check if there are any navbar burgers
+            if ($navbarBurgers.length > 0) {
+                // Add a click event on each of them
+                $navbarBurgers.forEach((el) => {
+                    el.addEventListener('click', () => {
+                        // Get the target from the "data-target" attribute
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
 
-        
-
-
-      </div>
-
-      <div class="column is-2 container is-fluid">
-
-    </div>
-
-    </div>
-  </body>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Get all "navbar-burger" elements
-      const $navbarBurgers = Array.prototype.slice.call(
-        document.querySelectorAll('.navbar-burger'),
-        0
-      );
-
-      // Check if there are any navbar burgers
-      if ($navbarBurgers.length > 0) {
-        // Add a click event on each of them
-        $navbarBurgers.forEach((el) => {
-          el.addEventListener('click', () => {
-            // Get the target from the "data-target" attribute
-            const target = el.dataset.target;
-            const $target = document.getElementById(target);
-
-            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-            el.classList.toggle('is-active');
-            $target.classList.toggle('is-active');
-          });
+                        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+                    });
+                });
+            }
         });
-      }
-    });
-  </script>
+    </script>
 </html>

@@ -59,12 +59,14 @@ public class User extends BaseModel implements UserDetails {
     public User() {}
 
     public User(
+            String email,
             String username,
             String password,
             boolean isAccountNonExpired,
             boolean isAccountNonLocked,
             boolean isCredentialsNonExpired,
             boolean isEnabled) {
+        this.email = email;
         this.username = username;
         this.password = password;
         this.isAccountNonExpired = isAccountNonExpired;

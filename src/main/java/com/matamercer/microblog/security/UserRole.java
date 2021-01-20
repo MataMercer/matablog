@@ -10,8 +10,15 @@ import java.util.stream.Collectors;
 
 public enum UserRole {
     STUDENT(Sets.newHashSet()),
-    ADMIN(Sets.newHashSet(UserPermission.COURSE_READ, UserPermission.COURSE_WRITE, UserPermission.STUDENT_READ, UserPermission.STUDENT_WRITE)),
-    ADMINTRAINEE(Sets.newHashSet(UserPermission.COURSE_READ, UserPermission.STUDENT_READ));;
+    ADMIN(Sets.newHashSet(
+            UserPermission.COURSE_READ,
+            UserPermission.COURSE_WRITE,
+            UserPermission.STUDENT_READ,
+            UserPermission.STUDENT_WRITE)),
+    ADMINTRAINEE(Sets.newHashSet(
+            UserPermission.COURSE_READ,
+            UserPermission.STUDENT_READ)),
+    USER(Sets.newHashSet());
 
     private final Set<UserPermission> permissions;
 

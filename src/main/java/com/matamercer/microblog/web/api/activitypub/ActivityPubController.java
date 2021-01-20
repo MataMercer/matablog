@@ -1,7 +1,7 @@
-package com.matamercer.microblog.controllers.api.activitypub;
+package com.matamercer.microblog.web.api.activitypub;
 
-import com.matamercer.microblog.controllers.api.activitypub.render.KeyRender;
-import com.matamercer.microblog.controllers.api.activitypub.render.PersonRender;
+import com.matamercer.microblog.web.api.activitypub.render.KeyRender;
+import com.matamercer.microblog.web.api.activitypub.render.PersonRender;
 import com.matamercer.microblog.Exceptions.NotFoundException;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.activitypub.UserKeyPairRepository;

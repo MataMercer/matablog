@@ -1,6 +1,5 @@
 package com.matamercer.microblog.security;
 
-
 import com.matamercer.microblog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,38 +33,25 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userService = userService;
     }
 
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-//                .csrf().disable()
-//                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                .and()
+        http.csrf().disable()
+                // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                // .and()
                 .authorizeRequests()
-                .antMatchers("/",
-                        "index",
-                        "/dist/*",
-                        "/stylesheets/*",
-                        "/img/*",
-                        "/profile/*",
-                        "/posts/*")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll().defaultSuccessUrl("/home", true)
-                .and()
-                .rememberMe().rememberMeParameter("remember-me")
-                .tokenRepository(persistentTokenRepository).userDetailsService(userService)
-                .and()
-                .logout().logoutUrl("/logout")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))//only bc we have csrf disabled. Whenever you go to this url, it logs u out.
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me")
+                .antMatchers("/", "/api/user/*", "index", "/users/*", "/register", "/registerSuccess", "/baduser",
+                        "/dist/*", "/stylesheets/*", "/img/*", "/profile/*", "/posts/*")
+                .permitAll().anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll()
+                .defaultSuccessUrl("/home", true).and().rememberMe().rememberMeParameter("remember-me")
+                .tokenRepository(persistentTokenRepository).userDetailsService(userService).and().logout()
+                .logoutUrl("/logout").logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))// only bc we
+                // have csrf
+                // disabled.
+                // Whenever you
+                // go to this
+                // url, it logs u
+                // out.
+                .clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID", "remember-me")
                 .logoutSuccessUrl("/login");
     }
 
@@ -82,6 +68,4 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-
 }
-

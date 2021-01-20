@@ -1,4 +1,4 @@
-package com.matamercer.microblog.controllers.api.activitypub.render;
+package com.matamercer.microblog.web.api.activitypub.render;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -6,6 +6,8 @@ logging:
       zaxxer: DEBUG
       root: ERROR
 ---
+support.email: extremelywealthnigerianprince@gmail.com
+---
 spring:
   servlet:
     multipart:
@@ -44,6 +46,19 @@ spring:
           github:
             client-id: 4f55d5da9e6f66fdd842
             client-secret: 03300ce199a222a968c17e7fbf3f4cb4af0001ab
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    protocol: smtps
+    username: extremelywealthynigerianprince@gmail.com
+    password: 9KJ;`k6e.?&=f^.m~H/~
+    transport:
+      protocol: smtps
+    smtps:
+      auth: true
+      starttls:
+        enable: true
+      timeout: 8000
 ---
 spring:
   profiles: docker

@@ -1,23 +1,14 @@
-package com.matamercer.microblog.controllers;
-import java.io.IOException;
-import java.security.Principal;
-import java.util.stream.Collectors;
+package com.matamercer.microblog.web;
 
 import com.matamercer.microblog.services.FileService;
 import com.matamercer.microblog.storage.StorageFileNotFoundException;
-import com.matamercer.microblog.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 
 @Controller

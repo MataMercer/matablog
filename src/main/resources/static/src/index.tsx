@@ -1,21 +1,45 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import NewPostModal from '../javascript/components/NewPostModal';
-import NavbarAccountDropdown from '../javascript/components/NavbarAccountDropdown';
-import { PageLoader } from 'rbx';
+// import RegisterForm from '../javascript/components/forms/RegisterForm';
+// import NavbarAccountDropdown from '../javascript/components/NavbarAccountDropdown';
+// const CreatePostForm = React.lazy(() =>
+//     import('../javascript/components/CreatePostForm')
+// );
 
-const CreatePostForm = React.lazy(() =>
-    import('../javascript/components/CreatePostForm')
+const RegisterForm = React.lazy(() =>
+    import('../javascript/components/forms/RegisterForm')
 );
 
-const container = document.getElementById('NavbarAccountDropdown');
-
-ReactDOM.render(
-    <NavbarAccountDropdown
-        username={container ? container.getAttribute('data-username') : null}
-    />,
-    container
+const NavbarAccountDropdown = React.lazy(() =>
+    import('../javascript/components/NavbarAccountDropdown')
 );
+
+const ReactNavbarAccountDropDownContainer = document.getElementById(
+    'ReactNavbarAccountDropdown'
+);
+if (ReactNavbarAccountDropDownContainer) {
+    ReactDOM.render(
+        <Suspense fallback={<div>loading...</div>}>
+            <NavbarAccountDropdown
+                username={ReactNavbarAccountDropDownContainer.getAttribute(
+                    'data-username'
+                )}
+            />
+        </Suspense>,
+        ReactNavbarAccountDropDownContainer
+    );
+}
+
+const ReactRegisterFormContainer = document.getElementById('ReactRegisterForm');
+if (ReactRegisterFormContainer) {
+    ReactDOM.render(
+        <Suspense fallback={<div>loading...</div>}>
+            <RegisterForm />
+        </Suspense>,
+        ReactRegisterFormContainer
+    );
+}
 
 // const container1 = document.getElementById('createPostForm');
 // container1

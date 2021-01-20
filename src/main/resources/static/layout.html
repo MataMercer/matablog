@@ -1,24 +1,30 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+<html
+    lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
 
-    <link rel="stylesheet" type="text/css" href="/stylesheets/index.css" />
-</head>
-<body>
-<div th:insert="~{navigation :: navigation}">...</div>
-<section layout:fragment="content">
-    <p>Page content goes here</p>
-</section>
-<div th:insert="~{footer :: footer}">...</div>
-
-</body>
-<script src="https://kit.fontawesome.com/937266cb6d.js" crossorigin="anonymous"></script>
-<script src="http://localhost:35729/livereload.js"></script>
-<script src="/dist/main.bundle.js"></script>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/index.css" />
+    </head>
+    <body>
+        <div th:insert="~{navigation :: navigation}">...</div>
+        <section layout:fragment="content">
+            <p>Page content goes here</p>
+        </section>
+        <div th:insert="~{footer :: footer}">...</div>
+    </body>
+    <script
+        src="https://kit.fontawesome.com/937266cb6d.js"
+        crossorigin="anonymous"
+    ></script>
+    <script th:inline="javascript">
+        window.serverContext = /*[[@{~/}]]*/ '';
+    </script>
+    <script src="http://localhost:35729/livereload.js"></script>
+    <script th:src="@{/dist/main.bundle.js}"></script>
 </html>

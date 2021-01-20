@@ -1,4 +1,4 @@
-package com.matamercer.microblog.controllers.api.v1;
+package com.matamercer.microblog.web.api.v1;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
