@@ -1,5 +1,8 @@
 package com.matamercer.microblog.security;
 
+import com.matamercer.microblog.jwt.JwtConfig;
+import com.matamercer.microblog.jwt.JwtTokenVerifier;
+import com.matamercer.microblog.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.matamercer.microblog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,9 +14,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.crypto.SecretKey;
 
 @Configuration
 @EnableWebSecurity
@@ -22,37 +28,51 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final SecretKey secretKey;
+    private final JwtConfig jwtConfig;
 
     @Autowired
     @Qualifier("persistentTokenRepository")
     private PersistentTokenRepository persistentTokenRepository;
 
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService, SecretKey secretKey, JwtConfig jwtConfig) {
+
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.secretKey = secretKey;
+        this.jwtConfig = jwtConfig;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                // .and()
+        http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
+                .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/", "/api/user/*", "index", "/users/*", "/register", "/registerSuccess", "/baduser",
-                        "/dist/*", "/stylesheets/*", "/img/*", "/profile/*", "/posts/*")
-                .permitAll().anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll()
-                .defaultSuccessUrl("/home", true).and().rememberMe().rememberMeParameter("remember-me")
-                .tokenRepository(persistentTokenRepository).userDetailsService(userService).and().logout()
-                .logoutUrl("/logout").logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))// only bc we
-                // have csrf
-                // disabled.
-                // Whenever you
-                // go to this
-                // url, it logs u
-                // out.
-                .clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID", "remember-me")
-                .logoutSuccessUrl("/login");
+                .antMatchers(
+                        "/",
+                        "/api/user/*",
+                        "index",
+                        "/users/*",
+                        "/register",
+                        "/registerSuccess",
+                        "/baduser",
+                        "/dist/*",
+                        "/stylesheets/*",
+                        "/img/*",
+                        "/profile/*",
+                        "/posts/*")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .logout().disable();
     }
 
     @Override
