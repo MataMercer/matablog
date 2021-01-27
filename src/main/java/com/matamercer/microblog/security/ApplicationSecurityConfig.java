@@ -5,7 +5,6 @@ import com.matamercer.microblog.jwt.JwtTokenVerifier;
 import com.matamercer.microblog.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.matamercer.microblog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,8 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.crypto.SecretKey;
 
@@ -32,10 +29,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtConfig jwtConfig;
 
     @Autowired
-    @Qualifier("persistentTokenRepository")
-    private PersistentTokenRepository persistentTokenRepository;
-
-    @Autowired
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService, SecretKey secretKey, JwtConfig jwtConfig) {
 
         this.passwordEncoder = passwordEncoder;
@@ -47,15 +40,17 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, userService))
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
                         "/",
-                        "/api/user/*",
+                        "/api/user/refreshtoken",
                         "index",
                         "/users/*",
                         "/register",
