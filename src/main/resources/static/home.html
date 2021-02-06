@@ -8,7 +8,7 @@
 <body>
 
 <div layout:fragment="content">
-    <p th:text="${#authentication.principal.username}" > </p>
+    <p th:text="${#authentication.getPrincipal().getUsername()}" > </p>
 </div>
 </body>
 </html>

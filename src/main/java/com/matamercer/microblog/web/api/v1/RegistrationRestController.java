@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.matamercer.microblog.forms.RegisterUserForm;
+import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
 import com.matamercer.microblog.models.repositories.UserRepository;
@@ -50,8 +51,15 @@ public class RegistrationRestController {
 
   @PostMapping("/registration")
   public GenericResponse registerUserAccount(@Valid RegisterUserForm registerUserForm, HttpServletRequest request) {
-    User registeredUser = new User(registerUserForm.getEmail(), registerUserForm.getUsername(),
-        passwordEncoder.encode(registerUserForm.getPassword()), true, true, true, false);
+    User registeredUser = new User(
+            registerUserForm.getEmail(),
+            registerUserForm.getUsername(),
+            passwordEncoder.encode(registerUserForm.getPassword()),
+            true,
+            true,
+            true,
+            false,
+            AuthenticationProvider.LOCAL);
     registeredUser = userService.createUser(registeredUser, UserRole.USER);
     applicationEventPublisher
         .publishEvent(new OnRegistrationCompleteEvent(registeredUser, request.getLocale(), request.getContextPath()));

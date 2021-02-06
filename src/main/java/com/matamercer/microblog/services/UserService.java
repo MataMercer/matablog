@@ -129,11 +129,12 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    private boolean emailExists(final String email) {
+    public boolean emailExists(final String email) {
         return userRepository.findByEmail(email) != null;
     }
 
-    private boolean usernameExists(final String username) {
+    public boolean usernameExists(final String username) {
         return userRepository.findByUsername(username) != null;
     }
+
 }

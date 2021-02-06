@@ -6,6 +6,13 @@ logging:
       zaxxer: DEBUG
       root: ERROR
 ---
+#okta:
+#  oauth2:
+#    issuer: https://dev-9494393.okta.com/oauth2/default
+#    client-id: 0oa4ykyvgf245acIH5d6
+#    client-secret: 1md7vusN_0yk-0PWUD8Cp8eYvqSfmwkepArwkg3G
+#    redirect-uri: /authorization-code/callback
+---
 support.email: extremelywealthnigerianprince@gmail.com
 ---
 spring:

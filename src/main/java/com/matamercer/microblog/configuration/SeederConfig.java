@@ -1,5 +1,6 @@
 package com.matamercer.microblog.configuration;
 
+import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.Post;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.AuthorityRepository;
@@ -34,7 +35,8 @@ public class SeederConfig {
                     true,
                     true,
                     true,
-                    true
+                    true,
+                    AuthenticationProvider.LOCAL
             );
             User foundUser = userRepository.findByUsername("adminuser");
             if(foundUser == null){

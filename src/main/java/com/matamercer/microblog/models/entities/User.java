@@ -37,7 +37,7 @@ public class User extends BaseModel implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column(nullable = false)
@@ -56,6 +56,11 @@ public class User extends BaseModel implements UserDetails {
     @JoinColumn(name = "blog_id")
     private Blog activeBlog;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private AuthenticationProvider authenticationProvider;
+
+
     public User() {}
 
     public User(
@@ -65,7 +70,9 @@ public class User extends BaseModel implements UserDetails {
             boolean isAccountNonExpired,
             boolean isAccountNonLocked,
             boolean isCredentialsNonExpired,
-            boolean isEnabled) {
+            boolean isEnabled,
+            AuthenticationProvider authenticationProvider
+    ) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -73,6 +80,7 @@ public class User extends BaseModel implements UserDetails {
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;
         this.isEnabled = isEnabled;
+        this.authenticationProvider = authenticationProvider;
     }
 
     public void addAuthority(Authority a){

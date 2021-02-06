@@ -1,5 +1,7 @@
 package com.matamercer.microblog.security;
 
+import com.matamercer.microblog.security.oauth.CustomOAuth2UserService;
+import com.matamercer.microblog.security.oauth.OAuth2LoginSuccessHandler;
 import com.matamercer.microblog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,20 +41,46 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 // .and()
                 .authorizeRequests()
-                .antMatchers("/", "/api/user/*", "index", "/users/*", "/register", "/registerSuccess", "/baduser",
-                        "/dist/*", "/stylesheets/*", "/img/*", "/profile/*", "/posts/*")
-                .permitAll().anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll()
-                .defaultSuccessUrl("/home", true).and().rememberMe().rememberMeParameter("remember-me")
-                .tokenRepository(persistentTokenRepository).userDetailsService(userService).and().logout()
-                .logoutUrl("/logout").logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))// only bc we
-                // have csrf
-                // disabled.
-                // Whenever you
-                // go to this
-                // url, it logs u
-                // out.
-                .clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID", "remember-me")
-                .logoutSuccessUrl("/login");
+                .antMatchers(
+                        "/",
+                        "/api/user/*",
+                        "index",
+                        "/users/*",
+                        "/register",
+                        "/registerSuccess",
+                        "/baduser",
+                        "/dist/*",
+                        "/stylesheets/*",
+                        "/img/*",
+                        "/profile/*",
+                        "/posts/*",
+                        "/oauth2/authorization/**",
+                        "/oauth2/**",
+                        "/login/**")
+                .permitAll().anyRequest().authenticated()
+                .and()
+                .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
+                    .defaultSuccessUrl("/home", true)
+                .and()
+                .rememberMe()
+                    .rememberMeParameter("remember-me")
+                    .tokenRepository(persistentTokenRepository)
+                    .userDetailsService(userService)
+                .and().logout()
+                    .logoutUrl("/logout")
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))// only bc we
+                    .clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID", "remember-me")
+                    .logoutSuccessUrl("/login").
+                and()
+                .oauth2Login()
+                    .loginPage("/oauthlogin")
+                    .userInfoEndpoint()
+                    .userService(custOAuth2UserService)
+                    .and()
+                    .successHandler(oAuth2LoginSuccessHandler)
+        ;
     }
 
     @Override
@@ -68,4 +96,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
+    @Autowired
+    private CustomOAuth2UserService custOAuth2UserService;
+
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 }

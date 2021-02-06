@@ -41,6 +41,14 @@
                             </span>
                         </a>
                     </header>
+                    <div>
+<!--                        <h4>-->
+<!--                            <a th:href="@{/oauth2/authorization/okta}">Login with Okta</a>-->
+<!--                        </h4>-->
+                        <h4>
+                            <a th:href="@{/oauth2/authorization/github}">Login with Github</a>
+                        </h4>
+                    </div>
                     <form method="post" action="/login">
                         <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
 

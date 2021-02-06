@@ -13,7 +13,7 @@
             <h1 class="title">Create a New Post</h1>
             <!--                    <div id="createPostForm" th:attr="data-csrfParameterName=${_csrf.parameterName}, data-csrfToken=${_csrf.token}"></div>-->
             <form method="post" th:action="@{/newpost}" enctype="multipart/form-data" th:object="${createPostForm}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+<!--                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
 
                 <div class="field">
                     <label class="label">Title

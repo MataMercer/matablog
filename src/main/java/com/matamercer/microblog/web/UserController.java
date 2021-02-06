@@ -17,7 +17,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -67,7 +69,6 @@ public class UserController {
 
     @GetMapping("/login")
     public String getLoginView() {
-
         return "login";
     }
 
@@ -128,6 +129,8 @@ public class UserController {
     public String getHomeView() {
         return "home";
     }
+
+
 
     @GetMapping("/profile/{blogname}")
     public String getProfile(Model model, @PathVariable("blogname") String blogname,
@@ -190,5 +193,6 @@ public class UserController {
     public String getAdminDashboardView() {
         return "adminDashboard";
     }
+
 
 }
