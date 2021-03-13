@@ -60,6 +60,8 @@ public class User extends BaseModel implements UserDetails {
     @Column
     private AuthenticationProvider authenticationProvider;
 
+    @Column
+    private String oAuth2Id;
 
     public User() {}
 

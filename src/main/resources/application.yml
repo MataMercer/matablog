@@ -23,7 +23,7 @@ spring:
   flyway:
     enabled: false
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/microblog
+    url: jdbc:postgresql://matamercerpi.local:5432/microblog
     username: postgres
     password: password
   jpa:
@@ -44,7 +44,7 @@ spring:
   cache:
     type: redis
   redis:
-    host: 127.0.0.1
+    host: matamercerpi.local
     port: 6379
   security:
     oauth2:
@@ -67,13 +67,23 @@ spring:
         enable: true
       timeout: 8000
 ---
+#spring:
+#  profiles: docker
+#  redis:
+#    host: redis
+#    port: 6379
+#  datasource:
+#    url: jdbc:postgresql://db:5432/microblog
+#    username: postgres
+#    password: password
+---
 spring:
-  profiles: docker
+  profiles: dev
   redis:
     host: redis
     port: 6379
   datasource:
-    url: jdbc:postgresql://db:5432/microblog
+    url: jdbc:postgresql://192.168.1.155:5432/microblog
     username: postgres
     password: password
 ---

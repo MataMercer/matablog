@@ -30,6 +30,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private PersistentTokenRepository persistentTokenRepository;
 
     @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    @Autowired
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
@@ -37,7 +40,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                .csrf().disable()
                 // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 // .and()
                 .authorizeRequests()
@@ -48,6 +52,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/users/*",
                         "/register",
                         "/registerSuccess",
+                        "/registerOAuth2Failure",
+                        "/registration/confirm*",
                         "/baduser",
                         "/dist/*",
                         "/stylesheets/*",
@@ -56,19 +62,23 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/posts/*",
                         "/oauth2/authorization/**",
                         "/oauth2/**",
-                        "/login/**")
+                        "/login/**",
+                        "/error")
                 .permitAll().anyRequest().authenticated()
                 .and()
                 .formLogin()
                     .loginPage("/login")
+                    .failureUrl("/login?error")
                     .permitAll()
                     .defaultSuccessUrl("/home", true)
+                    .failureHandler(customAuthenticationFailureHandler)
                 .and()
                 .rememberMe()
                     .rememberMeParameter("remember-me")
                     .tokenRepository(persistentTokenRepository)
                     .userDetailsService(userService)
-                .and().logout()
+                .and()
+                .logout()
                     .logoutUrl("/logout")
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))// only bc we
                     .clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID", "remember-me")

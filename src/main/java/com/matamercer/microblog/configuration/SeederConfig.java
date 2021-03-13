@@ -29,7 +29,7 @@ public class SeederConfig {
 
             //Admin account
             User adminUser = new User(
-                    "aurocomm@googlemail.com",
+                    "developer.mercer@gmail.com",
                     "a",
                     passwordEncoder.encode("1"),
                     true,

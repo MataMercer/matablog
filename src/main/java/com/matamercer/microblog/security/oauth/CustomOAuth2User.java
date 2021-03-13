@@ -1,5 +1,8 @@
 package com.matamercer.microblog.security.oauth;
 
+import com.matamercer.microblog.models.entities.AuthenticationProvider;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -26,16 +29,15 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return oAuth2User.getName();
+        return this.getUsername();
     }
-
 
     public String getUsername(){
-        return oAuth2User.getName();
+        return oAuth2User.getAttribute("name");
     }
 
-    public String getFullname(){
-        return oAuth2User.getName();
+    public String getId(){
+        return oAuth2User.getAttribute("id").toString();
     }
 
     public String getEmail(){

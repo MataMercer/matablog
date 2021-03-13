@@ -10,7 +10,8 @@ Clone the repository.
 
 `docker-compose up`
 
-Docker should run everything automatically after it builds microblog.
+Docker should run everything automatically after it builds microblog. Note: currently I haven't 
+configured Profiles properly yet. You must change the postgres and redis IPs to 127.0.0.1.
 
 ## Development (Build + Run Microblog natively)
 

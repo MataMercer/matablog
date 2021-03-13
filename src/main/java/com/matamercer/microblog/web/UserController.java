@@ -22,16 +22,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -67,9 +70,20 @@ public class UserController {
         this.messageSource = messageSource;
     }
 
+
     @GetMapping("/login")
-    public String getLoginView() {
-        return "login";
+    public ModelAndView login(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey, @RequestParam("error" ) final Optional<String> error) {
+        Locale locale = request.getLocale();
+        model.addAttribute("lang", locale.getLanguage());
+        messageKey.ifPresent( key -> {
+                    String message = messageSource.getMessage(key, null, locale);
+                    model.addAttribute("message", message);
+                }
+        );
+
+        error.ifPresent( e ->  model.addAttribute("error", e));
+
+        return new ModelAndView("login", model);
     }
 
     @GetMapping("register")
@@ -84,6 +98,8 @@ public class UserController {
         return "registerSuccess";
     }
 
+    @GetMapping("registerOAuth2Failure")
+    public String getRegisterOAuth2Failure() { return "registerOAuth2Failure";}
     // @PostMapping("registration/register")
     // public String registerUser(@Valid RegisterUserForm registerUserForm,
     // HttpServletRequest request, Errors errors) {
