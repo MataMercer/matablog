@@ -12,16 +12,35 @@ const RegisterForm = () => {
         // register(email,username, password).catch((loginError) => {
         //   setError(loginError);
         // });
+
+        //CSRF Protection
+        const elementToken = document.querySelector('meta[name="_csrf"]');
+        const csrfToken = elementToken && elementToken.getAttribute("content");
+        const elementHeader = document.querySelector('meta[name="_csrf_header"]');
+        const csrfHeader = elementHeader && elementHeader.getAttribute("content");
+        console.log(csrfHeader);
+        console.log(csrfToken);
+        if(!csrfToken || !csrfHeader){
+
+            setError("Missing CSRF token. Unable to send request.")
+            return;
+        }
         setLoading(true);
         const url = '/api/user/registration';
 
+
         fetch(url, {
             method: 'post',
-            mode: 'no-cors',
+            mode: 'cors',
             headers: {
-                'Content-Type': 'form-data',
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': csrfToken
             },
-            body: new FormData(e.target),
+            body: JSON.stringify({
+                email,
+                username,
+                password
+            }),
         })
             .then((response) => {
                 setLoading(false);

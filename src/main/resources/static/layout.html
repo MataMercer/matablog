@@ -7,6 +7,8 @@
 >
     <head>
         <meta charset="UTF-8" />
+        <meta th:name="_csrf" th:content="${_csrf.token}"/>
+        <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
         <title>Title</title>
 
         <link rel="stylesheet" type="text/css" href="/stylesheets/index.css" />

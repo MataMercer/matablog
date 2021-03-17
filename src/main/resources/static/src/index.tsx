@@ -11,6 +11,10 @@ const RegisterForm = React.lazy(() =>
     import('../javascript/components/forms/RegisterForm')
 );
 
+// const CreatePostForm = React.lazy(() =>
+//     import('../javascript/components/forms/CreatePostForm')
+// );
+
 const NavbarAccountDropdown = React.lazy(() =>
     import('../javascript/components/NavbarAccountDropdown')
 );
@@ -34,12 +38,22 @@ if (ReactNavbarAccountDropDownContainer) {
 const ReactRegisterFormContainer = document.getElementById('ReactRegisterForm');
 if (ReactRegisterFormContainer) {
     ReactDOM.render(
-        <Suspense fallback={<div>loading...</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
             <RegisterForm />
         </Suspense>,
         ReactRegisterFormContainer
     );
 }
+
+// const ReactCreatePostFormContainer = document.getElementById('ReactRegisterForm');
+// if(ReactCreatePostFormContainer) {
+//     ReactDOM.render(
+//         <Suspense fallback={<div>Loading...</div>}>
+//             <CreatePostForm csrfParameterName={} csrfToken={}/>
+//         </Suspense>,
+//         ReactCreatePostFormContainer
+//     )
+// }
 
 // const container1 = document.getElementById('createPostForm');
 // container1

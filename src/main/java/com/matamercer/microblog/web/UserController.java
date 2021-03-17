@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -119,7 +120,7 @@ public class UserController {
     // }
 
     @GetMapping("/registration/confirm")
-    public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
+    public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token, RedirectAttributes redirectAttributes) {
         Locale locale = request.getLocale();
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
@@ -138,7 +139,8 @@ public class UserController {
 
         user.setEnabled(true);
         userRepository.save(user);
-        return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("message.regSuccConfirmed", null, locale));
+        return "redirect:/login";
     }
 
     @GetMapping("/home")

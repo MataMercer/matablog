@@ -18,11 +18,7 @@ import com.matamercer.microblog.utilities.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -50,7 +46,7 @@ public class RegistrationRestController {
   }
 
   @PostMapping("/registration")
-  public GenericResponse registerUserAccount(@Valid RegisterUserForm registerUserForm, HttpServletRequest request) {
+  public GenericResponse registerUserAccount(@RequestBody @Valid RegisterUserForm registerUserForm, HttpServletRequest request) {
     User registeredUser = new User(
             registerUserForm.getEmail(),
             registerUserForm.getUsername(),

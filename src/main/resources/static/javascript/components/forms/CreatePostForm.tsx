@@ -10,7 +10,7 @@ import {
     Input,
     Checkbox,
 } from 'rbx';
-import TagField from './Tags/TagField';
+import TagField from '../Tags/TagField';
 import axios from 'axios';
 import qs, { stringify } from 'qs';
 
