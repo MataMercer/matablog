@@ -13,6 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-brands-svg-icons": "^5.15.3",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "@types/qs": "^6.9.3",
     "@types/react-tag-autocomplete": "^5.12.0",
     "bulma": "^0.8.2",
@@ -20,6 +24,7 @@
     "rbx": "^2.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^6.15.5",
     "react-tag-autocomplete": "^5.13.1"
   },
   "devDependencies": {
