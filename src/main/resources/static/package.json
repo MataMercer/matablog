@@ -19,6 +19,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@types/qs": "^6.9.3",
     "@types/react-tag-autocomplete": "^5.12.0",
+    "axios": "^0.21.1",
     "bulma": "^0.8.2",
     "qs": "^6.9.4",
     "rbx": "^2.2.0",

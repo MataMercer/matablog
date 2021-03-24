@@ -15,6 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 
 type FormData = {
     email: string;
@@ -35,34 +36,16 @@ export default () => {
     password.current = watch('password', '');
 
     const onSubmit = handleSubmit((data) => {
-        // register(email,username, password).catch((loginError) => {
-        //   setError(loginError);
-        // });
-
-        //CSRF Protection
-        const elementToken = document.querySelector('meta[name="_csrf"]');
-        const csrfToken = elementToken && elementToken.getAttribute('content');
-        const elementHeader = document.querySelector(
-            'meta[name="_csrf_header"]'
-        );
-        const csrfHeader =
-            elementHeader && elementHeader.getAttribute('content');
-
-        if (!csrfToken || !csrfHeader) {
-            setApiError('Missing CSRF token. Unable to send request.');
-            return;
-        }
         setLoading(true);
         const url = '/api/user/registration';
 
-        fetch(url, {
+        axios({
+            url,
             method: 'post',
-            mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': csrfToken,
             },
-            body: JSON.stringify({
+            data: JSON.stringify({
                 email: data.email,
                 username: data.username,
                 password: data.password,
@@ -70,18 +53,12 @@ export default () => {
         })
             .then((response) => {
                 setLoading(false);
-                if (response.ok) {
-                    setApiError('');
-                    window.location.href = '/registerSuccess';
-                } else {
-                    response.json().then((data: any) => {
-                        setApiError(data.message);
-                    });
-                }
+                setApiError('');
+                window.location.href = '/registerSuccess';
             })
             .catch((err) => {
                 setLoading(false);
-                setApiError('An network error has occurred.');
+                setApiError(err.message);
                 console.log(err);
             });
     });
