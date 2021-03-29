@@ -13,7 +13,7 @@ Clone the repository.
 Docker should run everything automatically after it builds microblog. Note: currently I haven't 
 configured Profiles properly yet. You must change the postgres and redis IPs to 127.0.0.1.
 
-## Development (Build + Run Microblog natively)
+## Development (Build + Run Microblog natively (use Docker for Postgres/Redis still))
 
 Run Postgres in Docker
 
@@ -24,6 +24,6 @@ Run Redis in Docker
 `docker run --name redis-desktop-microblog -p 6379:6379 -d redis:alpine`
 
 Git clone the repository to your PC.
-Run yarn start in the resources folder to build react code. 
+Run npm run dev in the resources/static folder to build react code. 
 
 Open the project in Intellij or VSCode and build with maven and run it.
