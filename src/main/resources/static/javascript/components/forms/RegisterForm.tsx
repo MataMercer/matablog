@@ -1,14 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-    Notification,
-    Progress,
-    Help,
-    Card,
-    Label,
-    Input,
-    Field,
-    Button,
-} from 'rbx';
+import { Notification, Progress, Help, Card, Label, Field, Button } from 'rbx';
 import {
     faCheck,
     faFontAwesomeLogoFull,

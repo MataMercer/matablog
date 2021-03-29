@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @Data
 public class CreatePostForm {
     @NotNull
-    @Size(min=1, max=500, message = "Length should be between 1 and 500 characters.")
+    @Size(min=1, max=1000, message = "Length should be between 1 and 1000 characters.")
     private String content;
 
     @Size(min=0, max=100, message = "Length should be between 1 and 100 characters.")

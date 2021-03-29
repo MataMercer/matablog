@@ -174,29 +174,7 @@ public class UserController {
         return "createPostForm";
     }
 
-    @PostMapping("/newpost")
-    public String createPostForm(@Valid CreatePostForm createPostForm, Errors errors,
-            @RequestParam("file") MultipartFile file, Model model, Principal principal) {
 
-        if (errors.hasErrors()) {
-            return "createPostForm";
-        }
-
-        Set<PostTag> postTags = createPostForm.getPostTags().stream()
-                .map(postTagName -> postTagService.findOrCreateByName(postTagName)).collect(Collectors.toSet());
-
-        Blog blog = userRepository.findByUsername(principal.getName()).getActiveBlog();
-        Post post = new Post(blog, createPostForm.getTitle(), createPostForm.getContent(),
-                createPostForm.isCommunityTaggingEnabled(), createPostForm.isSensitive());
-
-        if (!file.isEmpty()) {
-            post.getAttachments().add(fileService.createFile(file, blog));
-        }
-
-        postTags.forEach(post::addPostTag);
-        post = postService.createPost(post);
-        return "redirect:/posts/" + post.getId();
-    }
 
     @GetMapping("/posts/{postId}")
     public String getPostPage(Model model, @PathVariable("postId") long postId) {

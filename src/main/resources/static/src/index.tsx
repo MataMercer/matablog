@@ -10,9 +10,14 @@ const RegisterForm = React.lazy(() =>
     import('../javascript/components/forms/RegisterForm')
 );
 
+const CreatePostForm = React.lazy(() =>
+    import('../javascript/components/forms/CreatePostForm')
+);
+
 const NavbarAccountDropdown = React.lazy(() =>
     import('../javascript/components/NavbarAccountDropdown')
 );
 
 reactDomRender(NavbarAccountDropdown, 'ReactNavbarAccountDropdown');
 reactDomRender(RegisterForm, 'ReactRegisterForm');
+reactDomRender(CreatePostForm, 'ReactCreatePostForm');

@@ -1,2 +1,63 @@
 $body-bg: rgb(66, 69, 97);
 $primary: #303048;
+
+$primary: #4545b6;
+$secondary: #6b6b6b;
+$success: #209e6a;
+$warning: #dab616;
+
+$page-color: #f8f8f8;
+$page-color-lighter-1: lighten(
+    $color: $page-color,
+    $amount: 4,
+);
+$page-color-lighter-2: lighten(
+    $color: $page-color,
+    $amount: 8,
+);
+$page-color-lighter-3: lighten(
+    $color: $page-color,
+    $amount: 12,
+);
+
+$page-color-darker-1: darken(
+    $color: $page-color,
+    $amount: 4,
+);
+$page-color-darker-2: darken(
+    $color: $page-color,
+    $amount: 8,
+);
+$page-color-darker-3: darken(
+    $color: $page-color,
+    $amount: 12,
+);
+$page-color-darker-4: darken(
+    $color: $page-color,
+    $amount: 16,
+);
+
+$black-color: #232327;
+$black-color-lighter-1: lighten(
+    $color: $black-color,
+    $amount: 4,
+);
+$black-color-lighter-2: lighten(
+    $color: $black-color,
+    $amount: 8,
+);
+$black-color-lighter-3: lighten(
+    $color: $black-color,
+    $amount: 12,
+);
+
+$black-color-darker-1: darken(
+    $color: $black-color,
+    $amount: 4,
+);
+$black-color-darker-2: darken(
+    $color: $black-color,
+    $amount: 8,
+);
+
+$info: $black-color-lighter-3;

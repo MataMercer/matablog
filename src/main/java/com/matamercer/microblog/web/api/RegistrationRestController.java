@@ -1,4 +1,4 @@
-package com.matamercer.microblog.web.api.v1;
+package com.matamercer.microblog.web.api;
 
 import java.util.Locale;
 
@@ -26,7 +26,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 @RestController
 @RequestMapping("/api/user")
 public class RegistrationRestController {
-  private final UserRepository userRepository;
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
   private final ApplicationEventPublisher applicationEventPublisher;
@@ -34,10 +33,9 @@ public class RegistrationRestController {
   private final JavaMailSender mailSender;
 
   @Autowired
-  public RegistrationRestController(UserRepository userRepository, UserService userService,
+  public RegistrationRestController(UserService userService,
       PasswordEncoder passwordEncoder, ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource,
       JavaMailSender mailSender) {
-    this.userRepository = userRepository;
     this.userService = userService;
     this.passwordEncoder = passwordEncoder;
     this.applicationEventPublisher = applicationEventPublisher;
