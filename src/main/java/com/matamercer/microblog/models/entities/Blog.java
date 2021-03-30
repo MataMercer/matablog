@@ -1,5 +1,6 @@
 package com.matamercer.microblog.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,12 +20,15 @@ import java.util.Set;
 public class Blog extends BaseModel{
 
     @ManyToMany(mappedBy="blogs")
+    @JsonBackReference
     private Set<User> users = new HashSet<User>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "blog")
+    @JsonBackReference
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    @JsonBackReference
     private List<File> files = new ArrayList<>();
 
     @Column(nullable = false)

@@ -78,7 +78,8 @@ export default () => {
             .then((response) => {
                 setLoading(false);
                 setApiError('');
-                window.location.href = '/';
+                console.log(response.data);
+                window.location.href = `/posts/${response.data.id}`;
             })
             .catch((err) => {
                 setLoading(false);

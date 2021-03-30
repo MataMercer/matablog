@@ -1,5 +1,6 @@
 package com.matamercer.microblog.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.matamercer.microblog.models.entities.Authority;
 import com.matamercer.microblog.models.entities.BaseModel;
 import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
@@ -20,9 +21,11 @@ import java.util.*;
 public class User extends BaseModel implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonBackReference
     private List<Authority> authorities = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonBackReference
     private List<UserKeyPair> userKeyPairs = new ArrayList<>();
 
     @ManyToMany

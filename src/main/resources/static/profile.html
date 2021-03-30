@@ -5,17 +5,12 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
     layout:decorate="~{layout.html}"
->
     <head>
-        <!-- Required meta tags -->
         <meta charset="utf-8" />
         <meta
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
-
-        <!-- Bootstrap CSS -->
-
         <link rel="stylesheet" href="/stylesheets/index.css" />
         <title th:text="${profileBlog?.blogname}">Title</title>
     </head>
@@ -26,17 +21,6 @@
 
         <div class="columns">
             <div id="side-bar" class="column is-2 container is-fluid">
-                <!-- <div class="buttons are-small">
-          <a class="button">Java (104)</a>
-          <a class="button">Clojure (74)</a>
-          <a class="button">Github (65)</a>
-          <a class="button">Git (45)</a>
-          <a class="button">C (40)</a>
-          <a class="button">C++ (39)</a>
-          <a class="button">C# (21)</a>
-          <a class="button">Ruby (1)</a>
-        </div> -->
-
                 <aside class="menu">
                     <p class="menu-label">
                         Tags
@@ -98,11 +82,10 @@
                                             class="title is-4"
                                             th:text="${profileBlog?.blogname}"
                                         >
-                                            johnDoeBlog
+                                            Blog Name Placeholder
                                         </p>
                                     </div>
                                 </div>
-
                                 <div
                                     class="content"
                                     th:text="${posts.get(r + c).content}"
@@ -121,31 +104,11 @@
                         </a>
                     </div>
                 </th:block>
-
                 <div class="card" th:each="post: ${posts}"></div>
             </div>
-
             <div class="column is-2 container is-fluid">
-                <h4 class="title is-4">Recently Viewed</h4>
-                <div class="card">
-                    <div class="card-image">
-                        <figure class="image is-4by3">
-                            <img
-                                src="/img/placeholder-user-400x400.png"
-                                alt="Placeholder image"
-                            />
-                        </figure>
-                    </div>
-                    <div class="card-content">
-                        <div class="content">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Phasellus nec iaculis mauris.
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
-
         <div id="container"></div>
     </body>
 </html>

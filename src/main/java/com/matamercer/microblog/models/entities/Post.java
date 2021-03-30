@@ -1,4 +1,6 @@
 package com.matamercer.microblog.models.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,6 +38,7 @@ public class Post extends BaseModel {
     private Post parentPost;
 
     @OneToMany(mappedBy = "parentPost")
+    @JsonBackReference
     private List<Post> replies = new ArrayList<>();
 
 

@@ -1,5 +1,6 @@
 package com.matamercer.microblog.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class PostTag extends BaseModel {
     @ManyToMany(mappedBy="postTags")
+    @JsonBackReference
     private Set<Post> posts = new HashSet<Post>();
 
     @Type(type = "text")
