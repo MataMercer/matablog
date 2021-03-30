@@ -9,7 +9,6 @@ import com.matamercer.microblog.forms.RegisterUserForm;
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
-import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.security.OnRegistrationCompleteEvent;
 import com.matamercer.microblog.security.UserRole;
 import com.matamercer.microblog.services.UserService;

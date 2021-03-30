@@ -1,7 +1,6 @@
 package com.matamercer.microblog.models.repositories;
 
 import com.matamercer.microblog.models.entities.Blog;
-import com.matamercer.microblog.models.entities.Post;
 import com.matamercer.microblog.models.entities.PostTag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 

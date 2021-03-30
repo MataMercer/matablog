@@ -6,8 +6,6 @@ import com.matamercer.microblog.models.entities.*;
 import com.matamercer.microblog.models.repositories.BlogRepository;
 import com.matamercer.microblog.models.repositories.PostTagRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.security.OnRegistrationCompleteEvent;
-import com.matamercer.microblog.security.UserRole;
 import com.matamercer.microblog.services.FileService;
 import com.matamercer.microblog.services.PostService;
 import com.matamercer.microblog.services.PostTagService;
@@ -17,27 +15,19 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.security.Principal;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -57,9 +47,9 @@ public class UserController {
 
     @Autowired
     public UserController(UserRepository userRepository, UserService userService, PasswordEncoder passwordEncoder,
-            BlogRepository blogRepository, PostTagRepository postTagRepository, PostService postService,
-            PostTagService postTagService, FileService fileService, ApplicationEventPublisher applicationEventPublisher,
-            MessageSource messageSource) {
+                          BlogRepository blogRepository, PostTagRepository postTagRepository, PostService postService,
+                          PostTagService postTagService, FileService fileService, ApplicationEventPublisher applicationEventPublisher,
+                          MessageSource messageSource) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -73,16 +63,16 @@ public class UserController {
 
 
     @GetMapping("/login")
-    public ModelAndView login(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey, @RequestParam("error" ) final Optional<String> error) {
+    public ModelAndView login(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey, @RequestParam("error") final Optional<String> error) {
         Locale locale = request.getLocale();
         model.addAttribute("lang", locale.getLanguage());
-        messageKey.ifPresent( key -> {
+        messageKey.ifPresent(key -> {
                     String message = messageSource.getMessage(key, null, locale);
                     model.addAttribute("message", message);
                 }
         );
 
-        error.ifPresent( e ->  model.addAttribute("error", e));
+        error.ifPresent(e -> model.addAttribute("error", e));
 
         return new ModelAndView("login", model);
     }
@@ -100,24 +90,9 @@ public class UserController {
     }
 
     @GetMapping("registerOAuth2Failure")
-    public String getRegisterOAuth2Failure() { return "registerOAuth2Failure";}
-    // @PostMapping("registration/register")
-    // public String registerUser(@Valid RegisterUserForm registerUserForm,
-    // HttpServletRequest request, Errors errors) {
-    // if (errors.hasErrors()) {
-    // return "register";
-    // }
-    // User registeredUser = new User(registerUserForm.getEmail(),
-    // registerUserForm.getUsername(),
-    // passwordEncoder.encode(registerUserForm.getPassword()), true, true, true,
-    // false);
-    // registeredUser = userService.createUser(registeredUser, UserRole.USER);
-    // applicationEventPublisher.publishEvent(
-    // new OnRegistrationCompleteEvent(registeredUser, request.getLocale(),
-    // request.getContextPath()));
-
-    // return "registerSuccess";
-    // }
+    public String getRegisterOAuth2Failure() {
+        return "registerOAuth2Failure";
+    }
 
     @GetMapping("/registration/confirm")
     public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token, RedirectAttributes redirectAttributes) {
@@ -149,10 +124,9 @@ public class UserController {
     }
 
 
-
     @GetMapping("/profile/{blogname}")
     public String getProfile(Model model, @PathVariable("blogname") String blogname,
-            @RequestParam(defaultValue = "0") int page) {
+                             @RequestParam(defaultValue = "0") int page) {
 
         Blog blog = blogRepository.findByBlogname(blogname);
         model.addAttribute("profileBlog", blog);
@@ -173,8 +147,6 @@ public class UserController {
         model.addAttribute("createPostForm", createPostForm);
         return "createPostForm";
     }
-
-
 
     @GetMapping("/posts/{postId}")
     public String getPostPage(Model model, @PathVariable("postId") long postId) {
