@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 public class CustomOAuth2User implements OAuth2User {
 
@@ -33,15 +34,16 @@ public class CustomOAuth2User implements OAuth2User {
     }
 
     public String getUsername(){
-        return oAuth2User.getAttribute("name");
+        return oAuth2User.getAttribute("login");
     }
 
     public String getId(){
-        return oAuth2User.getAttribute("id").toString();
+        return Objects.requireNonNull(oAuth2User.getAttribute("id")).toString();
     }
 
     public String getEmail(){
         return oAuth2User.getAttribute("email");
     }
+
 
 }
