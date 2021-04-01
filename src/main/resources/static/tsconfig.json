@@ -15,6 +15,6 @@
         "isolatedModules": true,
         "jsx": "react"
     },
-    "include": ["src"],
+    "include": ["javascript", "javascript/index.tsx"],
     "exclude": ["node_modules", "build"]
 }
