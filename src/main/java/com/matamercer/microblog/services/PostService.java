@@ -29,12 +29,10 @@ public class PostService {
     public static final String CACHE_NAME_PAGE = CACHE_NAME + ".page";
 
     private final PostRepository postRepository;
-    private final FileService fileService;
 
     @Autowired
-    public PostService(PostRepository postRepository, FileService fileService){
+    public PostService(PostRepository postRepository){
         this.postRepository = postRepository;
-        this.fileService = fileService;
     }
 
     @Caching(evict = {
@@ -75,9 +73,7 @@ public class PostService {
     @Cacheable(CACHE_NAME)
     public Post getPost(Long postId) {
         log.debug("Get post " + postId);
-
         Optional<Post> post = postRepository.findById(postId);
-
         if (!post.isPresent()) {
             throw new NotFoundException("Post with id " + postId + " is not found.");
         }else{

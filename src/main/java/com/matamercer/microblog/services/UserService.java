@@ -32,19 +32,24 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class UserService implements UserDetailsService {
+    private final UserRepository userRepository;
+    private final UserKeyPairRepository userKeyPairRepository;
+    private final AuthorityRepository authorityRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final BlogService blogService;
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserKeyPairRepository userKeyPairRepository;
-    @Autowired
-    private BlogRepository blogRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthorityRepository authorityRepository;
-    @Autowired
-    private VerificationTokenRepository verificationTokenRepository;
+    public UserService(UserRepository userRepository,
+                       UserKeyPairRepository userKeyPairRepository,
+                       AuthorityRepository authorityRepository,
+                       VerificationTokenRepository verificationTokenRepository,
+                       BlogService blogService) {
+        this.userRepository = userRepository;
+        this.userKeyPairRepository = userKeyPairRepository;
+        this.authorityRepository = authorityRepository;
+        this.verificationTokenRepository = verificationTokenRepository;
+        this.blogService = blogService;
+    }
 
     @Transactional
     public User createUser(User user, UserRole userRole) {
@@ -53,16 +58,9 @@ public class UserService implements UserDetailsService {
         }
 
         try {
-            // add a default blog to user, so they can add posts to it.
-            Blog blog = new Blog();
-            // by default, the default blog will have just the user's username. this can be
-            // changed by the user later on.
-            blog.setBlogname(user.getUsername());
-            blog.setPreferredBlogName(user.getUsername());
-            blog.setSensitive(false);
-            blogRepository.save(blog);
-            user.addBlog(blog);
-            user.setActiveBlog(blog);
+            Blog defaultBlog = blogService.createDefaultBlogForUser(user);
+            user.addBlog(defaultBlog);
+            user.setActiveBlog(defaultBlog);
             User registeredUser = userRepository.save(user);
 
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -76,8 +74,7 @@ public class UserService implements UserDetailsService {
 
             Set<String> authorities = userRole.getGrantedAuthorities().stream().map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toSet());
-            ;
-            ;
+
             for (String authority : authorities) {
                 authorityRepository.save(new Authority(authority, user));
             }

@@ -17,16 +17,18 @@ import java.util.Locale;
 @Component("authenticationFailureHandler")
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
+    private final LocaleResolver localeResolver;
 
     @Autowired
-    private LocaleResolver localeResolver;
+    public CustomAuthenticationFailureHandler(MessageSource messageSource, LocaleResolver localeResolver){
+        this.messageSource = messageSource;
+        this.localeResolver = localeResolver;
+    }
 
     @Override
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login?error=true");
-
         super.onAuthenticationFailure(request, response, exception);
 
         final Locale locale = localeResolver.resolveLocale(request);
@@ -45,7 +47,6 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         else if (exception.getMessage().equalsIgnoreCase("unusual location")) {
             errorMessage = messageSource.getMessage("auth.message.unusual.location", null, locale);
         }
-
 
         request.getSession()
                 .setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, errorMessage);

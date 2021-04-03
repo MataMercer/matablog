@@ -124,11 +124,11 @@ public class UserController {
     }
 
 
-    @GetMapping("/profile/{blogname}")
-    public String getProfile(Model model, @PathVariable("blogname") String blogname,
+    @GetMapping("/profile/{blogName}")
+    public String getProfile(Model model, @PathVariable("blogName") String blogName,
                              @RequestParam(defaultValue = "0") int page) {
 
-        Blog blog = blogRepository.findByBlogname(blogname);
+        Blog blog = blogRepository.findByBlogName(blogName);
         model.addAttribute("profileBlog", blog);
 
         Page<Post> posts = postService.getAllPostsByPageByBlogSortedByCreated(blog, page, PAGE_SIZE);

@@ -32,7 +32,7 @@ public class Blog extends BaseModel{
     private List<File> files = new ArrayList<>();
 
     @Column(nullable = false)
-    private String blogname;
+    private String blogName;
 
     @Column(nullable = false)
     private String preferredBlogName;
@@ -40,4 +40,10 @@ public class Blog extends BaseModel{
     @Type(type = "boolean")
     @Column(nullable = false)
     private boolean isSensitive;
+
+    public Blog(String blogName, String preferredBlogName, boolean isSensitive){
+        this.blogName = blogName;
+        this.preferredBlogName = preferredBlogName;
+        this.isSensitive = isSensitive;
+    }
 }
