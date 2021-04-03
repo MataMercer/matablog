@@ -12,7 +12,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByBlog(Blog blog, Pageable pageRequest);
-
-//    @Query("SELECT p FROM Post p INNER JOIN l.user u WHERE u.username = :username")
-//    Page<Post> findByQuery(Pageable pageRequest);
 }

@@ -8,7 +8,7 @@ public enum AuthenticationProvider {
     GITHUB("github");
 
     @Getter
-    private String provider;
+    private final String provider;
 
     private AuthenticationProvider(String provider){
         this.provider = provider;
