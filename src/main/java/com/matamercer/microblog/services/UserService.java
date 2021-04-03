@@ -4,11 +4,9 @@ import com.matamercer.microblog.models.entities.Authority;
 import com.matamercer.microblog.models.entities.Blog;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
-import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
 import com.matamercer.microblog.models.repositories.AuthorityRepository;
-import com.matamercer.microblog.models.repositories.BlogRepository;
 import com.matamercer.microblog.models.repositories.VerificationTokenRepository;
-import com.matamercer.microblog.models.repositories.activitypub.UserKeyPairRepository;
+import com.matamercer.microblog.models.repositories.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.security.UserRole;
 import com.matamercer.microblog.web.error.UserAlreadyExistsException;
@@ -19,12 +17,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.*;
-import java.util.Base64;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,18 +33,21 @@ public class UserService implements UserDetailsService {
     private final AuthorityRepository authorityRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final BlogService blogService;
+    private final UserKeyPairService userKeyPairService;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        UserKeyPairRepository userKeyPairRepository,
                        AuthorityRepository authorityRepository,
                        VerificationTokenRepository verificationTokenRepository,
-                       BlogService blogService) {
+                       BlogService blogService,
+                       UserKeyPairService userKeyPairService) {
         this.userRepository = userRepository;
         this.userKeyPairRepository = userKeyPairRepository;
         this.authorityRepository = authorityRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.blogService = blogService;
+        this.userKeyPairService = userKeyPairService;
     }
 
     @Transactional
@@ -57,32 +56,25 @@ public class UserService implements UserDetailsService {
             throw new UserAlreadyExistsException(("There is already an account with that email."));
         }
 
+        Blog defaultBlog = blogService.createDefaultBlogForUser(user);
+        user.addBlog(defaultBlog);
+        user.setActiveBlog(defaultBlog);
+        User registeredUser = userRepository.save(user);
+
         try {
-            Blog defaultBlog = blogService.createDefaultBlogForUser(user);
-            user.addBlog(defaultBlog);
-            user.setActiveBlog(defaultBlog);
-            User registeredUser = userRepository.save(user);
-
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            KeyPair keyPair = keyPairGenerator.generateKeyPair();
-            UserKeyPair userKeyPair = new UserKeyPair();
-            userKeyPair.setUser(user);
-            userKeyPair.setPrivateKey(Base64.getMimeEncoder().encodeToString(keyPair.getPrivate().getEncoded()));
-            userKeyPair.setPublicKey(Base64.getMimeEncoder().encodeToString(keyPair.getPublic().getEncoded()));
-            userKeyPairRepository.save(userKeyPair);
-
-            Set<String> authorities = userRole.getGrantedAuthorities().stream().map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toSet());
-
-            for (String authority : authorities) {
-                authorityRepository.save(new Authority(authority, user));
-            }
-            return registeredUser;
+            userKeyPairService.createUserKeyPairForUser(user);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }
+
+        Set<String> authorities = userRole.getGrantedAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+
+        for (String authority : authorities) {
+            authorityRepository.save(new Authority(authority, user));
+        }
+        return registeredUser;
     }
 
     @Transactional(readOnly = true)

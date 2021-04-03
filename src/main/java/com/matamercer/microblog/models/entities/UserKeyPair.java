@@ -1,4 +1,4 @@
-package com.matamercer.microblog.models.entities.activitypub;
+package com.matamercer.microblog.models.entities;
 
 import com.matamercer.microblog.models.entities.BaseModel;
 import com.matamercer.microblog.models.entities.User;

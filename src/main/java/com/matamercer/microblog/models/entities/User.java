@@ -1,9 +1,6 @@
 package com.matamercer.microblog.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.matamercer.microblog.models.entities.Authority;
-import com.matamercer.microblog.models.entities.BaseModel;
-import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,8 +1,8 @@
-package com.matamercer.microblog.models.repositories.activitypub;
+package com.matamercer.microblog.models.repositories;
 
 
 import com.matamercer.microblog.models.entities.User;
-import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
+import com.matamercer.microblog.models.entities.UserKeyPair;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

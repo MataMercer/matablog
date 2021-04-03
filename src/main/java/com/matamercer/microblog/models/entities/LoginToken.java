@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name= "login_tokens")
+@Table(name = "login_tokens")
 @Getter
 @Setter
 @NoArgsConstructor
