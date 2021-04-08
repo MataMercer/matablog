@@ -1,9 +1,11 @@
 package com.matamercer.microblog.unit.repository;
 
+import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.LoginToken;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.LoginTokenRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,23 +24,33 @@ class LoginTokenRepositoryTest {
     @Autowired
     private LoginTokenRepository loginTokenRepository;
 
-    @Test
-    void whenFindBySeries_returnLoginToken() {
-        User user = new User();
-        entityManager.persist(user);
-        LoginToken loginToken = new LoginToken("series", user, "token", new Date());
+    private User user;
+    private LoginToken loginToken;
+
+    @BeforeEach
+    public void initData(){
+        user = new User("username@gmail.com",
+                "username",
+                "password",
+                true,
+                true,
+                true,
+                true,
+                AuthenticationProvider.LOCAL);
+        user = entityManager.persist(user);
+
+        loginToken = new LoginToken("series", user, "token", new Date());
         loginToken = entityManager.persist(loginToken);
+    }
+
+    @Test
+    public void whenFindBySeries_returnLoginToken() {
         LoginToken foundLoginToken = loginTokenRepository.findBySeries(loginToken.getSeries());
         assertThat(foundLoginToken).isEqualTo(loginToken);
     }
 
     @Test
-    void whenFindByUsername_returnLoginToken() {
-        User user = new User();
-        user.setUsername("username");
-        entityManager.persist(user);
-        LoginToken loginToken = new LoginToken("series", user, "token", new Date());
-        loginToken = entityManager.persist(loginToken);
+    public void whenFindByUsername_returnLoginToken() {
         LoginToken foundLoginToken = loginTokenRepository.findByUsername(loginToken.getUser().getUsername());
         assertThat(foundLoginToken).isEqualTo(loginToken);
     }

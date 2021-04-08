@@ -24,7 +24,7 @@ public class PostRepositoryTest {
     private PostRepository postRepository;
 
     @Test
-    void whenFindByBlog_returnBlog(){
+    public void whenFindByBlog_returnBlog(){
         Blog blog = new Blog("blogName", "preferredBlogName", false);
         entityManager.persist(blog);
 
