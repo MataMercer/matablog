@@ -11,7 +11,7 @@
         <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
         <title>Title</title>
 
-        <link rel="stylesheet" type="text/css" href="/stylesheets/index.css" />
+        <link rel="stylesheet" type="text/css" href="/../stylesheets/index.css" />
     </head>
     <body>
         <div th:insert="~{navigation :: navigation}">...</div>
@@ -28,5 +28,5 @@
         window.serverContext = /*[[@{~/}]]*/ '';
     </script>
     <script src="http://localhost:35729/livereload.js"></script>
-    <script th:src="@{/dist/main.bundle.js}"></script>
+    <script th:src="@{/../dist/main.bundle.js}"></script>
 </html>

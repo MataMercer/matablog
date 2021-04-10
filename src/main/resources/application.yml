@@ -40,7 +40,7 @@ spring:
     cache: false
     check-template: true
     check-template-location: true
-    prefix: classpath:static/
+    prefix: classpath:/static/templates/
   cache:
     type: redis
   redis:
