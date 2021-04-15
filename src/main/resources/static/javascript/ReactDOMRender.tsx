@@ -29,10 +29,16 @@ const extractPropsFromHTMLElement: any = (
     let props: any = {};
     propNames.forEach((propName) => {
         props[
-            propName.substring(propPrefix.length, propName.length)
+            convertDashCaseToCamelCase(propName.substring(propPrefix.length, propName.length))
         ] = ReactComponentContainer.getAttribute(propName);
     });
     return props;
+};
+
+const convertDashCaseToCamelCase = (input: string) =>{
+    return input.replace(/-([a-z])/g,  (m, w) => {
+        return w.toUpperCase();
+    });
 };
 
 export default reactDomRender;

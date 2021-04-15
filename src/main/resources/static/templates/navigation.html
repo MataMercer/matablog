@@ -92,7 +92,6 @@
                             class="navbar-item"
                             id="ReactNavbarAccountDropdown"
                             sec:authorize="isAuthenticated()"
-                            username="username"
                             th:attr="data-username=${#authentication.getPrincipal().getUsername()}"
                         ></div>
                     </div>

@@ -15,9 +15,12 @@
         <div class="column is-2 container is-fluid"></div>
         <div class="column container is-fluid">
 <!--            <img th:if="${post.getAttachments().size()>0}" th:src="${'/files/' + post.getAttachments().get(0).getId() + '/' + post.getAttachments().get(0).getName()}"/>-->
-            <tr th:each="attachment: ${post.getAttachments()}">
-                <img  th:src="${'/files/' + attachment.getId() + '/' + attachment.getName()}"/>
-            </tr>
+<!--            <tr th:each="attachment: ${post.getAttachments()}">-->
+<!--                <img  th:src="${'/files/' + attachment.getId() + '/' + attachment.getName()}"/>-->
+<!--            </tr>-->
+            <div id="ReactThumbnailCarousel"
+                 th:attr="data-post-id=${post.getId()}"
+            ></div>
             <p th:text="${post.content}" ></p>
         </div>
         <div class="column is-2 container is-fluid"></div>

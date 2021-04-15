@@ -35,22 +35,11 @@ public class FileController {
 
     @GetMapping("/{fileId}/{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable long fileId) {
+    public ResponseEntity<Resource> serveFile(@PathVariable long fileId, @PathVariable String filename) {
         Resource fileResource = fileService.getResourceFromFile(fileService.getFile(fileId));
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).header(HttpHeaders.CONTENT_DISPOSITION,
                 "inline; filename=\"" + fileResource.getFilename() + "\"").body(fileResource);
     }
-
-//    @PostMapping("/")
-//    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-//                                   RedirectAttributes redirectAttributes, Principal principal) {
-//
-//        fileService.createFile(file, principal.getName());
-//        redirectAttributes.addFlashAttribute("message",
-//                "You successfully uploaded " + file.getOriginalFilename() + "!");
-//
-//        return "redirect:/";
-//    }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {

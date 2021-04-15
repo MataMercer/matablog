@@ -4,7 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-    layout:decorate="~{layout.html}"
+    layout:decorate="~{layout.html}">
     <head>
         <meta charset="utf-8" />
         <meta
@@ -12,7 +12,7 @@
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
         <link rel="stylesheet" href="/stylesheets/index.css" />
-        <title th:text="${profileBlog?.blogname}">Title</title>
+        <title th:text="${profileBlog?.blogName}">Title</title>
     </head>
     <body layout:fragment="content">
         <section class="hero">
@@ -80,7 +80,7 @@
                                     <div class="media-content">
                                         <p
                                             class="title is-4"
-                                            th:text="${profileBlog?.blogname}"
+                                            th:text="${profileBlog?.blogName}"
                                         >
                                             Blog Name Placeholder
                                         </p>

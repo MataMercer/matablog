@@ -1,0 +1,46 @@
+@import "variables";
+.project-entry-thumbnail-carousel-panel-no-modal {
+  background-color: #1e1e24;
+  padding: 0;
+}
+
+.project-entry-thumbnail-text-panel-modal {
+  padding: 0;
+}
+
+.project-entry-description {
+  margin-top: 1em;
+}
+
+.thumbnail-carousel-nav {
+  padding: 0.5em;
+  .btn {
+    border-radius: 0;
+    border: none;
+    font-size: x-large;
+    height: 3em;
+  }
+  button:focus {
+    outline: none;
+  }
+}
+
+.thumbnail-carousel-nav-item {
+  background-color: #1e1e24;
+  border: none;
+  padding: 0;
+  img {
+    object-fit: contain;
+    width: 5em;
+    height: 5em;
+    filter: brightness(70%);
+  }
+}
+
+.thumbnail-carousel-nav-item-active {
+  img {
+    filter: brightness(100%);
+    outline: 0.3em solid $primary;
+    outline-offset: -0.3em;
+  }
+}
