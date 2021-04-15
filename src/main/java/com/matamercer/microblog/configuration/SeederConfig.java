@@ -24,7 +24,7 @@ public class SeederConfig {
                                       PostService postService) {
         return (args) -> {
             User adminUser = new User(
-                    "mercer233@gmail.com",
+                    "developer.mercer@gmail.com",
                     "a",
                     passwordEncoder.encode("1"),
                     true,
