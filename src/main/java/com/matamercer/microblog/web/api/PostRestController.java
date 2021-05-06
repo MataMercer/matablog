@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,21 +36,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class PostRestController {
 
     private final PostService postService;
-    private final FileService fileService;
-    private final PostTagService postTagService;
-    private final UserRepository userRepository;
 
     @Autowired
-    public PostRestController(PostService postService, FileService fileService, PostTagService postTagService, UserRepository userRepository) {
+    public PostRestController(PostService postService ) {
         this.postService = postService;
-        this.fileService = fileService;
-        this.postTagService = postTagService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPost(@PathVariable String id){
         return ResponseEntity.ok(postService.getPost(Long.parseLong(id)));
+    }
+
+    @GetMapping("/{id}/replies")
+    public ResponseEntity<List<Post>> getPostReplies(@PathVariable String id){
+        return ResponseEntity.ok(postService.getPost(Long.parseLong(id)).getReplies());
     }
 
     @GetMapping("/{id}/attachments")
@@ -63,29 +63,9 @@ public class PostRestController {
     @PostMapping("/create")
     public ResponseEntity<Post> createPostForm(@Valid CreatePostForm createPostForm,
                                          @RequestParam("files") MultipartFile[] files, Principal principal) {
-        Set<PostTag> postTags = createPostForm.getPostTags().stream()
-                .map(postTagService::findOrCreateByName).collect(Collectors.toSet());
-
-        Blog blog = userRepository.findByUsername(principal.getName()).getActiveBlog();
-        Post post = new Post(blog, createPostForm.getTitle(), createPostForm.getContent(),
-                createPostForm.isCommunityTaggingEnabled(), createPostForm.isSensitive());
-
-        attachFilesToPost(files, post);
-
-        postTags.forEach(post::addPostTag);
-        post = postService.createPost(post);
+        Post post = postService.createPost(createPostForm, files, principal);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(
                 "/{id}").buildAndExpand(post.getId()).toUri();
         return ResponseEntity.created(location).body(post);
     }
-
-    private void attachFilesToPost(MultipartFile[] files, Post post) {
-        for (MultipartFile file : files) {
-            post.getAttachments().add(fileService.createFile(file, post.getBlog()));
-        }
-    }
-
-
-
-
 }

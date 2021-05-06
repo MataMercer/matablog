@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PostTagService {
@@ -26,10 +28,12 @@ public class PostTagService {
         return postTag;
     }
 
-
-
     public PostTag getTag(String name) {
         return postTagRepository.findByName(name);
+    }
+
+    public Set<PostTag> getTags(List<String> postTagNames){
+        return postTagNames.stream().map(this::getTag).collect(Collectors.toSet());
     }
 
     public Map<PostTag, Integer> getTopTagsByPosts(Blog blog, int page, int pageSize){

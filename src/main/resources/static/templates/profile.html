@@ -27,7 +27,7 @@
                     </p>
                     <ul class="menu-list">
                         <div th:each="tag: ${mostUsedTags}">
-                            <a
+                            <a th:href="@{${profileBlog?.blogName}(postTagNames=(${tag.getKey().getName()}))}"
                                 ><div
                                     th:text="${tag.getKey().getName() + ' (' + tag.getValue()} + ')'"
                                 ></div
@@ -39,10 +39,12 @@
             <div class="column container is-fluid">
                 <div class="tabs is-fullwidth">
                     <ul>
-                        <li class="is-active"><a>Posts</a></li>
-                        <li><a>Media</a></li>
-                        <li><a>Replies</a></li>
-                        <li><a>Likes</a></li>
+                        <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).ROOT} ? 'is-active' : ''">
+                            <a th:href="@{'/profile/' +  ${profileBlog?.blogName}}">Posts</a></li>
+                        <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).MEDIA} ? 'is-active' : ''">
+                            <a th:href="@{'/profile/' +  ${profileBlog?.blogName} + '/media'}">Media</a></li>
+                        <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).REPLY} ? 'is-active' : ''">
+                            <a th:href="@{'/profile/' +  ${profileBlog?.blogName} + '/reply'}">Replies</a></li>
                     </ul>
                 </div>
 

@@ -35,7 +35,7 @@ const ThumbnailCarousel = ({ postId }: ThumbnailCarouselProps) => {
     };
 
     useEffect(() => {
-        const getPictureUrls = axios({
+        axios({
             url: `/api/post/${postId}/attachments`,
             method: 'GET',
         }).then((response) => {

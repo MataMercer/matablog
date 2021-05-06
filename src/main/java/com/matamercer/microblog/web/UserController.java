@@ -3,9 +3,11 @@ package com.matamercer.microblog.web;
 import com.matamercer.microblog.forms.CreatePostForm;
 import com.matamercer.microblog.forms.RegisterUserForm;
 import com.matamercer.microblog.models.entities.*;
+import com.matamercer.microblog.models.enums.PostCategory;
 import com.matamercer.microblog.models.repositories.BlogRepository;
 import com.matamercer.microblog.models.repositories.PostTagRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
+import com.matamercer.microblog.models.repositories.searches.PostSearch;
 import com.matamercer.microblog.services.FileService;
 import com.matamercer.microblog.services.PostService;
 import com.matamercer.microblog.services.PostTagService;
@@ -25,9 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/")
@@ -124,18 +124,39 @@ public class UserController {
     }
 
 
-    @GetMapping("/profile/{blogName}")
-    public String getProfile(Model model, @PathVariable("blogName") String blogName,
-                             @RequestParam(defaultValue = "0") int page) {
-
+    @GetMapping({"/profile/{blogName}","/profile/{blogName}/{category}"})
+    public String getProfile(Model model,
+                             @PathVariable(required = false) Optional<String> category,
+                             @PathVariable String blogName,
+                             @RequestParam(defaultValue = "0") int page,
+                             @RequestParam(required = false) Optional<List<String>> postTagNames
+    ) {
         Blog blog = blogRepository.findByBlogName(blogName);
         model.addAttribute("profileBlog", blog);
 
-        Page<Post> posts = postService.getAllPostsByPageByBlogSortedByCreated(blog, page, PAGE_SIZE);
+        PostSearch postSearch = new PostSearch();
+        if(postTagNames.isPresent()) {
+            Set<PostTag> postTags = postTagService.getTags(postTagNames.get());
+            postSearch.setPostTags(postTags);
+        }
+        if(category.isPresent()) {
+            postSearch.setPostCategory(PostCategory.valueOf(category.get().toUpperCase()));
+        }else{
+            postSearch.setPostCategory(PostCategory.ROOT);
+        }
+        postSearch.setBlog(blog);
+
+        Page<Post> posts = postService.searchPosts(postSearch, page, PAGE_SIZE);
+
         model.addAttribute("totalPages", posts.getTotalPages());
         model.addAttribute("page", page);
-        model.addAttribute("posts", posts.toList());
 
+        if(category.isPresent()) {
+            model.addAttribute("category", PostCategory.valueOf(category.get().toUpperCase()));
+        }else{
+            model.addAttribute("category", PostCategory.ROOT);
+        }
+        model.addAttribute("posts", posts.toList());
         model.addAttribute("mostUsedTags", postTagService.getTopTagsByPosts(blog, 0, 10));
 
         return "profile";

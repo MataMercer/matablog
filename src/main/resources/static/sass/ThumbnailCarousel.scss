@@ -1,4 +1,9 @@
 @import "variables";
+
+img.project-entry-screenshot {
+  height: 30em;
+}
+
 .project-entry-thumbnail-carousel-panel-no-modal {
   background-color: #1e1e24;
   padding: 0;
@@ -14,12 +19,14 @@
 
 .thumbnail-carousel-nav {
   padding: 0.5em;
+
   .btn {
     border-radius: 0;
     border: none;
     font-size: x-large;
     height: 3em;
   }
+
   button:focus {
     outline: none;
   }
@@ -29,6 +36,7 @@
   background-color: #1e1e24;
   border: none;
   padding: 0;
+
   img {
     object-fit: contain;
     width: 5em;

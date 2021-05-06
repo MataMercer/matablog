@@ -1,6 +1,7 @@
 package com.matamercer.microblog.models.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.matamercer.microblog.models.enums.PostCategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -77,5 +78,14 @@ public class Post extends BaseModel {
         pt.getPosts().remove(this);
     }
 
+    public void addReply(Post post) {
+        this.replies.add(post);
+        post.getReplies().add(this);
+    }
+
+    public void removeReply(Post post) {
+        this.replies.remove(post);
+        post.getReplies().remove(this);
+    }
     
 }

@@ -1,6 +1,7 @@
 package com.matamercer.microblog.security;
 
 import com.google.common.collect.Sets;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -20,14 +21,11 @@ public enum UserRole {
             UserPermission.STUDENT_READ)),
     USER(Sets.newHashSet());
 
+    @Getter
     private final Set<UserPermission> permissions;
 
     UserRole(Set<UserPermission> permissions) {
         this.permissions = permissions;
-    }
-
-    public Set<UserPermission> getPermissions() {
-        return permissions;
     }
 
     public Set<? extends GrantedAuthority> getGrantedAuthorities(){
