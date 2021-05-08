@@ -1,6 +1,6 @@
 language: java
 sudo: true
 jdk:
-  - maven:3.6.3-jdk-8
+  - openjdk11
 script:
   - mvn spring-boot:run
