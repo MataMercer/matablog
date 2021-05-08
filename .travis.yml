@@ -1,1 +1,6 @@
 language: java
+sudo: true
+jdk:
+  - openjdk11
+script:
+  - ./mvnw clean install
