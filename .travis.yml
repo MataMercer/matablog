@@ -4,3 +4,5 @@ jdk:
   - openjdk11
 script:
   - mvn spring-boot:run
+before_install:
+  - chmod +x mvnw
