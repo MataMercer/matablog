@@ -57,7 +57,7 @@ const ThumbnailCarousel = ({ postId }: ThumbnailCarouselProps) => {
         };
     });
 
-    return (
+    return pictureUrls.length > 0 ? (
         <Container>
             <div>
                 {pictureUrls.map((pictureUrl, i) => (
@@ -112,7 +112,8 @@ const ThumbnailCarousel = ({ postId }: ThumbnailCarouselProps) => {
                 </Button>
             </div>
         </Container>
-    );
+    ) :
+        <></>;
 };
 
 export default ThumbnailCarousel;

@@ -35,9 +35,10 @@ type FormData = {
 
 type CreateReplyFormProps = {
     parentPostId: string;
+    reloadReplies: ()=>void;
 };
 
-export default ({ parentPostId }: CreateReplyFormProps) => {
+export default ({ parentPostId, reloadReplies }: CreateReplyFormProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiError, setApiError] = useState<string>('');
     const {
@@ -83,6 +84,8 @@ export default ({ parentPostId }: CreateReplyFormProps) => {
             .then((response) => {
                 setLoading(false);
                 setApiError('');
+                clearAll();
+                reloadReplies();
                 console.log(response.data);
             })
             .catch((err) => {
@@ -91,6 +94,12 @@ export default ({ parentPostId }: CreateReplyFormProps) => {
                 console.log(err);
             });
     });
+
+    const clearAll = () => {
+        setValue('tags', []);
+        setValue('content', '');
+        setValue('files', []);
+    }
 
     const convertTagListToStringList = (tags: Tag[]) => {
         return tags.map((elem) => elem.name);

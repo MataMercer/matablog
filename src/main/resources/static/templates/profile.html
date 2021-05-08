@@ -16,18 +16,22 @@
     </head>
     <body layout:fragment="content">
         <section class="hero">
-            <div class="hero-body"></div>
+            <div class="hero-body">
+                <div class="title"  th:text="${profileBlog?.preferredBlogName}"></div>
+                <div class="subTitle"  th:text="${'@' + profileBlog?.blogName}"></div>
+            </div>
         </section>
 
         <div class="columns">
             <div id="side-bar" class="column is-2 container is-fluid">
                 <aside class="menu">
                     <p class="menu-label">
-                        Tags
+                        Top 10 Tags
                     </p>
                     <ul class="menu-list">
                         <div th:each="tag: ${mostUsedTags}">
-                            <a th:href="@{${profileBlog?.blogName}(postTagNames=(${tag.getKey().getName()}))}"
+                            <a
+                                th:href="@{'/profile/' + ${profileBlog?.blogName + (category != T(com.matamercer.microblog.models.enums.PostCategory).ROOT ? '/' + category.toString().toLowerCase() : '')}(postTagNames=(${tag.getKey().getName()}))}"
                                 ><div
                                     th:text="${tag.getKey().getName() + ' (' + tag.getValue()} + ')'"
                                 ></div
@@ -40,7 +44,7 @@
                 <div class="tabs is-fullwidth">
                     <ul>
                         <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).ROOT} ? 'is-active' : ''">
-                            <a th:href="@{'/profile/' +  ${profileBlog?.blogName}}">Posts</a></li>
+                            <a th:href="@{'/profile/' +  ${profileBlog?.blogName}}">All Posts</a></li>
                         <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).MEDIA} ? 'is-active' : ''">
                             <a th:href="@{'/profile/' +  ${profileBlog?.blogName} + '/media'}">Media</a></li>
                         <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).REPLY} ? 'is-active' : ''">

@@ -31,9 +31,13 @@ export default ({ postId }: RepliesSectionProps) => {
             });
     }, [apiError, status]);
 
+    const reload = () => {
+        setStatus('loading');
+    }
+
     return (
         <div>
-            <CreateReplyForm parentPostId={postId} />
+            <CreateReplyForm parentPostId={postId} reloadReplies={reload}/>
             {
                 replies.map(reply => <Reply key={reply.id} post={reply}/>)
             }
