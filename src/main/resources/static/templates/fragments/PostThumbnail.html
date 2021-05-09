@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang='en'
+      xmlns:th='http://www.thymeleaf.org'
+      xmlns:sec='http://www.thymeleaf.org/extras/spring-security'
+      xmlns:layout='http://www.w3.org/1999/xhtml'
+>
+<head>
+    <meta charset='UTF-8'>
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment='PostThumbnail (post)'>
+
+    <div
+        class='card-image'
+        th:if='${post.getAttachments().size()>0}'
+    >
+        <figure class='image is-4by3'>
+            <img
+                th:src="${'/files/' + post.getAttachments().get(0).getId() + '/' + post.getAttachments().get(0).getName()}"
+            />
+        </figure>
+    </div>
+    <div class='card-content'>
+        <div class='media'>
+            <div class='media-left'>
+                <figure class='image is-24x24'>
+                    <img
+                        src='/img/image-placeholder.jpg'
+                        alt='Placeholder image'
+                    />
+                </figure>
+            </div>
+            <div class='media-content'>
+                <p
+                    class='title is-3'
+                    th:text='${post.getBlog().getPreferredBlogName()}'
+                >
+                    Blog Name Placeholder
+                </p>
+                <p
+                    class='title is-6'
+                    th:text="${'@' + post.getBlog().getBlogName()}"
+                >
+                    Blog Name Placeholder
+                </p>
+            </div>
+        </div>
+        <div
+            class='title'
+            th:text='${post.getTitle()}'
+        >
+            <div
+                class='content'
+                th:text='${post.getContent()}'
+            >
+
+                <a href='#'>#css</a>
+                <a href='#'>#responsive</a>
+                <br />
+                <time datetime='2016-1-1'
+                >11:09 PM - 1 Jan 2016
+                </time
+                >
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

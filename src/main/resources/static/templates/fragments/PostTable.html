@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang='en'
+      xmlns:th='http://www.thymeleaf.org'
+      xmlns:sec='http://www.thymeleaf.org/extras/spring-security'
+      xmlns:layout='http://www.w3.org/1999/xhtml'
+>
+<head>
+    <meta charset='UTF-8'>
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment='PostTable (posts)'>
+<th:block th:with='colCount=${4}'>
+    <div
+        th:each='r : ${#numbers.sequence(0, posts.size(), colCount)}'
+        class='columns'
+    >
+        <a
+            th:each='c : ${#numbers.sequence(0, colCount - 1)}'
+            th:if='${r + c &lt; posts.size()}'
+            class='column is-one-quarter'
+            th:href="@{'/posts/' + ${posts.get(r + c).id}}"
+        >
+            <div th:replace='fragments/PostThumbnail :: PostThumbnail (post=${posts.get(r + c)})'>
+                PostThumbnail
+            </div>
+        </a>
+    </div>
+</th:block>
+</div>
+</body>
+</html>

@@ -1,120 +1,65 @@
 <!DOCTYPE html>
 <html
-    lang="en"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    lang='en'
+    xmlns:th='http://www.thymeleaf.org'
+    xmlns:sec='http://www.thymeleaf.org/extras/spring-security'
     xmlns:layout='http://www.w3.org/1999/xhtml'
-    layout:decorate="~{layout.html}">
-    <head>
-        <meta charset="utf-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
-        <link rel="stylesheet" href="/stylesheets/index.css" />
-        <title th:text="${profileBlog?.blogName}">Title</title>
-    </head>
-    <body layout:fragment="content">
-        <section class="hero">
-            <div class="hero-body">
-                <div class="title"  th:text="${profileBlog?.preferredBlogName}"></div>
-                <div class="subTitle"  th:text="${'@' + profileBlog?.blogName}"></div>
-            </div>
-        </section>
+    layout:decorate='~{layout.html}'>
+<head>
+    <meta charset='utf-8' />
+    <meta
+        name='viewport'
+        content='width=device-width, initial-scale=1, shrink-to-fit=no'
+    />
+    <link rel='stylesheet' href='/stylesheets/index.css' />
+    <title th:text='${profileBlog?.blogName}'>Title</title>
+</head>
+<body layout:fragment='content'>
+<section class='hero'>
+    <div class='hero-body'>
+        <div class='title' th:text='${profileBlog?.preferredBlogName}'></div>
+        <div class='subTitle' th:text="${'@' + profileBlog?.blogName}"></div>
+    </div>
+</section>
 
-        <div class="columns">
-            <div id="side-bar" class="column is-2 container is-fluid">
-                <aside class="menu">
-                    <p class="menu-label">
-                        Top Tags
-                    </p>
-                    <ul class="menu-list">
-                        <div th:each="tag: ${mostUsedTags}">
-                            <a
-                                th:href="@{'/profile/' + ${profileBlog?.blogName + (category != T(com.matamercer.microblog.models.enums.PostCategory).ROOT ? '/' + category.toString().toLowerCase() : '')}(postTagNames=(${tag.getKey().getName()}))}"
-                                ><div
-                                    th:text="${tag.getKey().getName() + ' (' + tag.getValue()} + ')'"
-                                ></div
-                            ></a>
-                        </div>
-                    </ul>
-                </aside>
-            </div>
-            <div class="column container is-fluid">
-                <div class="tabs is-fullwidth">
-                    <ul>
-                        <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).ROOT} ? 'is-active' : ''">
-                            <a th:href="@{'/profile/' +  ${profileBlog?.blogName}}">All Posts</a></li>
-                        <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).MEDIA} ? 'is-active' : ''">
-                            <a th:href="@{'/profile/' +  ${profileBlog?.blogName} + '/media'}">Media</a></li>
-                        <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).REPLY} ? 'is-active' : ''">
-                            <a th:href="@{'/profile/' +  ${profileBlog?.blogName} + '/reply'}">Replies</a></li>
-                    </ul>
-                </div>
-
-                <th:block th:with="colCount=${4}">
-                    <div
-                        th:each="r : ${#numbers.sequence(0, posts.size(), colCount)}"
-                        class="columns"
+<div class='columns'>
+    <div id='side-bar' class='column is-2 container is-fluid'>
+        <aside class='menu'>
+            <p class='menu-label'>
+                Top Tags
+            </p>
+            <ul class='menu-list'>
+                <div th:each='tag: ${mostUsedTags}'>
+                    <a
+                        th:href="@{'/profile/' + ${profileBlog?.blogName + (category != T(com.matamercer.microblog.models.enums.PostCategory).ROOT ? '/' + category.toString().toLowerCase() : '')}(postTagNames=(${tag.getKey().getName()}))}"
                     >
-                        <a
-                            th:each="c : ${#numbers.sequence(0, colCount - 1)}"
-                            th:if="${r + c &lt; posts.size()}"
-                            class="column is-one-quarter"
-                            th:href="@{'/posts/' + ${posts.get(r + c).id}}"
+                        <div
+                            th:text="${tag.getKey().getName() + ' (' + tag.getValue()} + ')'"
+                        ></div
                         >
-                            <div
-                                class="card-image"
-                                th:if="${posts.get(r + c).getAttachments().size()>0}"
-                            >
-                                <figure class="image is-4by3">
-                                    <img
-                                        th:src="${'/files/' + posts.get(r + c).getAttachments().get(0).getId() + '/' + posts.get(r + c).getAttachments().get(0).getName()}"
-                                    />
-                                </figure>
-                            </div>
-                            <div class="card-content">
-                                <div class="media">
-                                    <div class="media-left">
-                                        <figure class="image is-24x24">
-                                            <img
-                                                src="/img/image-placeholder.jpg"
-                                                alt="Placeholder image"
-                                            />
-                                        </figure>
-                                    </div>
-                                    <div class="media-content">
-                                        <p
-                                            class="title is-4"
-                                            th:text="${profileBlog?.blogName}"
-                                        >
-                                            Blog Name Placeholder
-                                        </p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="content"
-                                    th:text="${posts.get(r + c).content}"
-                                >
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipiscing elit. Phasellus nec iaculis
-                                    mauris. <a>@bulmaio</a>.
-                                    <a href="#">#css</a>
-                                    <a href="#">#responsive</a>
-                                    <br />
-                                    <time datetime="2016-1-1"
-                                        >11:09 PM - 1 Jan 2016</time
-                                    >
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </th:block>
-                <div class="card" th:each="post: ${posts}"></div>
-            </div>
-            <div class="column is-2 container is-fluid">
-            </div>
+                    </a>
+                </div>
+            </ul>
+        </aside>
+    </div>
+    <div class='column container is-fluid'>
+        <div class='tabs is-fullwidth'>
+            <ul>
+                <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).ROOT} ? 'is-active' : ''">
+                    <a th:href="@{'/profile/' +  ${profileBlog?.blogName}}">All Posts</a></li>
+                <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).MEDIA} ? 'is-active' : ''">
+                    <a th:href="@{'/profile/' +  ${profileBlog?.blogName} + '/media'}">Media</a></li>
+                <li th:class="${category == T(com.matamercer.microblog.models.enums.PostCategory).REPLY} ? 'is-active' : ''">
+                    <a th:href="@{'/profile/' +  ${profileBlog?.blogName} + '/reply'}">Replies</a></li>
+            </ul>
         </div>
-        <div id="container"></div>
-    </body>
+
+        <div th:replace='fragments/PostTable :: PostTable (posts=${posts})'>
+            PostThumbnail
+        </div>
+    </div>
+    <div class='column is-2 container is-fluid'>
+    </div>
+</div>
+</body>
 </html>
