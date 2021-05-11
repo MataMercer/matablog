@@ -7,7 +7,7 @@
 >
 <head>
     <meta charset='UTF-8'>
-    <title>Title</title>
+    <title th:text='${post.getTitle()}'>Untitled</title>
 </head>
 <body>
 
@@ -19,8 +19,14 @@
                  th:attr='data-post-id=${post.getId()}'
             ></div>
             <h1 class='title' th:text='${post.getTitle()}'>Untitled</h1>
-            <p th:text='${post.getContent()}'></p>
-            <p th:text='${post.getBlog().getBlogName()}'></p>
+
+            <p th:text="${post.getBlog().getPreferredBlogName()}"></p>
+            <p th:text="${'@' + post.getBlog().getBlogName()}"></p>
+            <div class='mde-preview'>
+                <div class='mde-preview-content'>
+            <div th:markdown='${post.getContent()}'></div>
+                </div>
+            </div>
             <div id='ReactRepliesSection' th:attr='data-post-id=${post.getId()}'></div>
         </div>
         <div class='column is-2 container is-fluid'></div>

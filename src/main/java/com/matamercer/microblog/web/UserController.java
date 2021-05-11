@@ -1,5 +1,6 @@
 package com.matamercer.microblog.web;
 
+import com.matamercer.microblog.Exceptions.NotFoundException;
 import com.matamercer.microblog.forms.CreatePostForm;
 import com.matamercer.microblog.forms.RegisterUserForm;
 import com.matamercer.microblog.models.entities.*;
@@ -132,6 +133,9 @@ public class UserController {
                              @RequestParam(required = false) Optional<List<String>> postTagNames
     ) {
         Blog blog = blogRepository.findByBlogName(blogName);
+        if(blog == null){
+            throw new NotFoundException();
+        }
         model.addAttribute("profileBlog", blog);
 
         PostSearch postSearch = new PostSearch();
