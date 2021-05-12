@@ -1,7 +1,8 @@
 package com.matamercer.microblog.security;
 
-import com.matamercer.microblog.security.oauth.CustomOAuth2UserService;
-import com.matamercer.microblog.security.oauth.OAuth2LoginSuccessHandler;
+import com.matamercer.microblog.jwt.JwtConfig;
+import com.matamercer.microblog.jwt.JwtTokenVerifier;
+import com.matamercer.microblog.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.matamercer.microblog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,10 +14,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.crypto.SecretKey;
 
 @Configuration
 @EnableWebSecurity
@@ -31,9 +32,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private PersistentTokenRepository persistentTokenRepository;
 
     @Autowired
-    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-
-    @Autowired
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
@@ -42,9 +40,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                 .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .cors()
                 .and()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, userService))
+                .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
                         "/",
@@ -64,34 +66,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/oauth2/authorization/**",
                         "/oauth2/**",
                         "/login/**",
+                        "/api/user/refreshtoken",
                         "/error")
                 .permitAll().anyRequest().authenticated()
                 .and()
-                .formLogin()
-                    .loginPage("/login")
-                    .failureUrl("/login?error")
-                    .permitAll()
-                    .defaultSuccessUrl("/home", true)
-                    .failureHandler(customAuthenticationFailureHandler)
-                .and()
-                .rememberMe()
-                    .rememberMeParameter("remember-me")
-                    .tokenRepository(persistentTokenRepository)
-                    .userDetailsService(userService)
-                .and()
-                .logout()
-                    .logoutUrl("/logout")
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))// only bc we
-                    .clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID", "remember-me")
-                    .logoutSuccessUrl("/login").
-                and()
-                .oauth2Login()
-                    .loginPage("/oauthlogin")
-                    .userInfoEndpoint()
-                    .userService(custOAuth2UserService)
-                    .and()
-                    .successHandler(oAuth2LoginSuccessHandler)
-        ;
+                .formLogin().disable()
+                .httpBasic().disable()
+                .logout().disable();
     }
 
     @Override
@@ -107,9 +88,4 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-    @Autowired
-    private CustomOAuth2UserService custOAuth2UserService;
-
-    @Autowired
-    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 }

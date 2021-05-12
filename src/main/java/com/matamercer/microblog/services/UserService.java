@@ -8,19 +8,34 @@ import com.matamercer.microblog.models.repositories.AuthorityRepository;
 import com.matamercer.microblog.models.repositories.VerificationTokenRepository;
 import com.matamercer.microblog.models.repositories.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
+import com.matamercer.microblog.jwt.JwtUtil;
+import com.matamercer.microblog.models.entities.*;
+import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
+import com.matamercer.microblog.models.repositories.*;
+import com.matamercer.microblog.models.repositories.activitypub.UserKeyPairRepository;
 import com.matamercer.microblog.security.UserRole;
+import com.matamercer.microblog.web.error.RevokedRefreshTokenException;
 import com.matamercer.microblog.web.error.UserAlreadyExistsException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.crypto.SecretKey;
 import java.security.*;
+import java.util.Base64;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -94,6 +109,48 @@ public class UserService implements UserDetailsService {
         return builder.build();
     }
 
+
+
+    //Tokens
+
+    public String generateRefreshToken(String username, String accessToken){
+        //make a persistent refreshtoken entity in db to look up later.
+        User user = userRepository.findByUsername(username);
+        RefreshToken persistedRefreshToken = refreshTokenRepository.save(new RefreshToken(user));
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setId(persistedRefreshToken.getId().toString())
+                .setExpiration(new Date(System.currentTimeMillis() + 300000)) //set for 5m
+                .signWith(secretKey)
+                .compact();
+
+    }
+
+    public String generateAccessToken(String refreshToken){
+            //check this refreshtoken is legit
+            Jws<Claims> claimsJws = Jwts
+                    .parserBuilder().setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(refreshToken);
+
+            //extract important information from it
+            Claims body = claimsJws.getBody();
+            String username = body.getSubject();
+            Long id = Long.parseLong(body.getId());
+
+            //check db by ID for the refresh token
+            var persistedRefreshToken = refreshTokenRepository.findById(id);
+            if(persistedRefreshToken.isPresent()){
+                return jwtUtil.generateToken((String) username);
+            }
+            else{
+                throw new RevokedRefreshTokenException();
+            }
+    }
+
+
+    //Email Activation
     public void createVerificationTokenForUser(final User user, final String token) {
         final VerificationToken myToken = new VerificationToken(token, user);
         verificationTokenRepository.save(myToken);

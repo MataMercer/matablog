@@ -1,31 +1,29 @@
 package com.matamercer.microblog.configuration;
 
 import com.matamercer.microblog.storage.StorageService;
-import com.matamercer.microblog.thymeleaf.markdown.MarkdownDialect;
-import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.ITemplateResolver;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 @Configuration
@@ -89,26 +87,52 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean
     public ResourceBundleMessageSource messageSource() {
-
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
         source.setBasenames("messages");
         source.setUseCodeAsDefaultMessage(true);
-
         return source;
     }
 
-    //Thymeleaf
-    @Bean
-    public SpringTemplateEngine templateEngine(@Autowired ITemplateResolver templateResolver){
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setEnableSpringELCompiler(true);
-        templateEngine.setTemplateResolver(templateResolver);
-        templateEngine.addDialect(new MarkdownDialect());
-        templateEngine.addDialect(new LayoutDialect());
-        templateEngine.addDialect(new SpringSecurityDialect());
-        return templateEngine;
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**");
+//    }
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("X-Requested-With",
+                "Origin",
+                "Access-Control-Allow-Origin",
+                "Access-Control-Allow-Headers",
+                "Content-Type",
+                "Set-Cookie",
+                "Accept",
+                "Authorization",
+                "authorization"));
+
+        // This allow us to expose the headers
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Headers",
+                "Authorization",
+                "authorization",
+                "x-xsrf-token",
+                "Access-Control-Allow-Headers",
+                "Origin",
+                "Accept",
+                "Content-Type",
+                "Set-Cookie",
+                "Access-Control-Request-Method",
+                "Access-Control-Allow-Origin",
+                "Access-Control-Request-Headers"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 
 }
