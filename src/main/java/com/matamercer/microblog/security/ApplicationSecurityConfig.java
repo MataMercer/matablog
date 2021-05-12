@@ -27,9 +27,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    @Autowired
-    @Qualifier("persistentTokenRepository")
-    private PersistentTokenRepository persistentTokenRepository;
 
     @Autowired
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
@@ -70,9 +67,12 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/error")
                 .permitAll().anyRequest().authenticated()
                 .and()
+                .oauth2ResourceServer().jwt()
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .logout().disable();
+                .logout().disable()
+                ;
     }
 
     @Override
