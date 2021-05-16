@@ -1,9 +1,8 @@
-package com.matamercer.microblog.jwt;
+package com.matamercer.microblog.security.jwt;
 
 import com.google.common.base.Strings;
+import com.matamercer.microblog.security.UserRole;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
 import lombok.var;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,10 +49,9 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     .parseClaimsJws(token);
             Claims body = claimsJws.getBody();
 
-            String username = body.getSubject();
-            var authorities = (List<Map<String, String>>) body.get("authorities");
-
-            var simpleGrantedAuthorities = authorities.stream().map( m -> new SimpleGrantedAuthority(m.get("authority"))).collect(Collectors.toSet());
+            var username = (String) body.get("username");
+            var userRole = UserRole.valueOf((String)body.get("userRole"));
+            var simpleGrantedAuthorities = userRole.getGrantedAuthorities();
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     username,

@@ -1,11 +1,13 @@
 package com.matamercer.microblog.security;
 
-import com.matamercer.microblog.jwt.JwtConfig;
-import com.matamercer.microblog.jwt.JwtTokenVerifier;
-import com.matamercer.microblog.jwt.JwtUsernameAndPasswordAuthenticationFilter;
+import com.matamercer.microblog.security.jwt.JwtConfig;
+import com.matamercer.microblog.security.jwt.JwtTokenVerifier;
+import com.matamercer.microblog.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
+import com.matamercer.microblog.security.jwt.JwtUtil;
+import com.matamercer.microblog.security.oauth.GithubOAuth2UserService;
+import com.matamercer.microblog.security.oauth.GithubOAuthOnSuccessHandler;
 import com.matamercer.microblog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,12 +28,22 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final SecretKey secretKey;
+    private final JwtConfig jwtConfig;
+    private final GithubOAuthOnSuccessHandler githubOAuthOnSuccessHandler;
+    private  final GithubOAuth2UserService githubOAuth2UserService;
+    private final JwtUtil jwtUtil;
 
 
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService, SecretKey secretKey, JwtConfig jwtConfig, GithubOAuthOnSuccessHandler githubOAuthOnSuccessHandler, GithubOAuth2UserService githubOAuth2UserService, JwtUtil jwtUtil) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.secretKey = secretKey;
+        this.jwtConfig = jwtConfig;
+        this.githubOAuthOnSuccessHandler = githubOAuthOnSuccessHandler;
+        this.githubOAuth2UserService = githubOAuth2UserService;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -42,7 +54,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, userService))
+                .formLogin().disable()
+                .httpBasic().disable()
+                .logout()
+                .and()
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, jwtUtil))
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
@@ -67,11 +83,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/error")
                 .permitAll().anyRequest().authenticated()
                 .and()
-                .oauth2ResourceServer().jwt()
-                .and()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .logout().disable()
+                .oauth2Login()
+                .successHandler(githubOAuthOnSuccessHandler)
+                .userInfoEndpoint()
+                .userService(githubOAuth2UserService)
                 ;
     }
 
@@ -87,5 +102,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(userService);
         return provider;
     }
+
+
+
+
 
 }

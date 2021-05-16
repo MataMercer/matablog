@@ -1,9 +1,12 @@
 package com.matamercer.microblog.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.matamercer.microblog.security.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -16,10 +19,6 @@ import java.util.*;
 @Getter
 @Setter
 public class User extends BaseModel implements UserDetails {
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonBackReference
-    private List<Authority> authorities = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonBackReference
@@ -60,6 +59,11 @@ public class User extends BaseModel implements UserDetails {
     @Column
     private AuthenticationProvider authenticationProvider;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private UserRole role;
+
+
     @Column
     private String oAuth2Id;
 
@@ -69,6 +73,7 @@ public class User extends BaseModel implements UserDetails {
             String email,
             String username,
             String password,
+            UserRole role,
             boolean isAccountNonExpired,
             boolean isAccountNonLocked,
             boolean isCredentialsNonExpired,
@@ -78,16 +83,12 @@ public class User extends BaseModel implements UserDetails {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.role = role;
         this.isAccountNonExpired = isAccountNonExpired;
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;
         this.isEnabled = isEnabled;
         this.authenticationProvider = authenticationProvider;
-    }
-
-    public void addAuthority(Authority a){
-        a.setUser(this);
-        this.authorities.add(a);
     }
 
     public void addBlog(Blog b) {
@@ -101,4 +102,8 @@ public class User extends BaseModel implements UserDetails {
     }
 
 
+    @Override
+    public Set<SimpleGrantedAuthority> getAuthorities() {
+        return role.getGrantedAuthorities();
+    }
 }

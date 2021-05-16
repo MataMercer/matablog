@@ -1,40 +1,34 @@
 package com.matamercer.microblog.services;
 
-import com.matamercer.microblog.models.entities.Authority;
+import com.matamercer.microblog.security.jwt.JwtUtil;
 import com.matamercer.microblog.models.entities.Blog;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
-import com.matamercer.microblog.models.repositories.AuthorityRepository;
 import com.matamercer.microblog.models.repositories.VerificationTokenRepository;
 import com.matamercer.microblog.models.repositories.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.jwt.JwtUtil;
 import com.matamercer.microblog.models.entities.*;
-import com.matamercer.microblog.models.entities.activitypub.UserKeyPair;
 import com.matamercer.microblog.models.repositories.*;
-import com.matamercer.microblog.models.repositories.activitypub.UserKeyPairRepository;
 import com.matamercer.microblog.security.UserRole;
 import com.matamercer.microblog.web.error.RevokedRefreshTokenException;
 import com.matamercer.microblog.web.error.UserAlreadyExistsException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.security.*;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -45,28 +39,31 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserKeyPairRepository userKeyPairRepository;
-    private final AuthorityRepository authorityRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final BlogService blogService;
     private final UserKeyPairService userKeyPairService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final SecretKey secretKey;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        UserKeyPairRepository userKeyPairRepository,
-                       AuthorityRepository authorityRepository,
                        VerificationTokenRepository verificationTokenRepository,
                        BlogService blogService,
-                       UserKeyPairService userKeyPairService) {
+                       UserKeyPairService userKeyPairService, RefreshTokenRepository refreshTokenRepository, SecretKey secretKey, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.userKeyPairRepository = userKeyPairRepository;
-        this.authorityRepository = authorityRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.blogService = blogService;
         this.userKeyPairService = userKeyPairService;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.secretKey = secretKey;
+        this.jwtUtil = jwtUtil;
     }
 
     @Transactional
-    public User createUser(User user, UserRole userRole) {
+    public User createUser(User user) {
         if (emailExists(user.getEmail()) || usernameExists(user.getUsername())) {
             throw new UserAlreadyExistsException(("There is already an account with that email."));
         }
@@ -82,13 +79,6 @@ public class UserService implements UserDetailsService {
             e.printStackTrace();
             return null;
         }
-
-        Set<String> authorities = userRole.getGrantedAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
-
-        for (String authority : authorities) {
-            authorityRepository.save(new Authority(authority, user));
-        }
         return registeredUser;
     }
 
@@ -101,7 +91,7 @@ public class UserService implements UserDetailsService {
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
             builder.disabled(!user.isEnabled());
             builder.password(user.getPassword());
-            String[] authorities = user.getAuthorities().stream().map(Authority::getAuthority).toArray(String[]::new);
+            String[] authorities = user.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).toArray(String[]::new);
             builder.authorities(authorities);
         } else {
             throw new UsernameNotFoundException("User not found.");
@@ -109,40 +99,21 @@ public class UserService implements UserDetailsService {
         return builder.build();
     }
 
-
-
-    //Tokens
-
-    public String generateRefreshToken(String username, String accessToken){
-        //make a persistent refreshtoken entity in db to look up later.
-        User user = userRepository.findByUsername(username);
-        RefreshToken persistedRefreshToken = refreshTokenRepository.save(new RefreshToken(user));
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setId(persistedRefreshToken.getId().toString())
-                .setExpiration(new Date(System.currentTimeMillis() + 300000)) //set for 5m
-                .signWith(secretKey)
-                .compact();
-
-    }
-
-    public String generateAccessToken(String refreshToken){
-            //check this refreshtoken is legit
+    @Transactional
+    public String grantAccessToken(String refreshToken){
             Jws<Claims> claimsJws = Jwts
                     .parserBuilder().setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(refreshToken);
 
-            //extract important information from it
-            Claims body = claimsJws.getBody();
-            String username = body.getSubject();
-            Long id = Long.parseLong(body.getId());
+            var body = claimsJws.getBody();
+            var userId = Long.parseLong((String) body.get("userId"));
+            var userRole = UserRole.valueOf((String) body.get("userRole"));
+            var refreshTokenId = Long.parseLong(body.getId());
 
-            //check db by ID for the refresh token
-            var persistedRefreshToken = refreshTokenRepository.findById(id);
+            var persistedRefreshToken = refreshTokenRepository.findById(refreshTokenId);
             if(persistedRefreshToken.isPresent()){
-                return jwtUtil.generateToken((String) username);
+                return jwtUtil.createAccessToken(userId);
             }
             else{
                 throw new RevokedRefreshTokenException();

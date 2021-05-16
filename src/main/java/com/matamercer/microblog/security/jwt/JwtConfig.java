@@ -1,4 +1,4 @@
-package com.matamercer.microblog.jwt;
+package com.matamercer.microblog.security.jwt;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Component;
 public class JwtConfig {
     private String secretKey;
     private String tokenPrefix;
-    private Integer tokenExpirationAfterDays;
+    private Integer refreshTokenExpirationInDays;
+    private Integer accessTokenExpirationInHours;
 
     public String getAuthorizationHeader(){
         return HttpHeaders.AUTHORIZATION;

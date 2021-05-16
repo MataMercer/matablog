@@ -1,9 +1,7 @@
 package com.matamercer.microblog.configuration;
 
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
-import com.matamercer.microblog.models.entities.Post;
 import com.matamercer.microblog.models.entities.User;
-import com.matamercer.microblog.models.repositories.AuthorityRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 
 import com.matamercer.microblog.security.UserRole;
@@ -18,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SeederConfig {
     @Bean
     public CommandLineRunner seedData(UserRepository userRepository,
-                                      AuthorityRepository authorityRepository,
                                       PasswordEncoder passwordEncoder,
                                       UserService userService,
                                       PostService postService) {
@@ -27,6 +24,7 @@ public class SeederConfig {
                     "developer.mercer@gmail.com",
                     "a",
                     passwordEncoder.encode("1"),
+                    UserRole.ADMIN,
                     true,
                     true,
                     true,
@@ -35,7 +33,7 @@ public class SeederConfig {
             );
             User foundUser = userRepository.findByUsername("adminuser");
             if(foundUser == null){
-                userService.createUser(adminUser, UserRole.ADMIN);
+                userService.createUser(adminUser);
             }
         };
     }

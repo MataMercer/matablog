@@ -13,10 +13,12 @@ import com.matamercer.microblog.services.FileService;
 import com.matamercer.microblog.services.PostService;
 import com.matamercer.microblog.services.PostTagService;
 import com.matamercer.microblog.services.UserService;
+import com.matamercer.microblog.utilities.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Controller
@@ -62,21 +65,6 @@ public class UserController {
         this.messageSource = messageSource;
     }
 
-
-    @GetMapping("/login")
-    public ModelAndView login(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey, @RequestParam("error") final Optional<String> error) {
-        Locale locale = request.getLocale();
-        model.addAttribute("lang", locale.getLanguage());
-        messageKey.ifPresent(key -> {
-                    String message = messageSource.getMessage(key, null, locale);
-                    model.addAttribute("message", message);
-                }
-        );
-
-        error.ifPresent(e -> model.addAttribute("error", e));
-
-        return new ModelAndView("login", model);
-    }
 
     @GetMapping("register")
     public String getRegisterView(Model model) {
@@ -125,47 +113,6 @@ public class UserController {
     }
 
 
-    @GetMapping({"/profile/{blogName}","/profile/{blogName}/{category}"})
-    public String getProfile(Model model,
-                             @PathVariable(required = false) Optional<String> category,
-                             @PathVariable String blogName,
-                             @RequestParam(defaultValue = "0") int page,
-                             @RequestParam(required = false) Optional<List<String>> postTagNames
-    ) {
-        Blog blog = blogRepository.findByBlogName(blogName);
-        if(blog == null){
-            throw new NotFoundException();
-        }
-        model.addAttribute("profileBlog", blog);
-
-        PostSearch postSearch = new PostSearch();
-        if(postTagNames.isPresent()) {
-            Set<PostTag> postTags = postTagService.getTags(postTagNames.get());
-            postSearch.setPostTags(postTags);
-        }
-        if(category.isPresent()) {
-            postSearch.setPostCategory(PostCategory.valueOf(category.get().toUpperCase()));
-        }else{
-            postSearch.setPostCategory(PostCategory.ROOT);
-        }
-        postSearch.setBlog(blog);
-
-        Page<Post> posts = postService.searchPosts(postSearch, page, PAGE_SIZE);
-
-        model.addAttribute("totalPages", posts.getTotalPages());
-        model.addAttribute("page", page);
-
-        if(category.isPresent()) {
-            model.addAttribute("category", PostCategory.valueOf(category.get().toUpperCase()));
-        }else{
-            model.addAttribute("category", PostCategory.ROOT);
-        }
-        model.addAttribute("posts", posts.toList());
-        model.addAttribute("mostUsedTags", postTagService.getTopTagsByPosts(blog, 0, 10));
-
-        return "profile";
-    }
-
     @GetMapping("/newpost")
     public String createPostForm(Model model) {
         CreatePostForm createPostForm = new CreatePostForm();
@@ -181,11 +128,12 @@ public class UserController {
         return "post";
     }
 
-    @GetMapping("admin")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public String getAdminDashboardView() {
-        return "adminDashboard";
+    @GetMapping("/currentuser")
+    public ResponseEntity<?> currentUser(HttpServletRequest request) {
+        User currentUser = userRepository.findByUsername(request.getUserPrincipal().getName());
+        return ResponseEntity.ok(currentUser.getEmail());
     }
+
 
 
 }

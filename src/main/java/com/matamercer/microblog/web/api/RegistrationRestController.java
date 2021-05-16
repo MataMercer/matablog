@@ -48,12 +48,13 @@ public class RegistrationRestController {
             registerUserForm.getEmail(),
             registerUserForm.getUsername(),
             passwordEncoder.encode(registerUserForm.getPassword()),
+            UserRole.USER,
             true,
             true,
             true,
             false,
             AuthenticationProvider.LOCAL);
-    registeredUser = userService.createUser(registeredUser, UserRole.USER);
+    registeredUser = userService.createUser(registeredUser);
     applicationEventPublisher
         .publishEvent(new OnRegistrationCompleteEvent(registeredUser, request.getLocale(), request.getContextPath()));
 

@@ -1,4 +1,4 @@
-package com.matamercer.microblog.jwt;
+package com.matamercer.microblog.security.jwt;
 
 
 import lombok.Getter;
