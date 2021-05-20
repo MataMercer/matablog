@@ -61,7 +61,7 @@ public class GithubOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Transactional
     protected User saveOrFindUser(OAuthAttributes attributes){
-        val optionalUser = Optional.ofNullable(userRepository.findByoAuth2IdAndAuthenticationProvider(attributes.getId(), AuthenticationProvider.GITHUB));
+        val optionalUser = userRepository.findByoAuth2IdAndAuthenticationProvider(attributes.getId(), AuthenticationProvider.GITHUB);
         if(optionalUser.isPresent()) {
             val user = optionalUser.get();
             if(user.getAuthenticationProvider() == AuthenticationProvider.GITHUB) {

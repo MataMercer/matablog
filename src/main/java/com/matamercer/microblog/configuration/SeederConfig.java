@@ -7,6 +7,7 @@ import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.security.UserRole;
 import com.matamercer.microblog.services.PostService;
 import com.matamercer.microblog.services.UserService;
+import lombok.var;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,8 +32,8 @@ public class SeederConfig {
                     true,
                     AuthenticationProvider.LOCAL
             );
-            User foundUser = userRepository.findByUsername("adminuser");
-            if(foundUser == null){
+            var foundUser = userRepository.findByEmail(adminUser.getEmail());
+            if(!foundUser.isPresent()){
                 userService.createUser(adminUser);
             }
         };

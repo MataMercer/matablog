@@ -6,11 +6,14 @@ import com.matamercer.microblog.forms.CreatePostForm;
 import com.matamercer.microblog.models.entities.Blog;
 import com.matamercer.microblog.models.entities.Post;
 import com.matamercer.microblog.models.entities.PostTag;
+import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.PostRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.models.repositories.searches.PostSearch;
 import com.matamercer.microblog.models.repositories.specifications.PostSpecification;
+import com.matamercer.microblog.web.error.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -61,7 +64,12 @@ public class PostService {
         Set<PostTag> postTags = createPostForm.getPostTags().stream()
                 .map(postTagService::findOrCreateByName).collect(Collectors.toSet());
 
-        Blog blog = userRepository.findByUsername(principal.getName()).getActiveBlog();
+        var optionalUser = userRepository.findByUsername(principal.getName());
+        if(!optionalUser.isPresent()){
+            throw new UserNotFoundException("Unable to create post because unable to find logged in user.");
+        }
+        User user = optionalUser.get();
+        Blog blog = user.getActiveBlog();
         Post post = new Post(blog, createPostForm.getTitle(), createPostForm.getContent(),
                 createPostForm.isCommunityTaggingEnabled(), createPostForm.isSensitive());
 

@@ -85,9 +85,10 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        var optionalUser = userRepository.findByUsername(username);
         UserBuilder builder = null;
-        if (user != null) {
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
             builder.disabled(!user.isEnabled());
             builder.password(user.getPassword());
@@ -147,11 +148,11 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean emailExists(final String email) {
-        return userRepository.findByEmail(email) != null;
+        return userRepository.findByEmail(email).isPresent();
     }
 
     public boolean usernameExists(final String username) {
-        return userRepository.findByUsername(username) != null;
+        return userRepository.findByUsername(username).isPresent();
     }
 
 }

@@ -45,34 +45,40 @@ public class JwtUtil {
                 .compact();
     }
 
+    @Transactional
     public String createAccessToken(Long userId){
         var optionalUser = userRepository.findById(userId);
+        return createAccessTokenHelper(optionalUser);
+    }
+
+    @Transactional
+    public String createAccessToken(String username){
+        var optionalUser = userRepository.findByUsername(username);
+        return createAccessTokenHelper(optionalUser);
+    }
+
+    private String createAccessTokenHelper(Optional<User> optionalUser){
         if(optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return createToken(getUserClaims(userId, user.getUsername(), user.getRole()), addHoursToCurrentDate(jwtConfig.getAccessTokenExpirationInHours()));
+            return createToken(getUserClaims(user.getId(), user.getUsername(), user.getRole()), addHoursToCurrentDate(jwtConfig.getAccessTokenExpirationInHours()));
         }else{
             throw new UserNotFoundException("Error creating access token. User not found.");
         }
     }
 
-
     @Transactional
     public String createRefreshToken(Long userId){
         var optionalUser = userRepository.findById(userId);
-        if(optionalUser.isPresent()){
-            User user = optionalUser.get();
-            RefreshToken refreshTokenEntity = refreshTokenRepository.save(new RefreshToken(user));
-            var claims = getUserClaims(userId, user.getUsername(), user.getRole());
-            claims.put("refreshTokenEntityId", refreshTokenEntity.toString());
-            return createToken(claims, java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getRefreshTokenExpirationInDays())));
-        }else{
-            throw new UserNotFoundException("Error creating refresh token. User not found.");
-        }
+        return createRefreshTokenHelper(optionalUser);
     }
 
     @Transactional
     public String createRefreshToken(String username){
-        var optionalUser = Optional.ofNullable(userRepository.findByUsername(username));
+        var optionalUser = userRepository.findByUsername(username);
+        return createRefreshTokenHelper(optionalUser);
+    }
+
+    private String createRefreshTokenHelper(Optional<User> optionalUser){
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
             RefreshToken refreshTokenEntity = refreshTokenRepository.save(new RefreshToken(user));
@@ -83,7 +89,6 @@ public class JwtUtil {
             throw new UserNotFoundException("Error creating refresh token. User not found.");
         }
     }
-
 
     private Map<String, String> getUserClaims(Long userId, String username, UserRole userRole ){
         Map<String, String> claims = new HashMap<>();

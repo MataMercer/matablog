@@ -14,6 +14,8 @@ import com.matamercer.microblog.services.PostService;
 import com.matamercer.microblog.services.PostTagService;
 import com.matamercer.microblog.services.UserService;
 import com.matamercer.microblog.utilities.AuthenticationResponse;
+import com.matamercer.microblog.web.error.UserNotFoundException;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -39,29 +41,19 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
-    private final BlogRepository blogRepository;
     private final PostService postService;
-    private final PostTagService postTagService;
-    private final FileService fileService;
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final MessageSource messageSource;
 
     private static final int PAGE_SIZE = 40;
 
     @Autowired
-    public UserController(UserRepository userRepository, UserService userService, PasswordEncoder passwordEncoder,
-                          BlogRepository blogRepository, PostTagRepository postTagRepository, PostService postService,
-                          PostTagService postTagService, FileService fileService, ApplicationEventPublisher applicationEventPublisher,
+    public UserController(UserRepository userRepository,
+                          UserService userService,
+                          PostService postService,
                           MessageSource messageSource) {
         this.userRepository = userRepository;
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-        this.blogRepository = blogRepository;
         this.postService = postService;
-        this.postTagService = postTagService;
-        this.fileService = fileService;
-        this.applicationEventPublisher = applicationEventPublisher;
         this.messageSource = messageSource;
     }
 
@@ -130,8 +122,12 @@ public class UserController {
 
     @GetMapping("/currentuser")
     public ResponseEntity<?> currentUser(HttpServletRequest request) {
-        User currentUser = userRepository.findByUsername(request.getUserPrincipal().getName());
-        return ResponseEntity.ok(currentUser.getEmail());
+        var optionalUser = userRepository.findByUsername(request.getUserPrincipal().getName());
+        if(!optionalUser.isPresent()){
+           throw new UserNotFoundException("Unable to find current user.");
+        }
+        User user = optionalUser.get();
+        return ResponseEntity.ok(user.getEmail());
     }
 
 

@@ -6,6 +6,7 @@ import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.utilities.EnvironmentUtil;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +32,15 @@ public class WellKnownController {
             String username = splitResource[1];
 
 
-            User user = userRepository.findByUsername(username);
-            if(user == null){
+            var optionalUser = userRepository.findByUsername(username);
+            if(!optionalUser.isPresent()){
                 throw new NotFoundException();
             }
+            User user = optionalUser.get();
 
             jsonResourceDescriptor.setSubject(resource.get());
             try {
-                jsonResourceDescriptor.setLinks(Arrays.asList(new Link("self", "application/activity+json", environmentUtil.getServerUrl() + "/activitypub/users/" + user.getId() )));
+                jsonResourceDescriptor.setLinks(Collections.singletonList(new Link("self", "application/activity+json", environmentUtil.getServerUrl() + "/activitypub/users/" + user.getId())));
                 return jsonResourceDescriptor;
             } catch (UnknownHostException e) {
                 e.printStackTrace();

@@ -21,4 +21,12 @@ public class JwtConfig {
     public String getAuthorizationHeader(){
         return HttpHeaders.AUTHORIZATION;
     }
+
+    public String getRefreshTokenHeader(){
+        return "refreshToken";
+    }
+
+
+
+
 }
