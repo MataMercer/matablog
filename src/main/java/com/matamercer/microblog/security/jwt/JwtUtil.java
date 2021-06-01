@@ -5,20 +5,20 @@ import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.RefreshTokenRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.security.UserRole;
+import com.matamercer.microblog.web.error.AuthenticationException;
 import com.matamercer.microblog.web.error.UserNotFoundException;
 import io.jsonwebtoken.*;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class JwtUtil {
@@ -36,14 +36,7 @@ public class JwtUtil {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public String createToken(Map<String, ?> claims, Date exp){
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date())
-                .setExpiration(exp)
-                .signWith(secretKey)
-                .compact();
-    }
+
 
     @Transactional
     public String createAccessToken(Long userId){
@@ -78,12 +71,21 @@ public class JwtUtil {
         return createRefreshTokenHelper(optionalUser);
     }
 
+    private String createToken(Map<String, ?> claims, Date exp){
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(exp)
+                .signWith(secretKey)
+                .compact();
+    }
+
     private String createRefreshTokenHelper(Optional<User> optionalUser){
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
             RefreshToken refreshTokenEntity = refreshTokenRepository.save(new RefreshToken(user));
             var claims = getUserClaims(user.getId(), user.getUsername(), user.getRole());
-            claims.put("refreshTokenEntityId", refreshTokenEntity.toString());
+            claims.put("refreshTokenEntityId", refreshTokenEntity.getId().toString());
             return createToken(claims, java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getRefreshTokenExpirationInDays())));
         }else{
             throw new UserNotFoundException("Error creating refresh token. User not found.");
@@ -93,14 +95,51 @@ public class JwtUtil {
     private Map<String, String> getUserClaims(Long userId, String username, UserRole userRole ){
         Map<String, String> claims = new HashMap<>();
         claims.put("userId", userId.toString());
-        claims.put("username", userId.toString());
+        claims.put("username", username);
         claims.put("userRole", userRole.toString());
         return claims;
     }
 
     private Date addHoursToCurrentDate(int hours){
-        LocalDateTime addedDate = LocalDateTime.now().plusHours(hours);
-        return java.sql.Date.valueOf(addedDate.toLocalDate());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.HOUR_OF_DAY, hours);
+        return calendar.getTime();
+    }
+
+    public Claims extractAllClaims(String token){
+        try {
+            return Jwts
+                    .parserBuilder().setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token).getBody();
+        } catch(ExpiredJwtException expiredJwtException) {
+            throw new AuthenticationException("Token is expired", expiredJwtException);
+        } catch(UnsupportedJwtException unsupportedJwtException) {
+            throw new AuthenticationException("This JWT token is unsupported", unsupportedJwtException);
+        } catch(MalformedJwtException malformedJwtException) {
+            throw new AuthenticationException("Malformed JWT", malformedJwtException);
+        } catch(SignatureException signatureException) {
+            throw new AuthenticationException("JWT Signature invalid", signatureException);
+        } catch(IllegalArgumentException illegalArgumentException) {
+            throw new AuthenticationException("Illegal argument", illegalArgumentException);
+        }
+    }
+
+    public boolean isTokenExpired(Claims claims){
+        return claims.getExpiration().before(new Date());
+    }
+
+    public Long getUserId(Claims claims){
+        return Long.parseLong(claims.get("userId").toString());
+    }
+
+    public UserRole getUserRole(Claims claims){
+        return UserRole.valueOf(claims.get("userRole").toString());
+    }
+
+    public String getUserName(Claims claims){
+        return claims.get("username").toString();
     }
 
 

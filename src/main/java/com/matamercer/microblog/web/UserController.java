@@ -127,7 +127,7 @@ public class UserController {
            throw new UserNotFoundException("Unable to find current user.");
         }
         User user = optionalUser.get();
-        return ResponseEntity.ok(user.getEmail());
+        return ResponseEntity.ok(user.getUsername());
     }
 
 

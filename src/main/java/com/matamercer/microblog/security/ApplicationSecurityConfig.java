@@ -4,8 +4,6 @@ import com.matamercer.microblog.security.jwt.JwtConfig;
 import com.matamercer.microblog.security.jwt.JwtTokenVerifier;
 import com.matamercer.microblog.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.matamercer.microblog.security.jwt.JwtUtil;
-import com.matamercer.microblog.security.oauth.GithubOAuth2UserService;
-import com.matamercer.microblog.security.oauth.GithubOAuthOnSuccessHandler;
 import com.matamercer.microblog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,19 +28,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
-    private final GithubOAuthOnSuccessHandler githubOAuthOnSuccessHandler;
-    private  final GithubOAuth2UserService githubOAuth2UserService;
     private final JwtUtil jwtUtil;
 
 
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService, SecretKey secretKey, JwtConfig jwtConfig, GithubOAuthOnSuccessHandler githubOAuthOnSuccessHandler, GithubOAuth2UserService githubOAuth2UserService, JwtUtil jwtUtil) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService, SecretKey secretKey, JwtConfig jwtConfig,  JwtUtil jwtUtil) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.secretKey = secretKey;
         this.jwtConfig = jwtConfig;
-        this.githubOAuthOnSuccessHandler = githubOAuthOnSuccessHandler;
-        this.githubOAuth2UserService = githubOAuth2UserService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -59,7 +53,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .and()
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, jwtUtil))
-                .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, jwtUtil), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
                         "/",
@@ -76,17 +70,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/img/*",
                         "/profile/*",
                         "/posts/*",
-                        "/oauth2/authorization/**",
-                        "/oauth2/**",
                         "/login/**",
                         "/api/user/refreshtoken",
                         "/error")
                 .permitAll().anyRequest().authenticated()
-                .and()
-                .oauth2Login()
-                .successHandler(githubOAuthOnSuccessHandler)
-                .userInfoEndpoint()
-                .userService(githubOAuth2UserService)
                 ;
     }
 
