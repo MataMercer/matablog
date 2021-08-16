@@ -1,4 +1,4 @@
-package com.matamercer.microblog.web;
+package com.matamercer.microblog.web.api.v1;
 
 import com.matamercer.microblog.services.FileService;
 import com.matamercer.microblog.storage.StorageFileNotFoundException;
@@ -7,18 +7,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-
-@Controller
-@RequestMapping(value = "files")
-public class FileController {
+@RestController
+@RequestMapping("/api/v1/files")
+public class FileRestController {
 
     private final FileService fileService;
 
     @Autowired
-    public FileController(FileService fileService) {
+    public FileRestController(FileService fileService) {
         this.fileService = fileService;
     }
 

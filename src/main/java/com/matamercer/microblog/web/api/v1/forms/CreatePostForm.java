@@ -1,14 +1,9 @@
-package com.matamercer.microblog.forms;
+package com.matamercer.microblog.web.api.v1.forms;
 
-import com.matamercer.microblog.models.entities.PostTag;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 

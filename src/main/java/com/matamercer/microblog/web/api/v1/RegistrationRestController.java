@@ -1,11 +1,11 @@
-package com.matamercer.microblog.web.api;
+package com.matamercer.microblog.web.api.v1;
 
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.matamercer.microblog.forms.RegisterUserForm;
+import com.matamercer.microblog.web.api.v1.forms.RegisterUserForm;
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
@@ -23,7 +23,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/registration")
 public class RegistrationRestController {
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
@@ -42,7 +42,7 @@ public class RegistrationRestController {
     this.mailSender = mailSender;
   }
 
-  @PostMapping("/registration")
+  @PostMapping("/createAccount")
   public GenericResponse registerUserAccount(@RequestBody @Valid RegisterUserForm registerUserForm, HttpServletRequest request) {
     User registeredUser = new User(
             registerUserForm.getEmail(),
@@ -72,11 +72,6 @@ public class RegistrationRestController {
     mailSender.send(email);
 
     return new GenericResponse(messageSource.getMessage("message.resendToken", null, request.getLocale()));
-  }
-
-  @PostMapping("/test")
-  public GenericResponse test(HttpServletRequest request) {
-    return new GenericResponse("derp");
   }
 
   // Helper Methods

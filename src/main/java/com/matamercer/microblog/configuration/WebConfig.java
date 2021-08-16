@@ -119,6 +119,7 @@ public class WebConfig implements WebMvcConfigurer {
         configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Headers",
                 "Authorization",
                 "authorization",
+                "refreshToken",
                 "x-xsrf-token",
                 "Access-Control-Allow-Headers",
                 "Origin",

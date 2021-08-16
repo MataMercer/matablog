@@ -1,6 +1,6 @@
 package com.matamercer.microblog.integration.controller;
 
-import com.matamercer.microblog.forms.LoginUserForm;
+import com.matamercer.microblog.web.api.v1.forms.LoginUserForm;
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.UserRepository;
@@ -13,8 +13,6 @@ import lombok.val;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

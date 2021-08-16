@@ -1,4 +1,4 @@
-package com.matamercer.microblog.forms;
+package com.matamercer.microblog.web.api.v1.forms;
 
 import lombok.Data;
 

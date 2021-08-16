@@ -5,6 +5,8 @@ import com.matamercer.microblog.security.jwt.JwtTokenVerifier;
 import com.matamercer.microblog.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.matamercer.microblog.security.jwt.JwtUtil;
 import com.matamercer.microblog.services.UserService;
+import lombok.val;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +44,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        var jwtUsernameAndPasswordAuthenticationFilter = new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, jwtUtil);
+        jwtUsernameAndPasswordAuthenticationFilter.setFilterProcessesUrl("/api/v1/auth/login");
         http
                 .cors()
                 .and()
@@ -52,12 +56,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .logout()
                 .and()
-                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, jwtUtil))
+                .addFilter(jwtUsernameAndPasswordAuthenticationFilter)
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, jwtUtil), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
                         "/",
                         "/api/user/*",
+                        "/api/v1/auth/login",
+                        "/api/v1/auth/currentuser",
                         "index",
                         "/users/*",
                         "/register",
