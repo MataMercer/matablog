@@ -32,7 +32,7 @@ public class UserServiceTest {
               "title",
               "content",
               false,
-              false);
+              false, true);
       post.setId(1L);
 
       PostRepository postRepository = Mockito.mock(PostRepository.class);

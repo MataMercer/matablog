@@ -13,6 +13,7 @@ import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.models.repositories.searches.PostSearch;
 import com.matamercer.microblog.models.repositories.specifications.PostSpecification;
 import com.matamercer.microblog.web.api.v1.forms.CreatePostForm;
+import com.matamercer.microblog.web.api.v1.forms.UpdatePostForm;
 import com.matamercer.microblog.web.error.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -74,10 +75,10 @@ public class PostService {
         User user = optionalUser.get();
         Blog blog = user.getActiveBlog();
         Post post = new Post(blog, createPostForm.getTitle(), createPostForm.getContent(),
-                createPostForm.isCommunityTaggingEnabled(), createPostForm.isSensitive());
-
-        attachFilesToPost(files, post);
-
+                createPostForm.isCommunityTaggingEnabled(), createPostForm.isSensitive(), createPostForm.isPublished());
+        if(files != null) {
+            attachFilesToPost(files, post);
+        }
         postTags.forEach(post::addPostTag);
 
         post =  postRepository.save(post);
@@ -102,8 +103,8 @@ public class PostService {
             @CacheEvict(value = CACHE_NAME, key = "#post.id"),
             @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true)
     })
-    public Post updatePost(Post post){
-        return postRepository.save(post);
+    public Post updatePost(UpdatePostForm updatePostForm, MultipartFile[] files, Principal principal){
+        return null;
     }
 
 

@@ -22,6 +22,8 @@ public class CreatePostForm {
 
     private boolean sensitive;
 
+    private boolean published;
+
     private String parentPostId;
 
 }

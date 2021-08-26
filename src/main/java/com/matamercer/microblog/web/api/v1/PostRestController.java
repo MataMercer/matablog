@@ -4,6 +4,7 @@ import com.matamercer.microblog.models.entities.File;
 import com.matamercer.microblog.models.entities.Post;
 import com.matamercer.microblog.services.PostService;
 import com.matamercer.microblog.web.api.v1.forms.CreatePostForm;
+import com.matamercer.microblog.web.api.v1.forms.UpdatePostForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -65,10 +66,16 @@ public class PostRestController {
 
     @PostMapping("/create")
     public ResponseEntity<Post> createPostForm(@Valid CreatePostForm createPostForm,
-                                               @RequestParam("files") MultipartFile[] files, Principal principal) {
+                                               @RequestParam(name="files", required = false) MultipartFile[] files, Principal principal) {
         Post post = postService.createPost(createPostForm, files, principal);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(
                 "/{id}").buildAndExpand(post.getId()).toUri();
         return ResponseEntity.created(location).body(post);
+    }
+    
+    @PutMapping("/update")
+    public ResponseEntity<Post> updatePostForm(@Valid UpdatePostForm updatePostForm, @RequestParam(name = "files", required = false) MultipartFile[] files, Principal principal){
+        Post post = postService.updatePost(updatePostForm, files, principal);
+        return ResponseEntity.ok().body(post);
     }
 }
