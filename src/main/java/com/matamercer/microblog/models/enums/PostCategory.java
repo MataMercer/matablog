@@ -14,8 +14,7 @@ public enum PostCategory {
     MEDIA("media"),
     REPLY("reply");
 
-    @Getter
-    private final String postCategory;
+    public final String postCategory;
 
     PostCategory(String category){
         this.postCategory = category;
@@ -48,6 +47,7 @@ public enum PostCategory {
         }
         return postCategories;
     }
+
 
 
 }

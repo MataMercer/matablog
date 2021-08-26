@@ -3,6 +3,8 @@ package com.matamercer.microblog.unit.repository;
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.UserRepository;
+import com.matamercer.microblog.security.UserRole;
+import lombok.var;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ class UserRepositoryTest {
         user = new User("username@gmail.com",
                 "username",
                 "password",
+                UserRole.USER,
                 true,
                 true,
                 true,
@@ -44,20 +47,20 @@ class UserRepositoryTest {
 
     @Test
     public void whenFindByUsername_thenReturnUser() {
-        User foundUser = userRepository.findByUsername(user.getUsername());
-        assertThat(foundUser).isEqualTo(user);
+        var foundUser = userRepository.findByUsername(user.getUsername());
+        assertThat(foundUser.get()).isEqualTo(user);
     }
 
     @Test
     public void whenFindByEmail_thenReturnUser() {
-        User foundUser = userRepository.findByEmail(user.getEmail());
-        assertThat(foundUser).isEqualTo(user);
+        var foundUser = userRepository.findByEmail(user.getEmail());
+        assertThat(foundUser.get()).isEqualTo(user);
     }
 
     @Test
     public void whenFindByoAuth2IdAndAuthenticationProvider_thenReturnUser() {
-        User foundUser = userRepository.findByoAuth2IdAndAuthenticationProvider(user.getOAuth2Id(),
+        var foundOptionalUser = userRepository.findByoAuth2IdAndAuthenticationProvider(user.getOAuth2Id(),
                 user.getAuthenticationProvider());
-        assertThat(foundUser).isEqualTo(user);
+        assertThat(foundOptionalUser.get()).isEqualTo(user);
     }
 }

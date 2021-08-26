@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
-  <circle style="fill: rgb(69, 69, 182);" cx="250" cy="250" r="250"/>
-  <path d="M 223.671 62.52 Q 250 47.319 276.329 62.52 L 399.198 133.458 Q 425.527 148.659 425.527 179.062 L 425.527 320.938 Q 425.527 351.34 399.198 366.542 L 276.329 437.48 Q 250 452.681 223.671 437.48 L 100.802 366.542 Q 74.473 351.341 74.473 320.938 L 74.473 179.062 Q 74.473 148.659 100.802 133.458 Z" style="fill: rgb(255, 255, 255);" bx:shape="n-gon 250 250 202.681 202.681 6 0.15 1@178453a0"/>
-  <line x1="69.161" y1="137.425" x2="249.711" y2="456.526" style="stroke-dashoffset: 4px; stroke-width: 29px; stroke-linecap: round; fill: rgb(134, 134, 151); stroke: rgb(69, 69, 182);"/>
-  <line x1="243.121" y1="457.674" x2="425.855" y2="142.323" style="stroke-width: 29px; fill: rgb(73, 73, 140); stroke-linecap: round; stroke: rgb(69, 69, 182);"/>
-</svg>

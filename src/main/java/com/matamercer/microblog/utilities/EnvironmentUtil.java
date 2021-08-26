@@ -30,7 +30,7 @@ public class EnvironmentUtil {
     }
 
     public String getServerUrl() throws UnknownHostException {
-        return "https://" + getHostname() + ":" + getPort();
+        return "http://" + getHostname() + ":" + getPort();
     }
 
 }

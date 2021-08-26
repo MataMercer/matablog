@@ -37,11 +37,11 @@ public class PostTagRepositoryTest {
         Blog blog = new Blog("BlogName", "PreferredBlogName", false);
         blog = entityManager.persist(blog);
 
-        Post post = new Post(blog, "", "", false, false);
+        Post post = new Post(blog, "", "", false, false, true);
         post = entityManager.persist(post);
         post.addPostTag(pt1);
 
-        Post post2 = new Post(blog, "", "", false, false);
+        Post post2 = new Post(blog, "", "", false, false, true);
         post2 = entityManager.persist(post2);
         post2.addPostTag(pt1);
         post2.addPostTag(pt2);

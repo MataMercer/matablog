@@ -1,18 +1,25 @@
 package com.matamercer.microblog.services;
 
-import com.matamercer.microblog.models.entities.Authority;
+import com.matamercer.microblog.security.jwt.JwtUtil;
 import com.matamercer.microblog.models.entities.Blog;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
-import com.matamercer.microblog.models.repositories.AuthorityRepository;
 import com.matamercer.microblog.models.repositories.VerificationTokenRepository;
 import com.matamercer.microblog.models.repositories.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
+import com.matamercer.microblog.models.entities.*;
+import com.matamercer.microblog.models.repositories.*;
 import com.matamercer.microblog.security.UserRole;
+import com.matamercer.microblog.web.error.RevokedRefreshTokenException;
 import com.matamercer.microblog.web.error.UserAlreadyExistsException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +27,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.crypto.SecretKey;
 import java.security.*;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,28 +39,31 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserKeyPairRepository userKeyPairRepository;
-    private final AuthorityRepository authorityRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final BlogService blogService;
     private final UserKeyPairService userKeyPairService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final SecretKey secretKey;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        UserKeyPairRepository userKeyPairRepository,
-                       AuthorityRepository authorityRepository,
                        VerificationTokenRepository verificationTokenRepository,
                        BlogService blogService,
-                       UserKeyPairService userKeyPairService) {
+                       UserKeyPairService userKeyPairService, RefreshTokenRepository refreshTokenRepository, SecretKey secretKey, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.userKeyPairRepository = userKeyPairRepository;
-        this.authorityRepository = authorityRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.blogService = blogService;
         this.userKeyPairService = userKeyPairService;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.secretKey = secretKey;
+        this.jwtUtil = jwtUtil;
     }
 
     @Transactional
-    public User createUser(User user, UserRole userRole) {
+    public User createUser(User user) {
         if (emailExists(user.getEmail()) || usernameExists(user.getUsername())) {
             throw new UserAlreadyExistsException(("There is already an account with that email."));
         }
@@ -67,26 +79,20 @@ public class UserService implements UserDetailsService {
             e.printStackTrace();
             return null;
         }
-
-        Set<String> authorities = userRole.getGrantedAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
-
-        for (String authority : authorities) {
-            authorityRepository.save(new Authority(authority, user));
-        }
         return registeredUser;
     }
 
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        var optionalUser = userRepository.findByUsername(username);
         UserBuilder builder = null;
-        if (user != null) {
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
             builder.disabled(!user.isEnabled());
             builder.password(user.getPassword());
-            String[] authorities = user.getAuthorities().stream().map(Authority::getAuthority).toArray(String[]::new);
+            String[] authorities = user.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).toArray(String[]::new);
             builder.authorities(authorities);
         } else {
             throw new UsernameNotFoundException("User not found.");
@@ -94,6 +100,29 @@ public class UserService implements UserDetailsService {
         return builder.build();
     }
 
+    @Transactional
+    public String grantAccessToken(String refreshToken){
+            Jws<Claims> claimsJws = Jwts
+                    .parserBuilder().setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(refreshToken);
+
+            var body = claimsJws.getBody();
+            var userId = Long.parseLong((String) body.get("userId"));
+            var userRole = UserRole.valueOf((String) body.get("userRole"));
+            var refreshTokenId = Long.parseLong(body.getId());
+
+            var persistedRefreshToken = refreshTokenRepository.findById(refreshTokenId);
+            if(persistedRefreshToken.isPresent()){
+                return jwtUtil.createAccessToken(userId);
+            }
+            else{
+                throw new RevokedRefreshTokenException();
+            }
+    }
+
+
+    //Email Activation
     public void createVerificationTokenForUser(final User user, final String token) {
         final VerificationToken myToken = new VerificationToken(token, user);
         verificationTokenRepository.save(myToken);
@@ -119,11 +148,11 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean emailExists(final String email) {
-        return userRepository.findByEmail(email) != null;
+        return userRepository.findByEmail(email).isPresent();
     }
 
     public boolean usernameExists(final String username) {
-        return userRepository.findByUsername(username) != null;
+        return userRepository.findByUsername(username).isPresent();
     }
 
 }

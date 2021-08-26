@@ -53,7 +53,7 @@ public class PostRepositoryTest {
         Blog blog = new Blog("blogName", "preferredBlogName", false);
         entityManager.persist(blog);
 
-        Post post = new Post(blog, "title", "content", false, false);
+        Post post = new Post(blog, "title", "content", false, false, true);
         entityManager.persist(post);
 
         int page = 0;
@@ -78,11 +78,11 @@ public class PostRepositoryTest {
         Blog blog = new Blog("blogName", "preferredBlogName", false);
         entityManager.persist(blog);
 
-        Post post = new Post(blog, "title", "content", false, false);
+        Post post = new Post(blog, "title", "content", false, false, true);
         entityManager.persist(post);
 
 
-        Post post2 = new Post(blog, "title", "content", false, false);
+        Post post2 = new Post(blog, "title", "content", false, false, true);
         entityManager.persist(post2);
 
         PostTag postTag = new PostTag("postTag1");

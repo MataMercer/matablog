@@ -1,13 +1,7 @@
 package com.matamercer.microblog.Exceptions;
 
-import com.google.common.base.Throwables;
-import com.matamercer.microblog.web.error.OAuth2UserRegistrationFailed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 @Slf4j

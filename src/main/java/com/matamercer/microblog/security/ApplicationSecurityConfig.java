@@ -1,10 +1,13 @@
 package com.matamercer.microblog.security;
 
-import com.matamercer.microblog.security.oauth.CustomOAuth2UserService;
-import com.matamercer.microblog.security.oauth.OAuth2LoginSuccessHandler;
+import com.matamercer.microblog.security.jwt.JwtConfig;
+import com.matamercer.microblog.security.jwt.JwtTokenVerifier;
+import com.matamercer.microblog.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
+import com.matamercer.microblog.security.jwt.JwtUtil;
 import com.matamercer.microblog.services.UserService;
+import lombok.val;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,10 +16,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.crypto.SecretKey;
 
 @Configuration
 @EnableWebSecurity
@@ -25,30 +28,43 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final SecretKey secretKey;
+    private final JwtConfig jwtConfig;
+    private final JwtUtil jwtUtil;
+
 
     @Autowired
-    @Qualifier("persistentTokenRepository")
-    private PersistentTokenRepository persistentTokenRepository;
-
-    @Autowired
-    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-
-    @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService, SecretKey secretKey, JwtConfig jwtConfig,  JwtUtil jwtUtil) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.secretKey = secretKey;
+        this.jwtConfig = jwtConfig;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        var jwtUsernameAndPasswordAuthenticationFilter = new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, jwtUtil);
+        jwtUsernameAndPasswordAuthenticationFilter.setFilterProcessesUrl("/api/v1/auth/login");
         http
-                 .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .cors()
                 .and()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .logout()
+                .and()
+                .addFilter(jwtUsernameAndPasswordAuthenticationFilter)
+                .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, jwtUtil), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(
                         "/",
                         "/api/user/*",
+                        "/api/v1/auth/login",
+                        "/api/v1/auth/currentuser",
+                        "/api/v1/post/*",
                         "index",
                         "/users/*",
                         "/register",
@@ -61,37 +77,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/img/*",
                         "/profile/*",
                         "/posts/*",
-                        "/oauth2/authorization/**",
-                        "/oauth2/**",
                         "/login/**",
+                        "/api/user/refreshtoken",
                         "/error")
                 .permitAll().anyRequest().authenticated()
-                .and()
-                .formLogin()
-                    .loginPage("/login")
-                    .failureUrl("/login?error")
-                    .permitAll()
-                    .defaultSuccessUrl("/home", true)
-                    .failureHandler(customAuthenticationFailureHandler)
-                .and()
-                .rememberMe()
-                    .rememberMeParameter("remember-me")
-                    .tokenRepository(persistentTokenRepository)
-                    .userDetailsService(userService)
-                .and()
-                .logout()
-                    .logoutUrl("/logout")
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))// only bc we
-                    .clearAuthentication(true).invalidateHttpSession(true).deleteCookies("JSESSIONID", "remember-me")
-                    .logoutSuccessUrl("/login").
-                and()
-                .oauth2Login()
-                    .loginPage("/oauthlogin")
-                    .userInfoEndpoint()
-                    .userService(custOAuth2UserService)
-                    .and()
-                    .successHandler(oAuth2LoginSuccessHandler)
-        ;
+                ;
     }
 
     @Override
@@ -107,9 +97,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-    @Autowired
-    private CustomOAuth2UserService custOAuth2UserService;
 
-    @Autowired
-    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+
+
 }
