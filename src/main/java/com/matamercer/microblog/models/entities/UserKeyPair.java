@@ -14,8 +14,8 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 public class UserKeyPair extends BaseModel {
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "userKeyPairs")
     private User user;
 
     @Column(nullable = false, length = 2048)

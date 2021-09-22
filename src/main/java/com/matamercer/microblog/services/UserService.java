@@ -12,6 +12,7 @@ import com.matamercer.microblog.models.repositories.*;
 import com.matamercer.microblog.security.UserRole;
 import com.matamercer.microblog.web.error.RevokedRefreshTokenException;
 import com.matamercer.microblog.web.error.UserAlreadyExistsException;
+import com.matamercer.microblog.web.error.UserNotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -40,7 +41,6 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserKeyPairRepository userKeyPairRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-    private final BlogService blogService;
     private final UserKeyPairService userKeyPairService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final SecretKey secretKey;
@@ -50,12 +50,10 @@ public class UserService implements UserDetailsService {
     public UserService(UserRepository userRepository,
                        UserKeyPairRepository userKeyPairRepository,
                        VerificationTokenRepository verificationTokenRepository,
-                       BlogService blogService,
                        UserKeyPairService userKeyPairService, RefreshTokenRepository refreshTokenRepository, SecretKey secretKey, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.userKeyPairRepository = userKeyPairRepository;
         this.verificationTokenRepository = verificationTokenRepository;
-        this.blogService = blogService;
         this.userKeyPairService = userKeyPairService;
         this.refreshTokenRepository = refreshTokenRepository;
         this.secretKey = secretKey;
@@ -68,9 +66,7 @@ public class UserService implements UserDetailsService {
             throw new UserAlreadyExistsException(("There is already an account with that email."));
         }
 
-        Blog defaultBlog = blogService.createDefaultBlogForUser(user);
-        user.addBlog(defaultBlog);
-        user.setActiveBlog(defaultBlog);
+
         User registeredUser = userRepository.save(user);
 
         try {
@@ -135,16 +131,28 @@ public class UserService implements UserDetailsService {
         return verificationToken;
     }
 
-    public VerificationToken getVerificationToken(String VerificationToken) {
+    public VerificationToken getVerificationToken(final String VerificationToken) {
         return verificationTokenRepository.findByToken(VerificationToken);
     }
 
-    public User getUser(VerificationToken verificationToken) {
+    public User getUser(final VerificationToken verificationToken) {
         final VerificationToken token = verificationTokenRepository.findByToken(verificationToken.getToken());
         if (token != null) {
             return token.getUser();
         }
         return null;
+    }
+
+    public User getUser(Principal principal){
+        var optionalUser = userRepository.findByUsername(principal.getName());
+        if(!optionalUser.isPresent()){
+            throw new UserNotFoundException("Unable to create post because unable to find logged in user.");
+        }
+        return optionalUser.get();
+    }
+
+    public User save(User user){
+        return userRepository.save(user);
     }
 
     public boolean emailExists(final String email) {

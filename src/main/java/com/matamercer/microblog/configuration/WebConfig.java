@@ -5,6 +5,7 @@ import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -55,6 +56,11 @@ public class WebConfig implements WebMvcConfigurer {
 //        connector.setRedirectPort(8443);
 //        return connector;
 //    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
     //File Storage
     @Bean

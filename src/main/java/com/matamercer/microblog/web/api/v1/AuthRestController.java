@@ -2,7 +2,7 @@ package com.matamercer.microblog.web.api.v1;
 
 import com.matamercer.microblog.services.UserService;
 import com.matamercer.microblog.utilities.AuthenticationResponse;
-import com.matamercer.microblog.web.api.v1.forms.RefreshTokenForm;
+import com.matamercer.microblog.web.api.v1.dto.requests.RefreshTokenRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +21,8 @@ public class AuthRestController {
     }
 
     @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshTokenForm refreshTokenForm, HttpServletRequest request) throws Exception {
-        String accessToken = userService.grantAccessToken(refreshTokenForm.getRefreshToken());
+    public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshTokenRequestDto refreshTokenRequestDTO, HttpServletRequest request) throws Exception {
+        String accessToken = userService.grantAccessToken(refreshTokenRequestDTO.getRefreshToken());
         return ResponseEntity.ok(new AuthenticationResponse(accessToken));
     }
 }

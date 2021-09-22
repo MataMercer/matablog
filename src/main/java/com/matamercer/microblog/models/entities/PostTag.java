@@ -20,7 +20,6 @@ public class PostTag extends BaseModel {
     @JsonBackReference
     private Set<Post> posts = new HashSet<Post>();
 
-    @Type(type = "text")
     @Column(nullable = false, unique = true)
     private String name;
 

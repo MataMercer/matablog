@@ -5,7 +5,8 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.matamercer.microblog.web.api.v1.forms.RegisterUserForm;
+import com.matamercer.microblog.services.BlogService;
+import com.matamercer.microblog.web.api.v1.dto.requests.RegisterUserRequestDto;
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
@@ -26,6 +27,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 @RequestMapping("/api/v1/registration")
 public class RegistrationRestController {
   private final UserService userService;
+  private final BlogService blogService;
   private final PasswordEncoder passwordEncoder;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final MessageSource messageSource;
@@ -33,9 +35,10 @@ public class RegistrationRestController {
 
   @Autowired
   public RegistrationRestController(UserService userService,
-      PasswordEncoder passwordEncoder, ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource,
-      JavaMailSender mailSender) {
+                                    BlogService blogService, PasswordEncoder passwordEncoder, ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource,
+                                    JavaMailSender mailSender) {
     this.userService = userService;
+    this.blogService = blogService;
     this.passwordEncoder = passwordEncoder;
     this.applicationEventPublisher = applicationEventPublisher;
     this.messageSource = messageSource;
@@ -43,11 +46,11 @@ public class RegistrationRestController {
   }
 
   @PostMapping("/createAccount")
-  public GenericResponse registerUserAccount(@RequestBody @Valid RegisterUserForm registerUserForm, HttpServletRequest request) {
+  public GenericResponse registerUserAccount(@RequestBody @Valid RegisterUserRequestDto registerUserRequestDTO, HttpServletRequest request) {
     User registeredUser = new User(
-            registerUserForm.getEmail(),
-            registerUserForm.getUsername(),
-            passwordEncoder.encode(registerUserForm.getPassword()),
+            registerUserRequestDTO.getEmail(),
+            registerUserRequestDTO.getUsername(),
+            passwordEncoder.encode(registerUserRequestDTO.getPassword()),
             UserRole.USER,
             true,
             true,
@@ -55,6 +58,8 @@ public class RegistrationRestController {
             false,
             AuthenticationProvider.LOCAL);
     registeredUser = userService.createUser(registeredUser);
+    blogService.createDefaultBlogForUser(registeredUser);
+
     applicationEventPublisher
         .publishEvent(new OnRegistrationCompleteEvent(registeredUser, request.getLocale(), request.getContextPath()));
 

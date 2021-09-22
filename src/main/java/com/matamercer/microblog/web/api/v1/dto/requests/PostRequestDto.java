@@ -1,4 +1,4 @@
-package com.matamercer.microblog.web.api.v1.forms;
+package com.matamercer.microblog.web.api.v1.dto.requests;
 
 import lombok.Data;
 
@@ -8,7 +8,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class CreatePostForm {
+public class PostRequestDto {
+
+    private String id;
+
     @NotNull
     @Size(min=1, max=10000, message = "Length should be between 1 and 10000 characters.")
     private String content;

@@ -19,8 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class RefreshToken extends BaseModel {
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "fk_user")
     private User user;
 
 }

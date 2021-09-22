@@ -1,6 +1,7 @@
 package com.matamercer.microblog.models.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.matamercer.microblog.models.enums.PostCategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class Post extends BaseModel {
         joinColumns = { @JoinColumn(name = "post_id") },
         inverseJoinColumns = { @JoinColumn(name = "posttag_id" ) }
     )
+    @JsonProperty("tags")
     private Set<PostTag> postTags = new HashSet<>();
 
     @OneToMany
@@ -44,11 +46,10 @@ public class Post extends BaseModel {
 
 
 
-    @Type(type = "text")
+    @Column(nullable = true)
     private String title;
 
-    @Type(type = "text")
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     private String content;
 
     @Type(type = "boolean")
@@ -62,6 +63,11 @@ public class Post extends BaseModel {
     @Type(type = "boolean")
     @Column(nullable = false)
     private boolean isPublished;
+
+    @OneToMany(mappedBy = "post")
+    @JsonBackReference
+    private Set<Like> likes = new HashSet<>();
+
 
     public Post(Blog blog, String title, String content, boolean isCommunityTaggingEnabled,
             boolean isSensitive, boolean isPublished) {

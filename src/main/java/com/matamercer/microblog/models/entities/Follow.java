@@ -1,23 +1,31 @@
 package com.matamercer.microblog.models.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "follows")
+@Table(name="follows")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Follow extends BaseModel {
-    @OneToOne
-    @JoinColumn(name = "follower_id")
-    private User follower;
+@AllArgsConstructor
+public class Follow extends BaseModel{
 
-    @OneToOne
-    @JoinColumn(name = "followee_id")
-    private User followee;
+    @ManyToOne
+    @JoinColumn(name = "fk_follower_blog")
+    private Blog follower;
+
+    @ManyToOne
+    @JoinColumn(name= "fk_followee_blog")
+    private Blog followee;
+
+    @Column
+    private boolean notificationsEnabled;
+
+    @Column
+    private boolean muted;
 }

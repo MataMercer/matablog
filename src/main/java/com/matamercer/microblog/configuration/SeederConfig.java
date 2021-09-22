@@ -5,6 +5,7 @@ import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.UserRepository;
 
 import com.matamercer.microblog.security.UserRole;
+import com.matamercer.microblog.services.BlogService;
 import com.matamercer.microblog.services.PostService;
 import com.matamercer.microblog.services.UserService;
 import lombok.var;
@@ -19,6 +20,7 @@ public class SeederConfig {
     public CommandLineRunner seedData(UserRepository userRepository,
                                       PasswordEncoder passwordEncoder,
                                       UserService userService,
+                                      BlogService blogService,
                                       PostService postService) {
         return (args) -> {
             User adminUser = new User(
@@ -34,7 +36,8 @@ public class SeederConfig {
             );
             var foundUser = userRepository.findByEmail(adminUser.getEmail());
             if(!foundUser.isPresent()){
-                userService.createUser(adminUser);
+                User user = userService.createUser(adminUser);
+                blogService.createDefaultBlogForUser(user);
             }
         };
     }

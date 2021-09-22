@@ -1,6 +1,6 @@
 package com.matamercer.microblog.integration.controller;
 
-import com.matamercer.microblog.web.api.v1.forms.LoginUserForm;
+import com.matamercer.microblog.web.api.v1.dto.requests.LoginUserRequestDto;
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.UserRepository;
@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;
@@ -31,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class LoginControllerTest {
 
     @Autowired
@@ -81,17 +83,17 @@ public class LoginControllerTest {
     }
 
 
-    private RequestEntity<LoginUserForm> getLoginRequestEntity(LoginUserForm loginUserForm) throws UnknownHostException {
+    private RequestEntity<LoginUserRequestDto> getLoginRequestEntity(LoginUserRequestDto loginUserRequestDTO) throws UnknownHostException {
         return RequestEntity
-                .post(URI.create(environmentUtil.getServerUrl()+ "/login"))
+                .post(URI.create(environmentUtil.getServerUrl()+ "/api/v1/auth/login"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(loginUserForm);
+                .body(loginUserRequestDTO);
     }
 
     private RequestEntity<Void> getCurrentUserRequestEntity(String accessToken) throws UnknownHostException {
         HttpHeaders headers = new HttpHeaders();
         headers.add(jwtConfig.getAuthorizationHeader(), accessToken);
-        return RequestEntity.get(URI.create(environmentUtil.getServerUrl() + "/currentuser"))
+        return RequestEntity.get(URI.create(environmentUtil.getServerUrl() + "/api/v1/user/currentuser"))
                 .headers(headers)
                 .build();
     }
@@ -99,7 +101,7 @@ public class LoginControllerTest {
 
     @Test
     public void whenLogin_withGoodCredentials_thenReturnResponseIsOk_WithAccessAndRefreshTokens() throws UnknownHostException {
-        val requestEntity = getLoginRequestEntity(new LoginUserForm(user.getUsername(), unencodedPassword));
+        val requestEntity = getLoginRequestEntity(new LoginUserRequestDto(user.getUsername(), unencodedPassword));
         val responseEntity = testRestTemplate.exchange(requestEntity, Object.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -111,7 +113,7 @@ public class LoginControllerTest {
 
     @Test
     public void whenGetCurrentUser_withAccessToken_thenReturnCurrentUser() throws UnknownHostException {
-        val requestEntity = getLoginRequestEntity(new LoginUserForm(user.getUsername(), unencodedPassword));
+        val requestEntity = getLoginRequestEntity(new LoginUserRequestDto(user.getUsername(), unencodedPassword));
         val responseEntity = testRestTemplate.exchange(requestEntity, Object.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

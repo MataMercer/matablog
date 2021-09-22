@@ -65,6 +65,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/auth/login",
                         "/api/v1/auth/currentuser",
                         "/api/v1/post/*",
+                        "/api/v1/files/**",
                         "index",
                         "/users/*",
                         "/register",

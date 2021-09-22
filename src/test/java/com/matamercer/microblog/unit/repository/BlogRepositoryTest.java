@@ -6,10 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
+@ActiveProfiles("test")
 public class BlogRepositoryTest {
 
     @Autowired
@@ -22,7 +26,11 @@ public class BlogRepositoryTest {
     public void whenFindByBlogName_returnBlog(){
         Blog blog = new Blog("BlogName", "PreferredBlogName", false);
         blog = entityManager.persist(blog);
-        Blog foundBlog = blogRepository.findByBlogName(blog.getBlogName());
+        Optional<Blog> optionalFoundBlog = blogRepository.findByBlogName(blog.getBlogName());
+        Blog foundBlog = null;
+        if(optionalFoundBlog.isPresent()){
+            foundBlog = optionalFoundBlog.get();
+        }
         assertThat(foundBlog).isEqualTo(blog);
     }
 }

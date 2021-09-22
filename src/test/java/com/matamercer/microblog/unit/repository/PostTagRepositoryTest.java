@@ -10,12 +10,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
+@ActiveProfiles("test")
 public class PostTagRepositoryTest {
 
     @Autowired

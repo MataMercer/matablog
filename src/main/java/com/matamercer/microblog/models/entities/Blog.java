@@ -41,6 +41,18 @@ public class Blog extends BaseModel{
     @Column(nullable = false)
     private boolean isSensitive;
 
+    @OneToMany(mappedBy = "followee")
+    @JsonBackReference
+    private Set<Follow> followers = new HashSet<>();
+
+    @OneToMany(mappedBy = "follower")
+    @JsonBackReference
+    private Set<Follow> following = new HashSet<>();
+
+    @OneToMany(mappedBy = "liker")
+    @JsonBackReference
+    private Set<Like> likes = new HashSet<>();
+
     public Blog(String blogName, String preferredBlogName, boolean isSensitive){
         this.blogName = blogName;
         this.preferredBlogName = preferredBlogName;

@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
+@ActiveProfiles("test")
 public class PostRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;

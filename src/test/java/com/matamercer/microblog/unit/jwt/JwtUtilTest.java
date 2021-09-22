@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -26,6 +27,7 @@ import javax.crypto.SecretKey;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("/application.properties")
+@ActiveProfiles("test")
 public class JwtUtilTest {
 
     @Value("${application.jwt.secretKey}")

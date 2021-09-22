@@ -1,6 +1,7 @@
 package com.matamercer.microblog.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matamercer.microblog.security.UserRole;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,12 +31,14 @@ public class User extends BaseModel implements UserDetails {
             inverseJoinColumns = { @JoinColumn(name = "blog_id") })
     private Set<Blog> blogs = new HashSet<Blog>();
 
+
     @Column(unique = true)
     private String username;
 
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     @Column
     private String password;
 
@@ -66,6 +69,10 @@ public class User extends BaseModel implements UserDetails {
 
     @Column
     private String oAuth2Id;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<RefreshToken> refreshToken = new HashSet<>();
 
     public User() {}
 

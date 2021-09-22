@@ -31,7 +31,7 @@ public class FileRestController {
 //        return "uploadForm";
 //    }
 
-    @GetMapping("/{fileId}/{filename:.+}")
+    @GetMapping("/serve/{fileId}/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable long fileId, @PathVariable String filename) {
         Resource fileResource = fileService.getResourceFromFile(fileService.getFile(fileId));
