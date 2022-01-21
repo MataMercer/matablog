@@ -2,11 +2,11 @@ package com.matamercer.microblog.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.matamercer.microblog.security.UserRole;
+import com.matamercer.microblog.security.authorization.UserAuthority;
+import com.matamercer.microblog.security.authorization.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -22,7 +22,6 @@ import java.util.*;
 public class User extends BaseModel implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonBackReference
     private List<UserKeyPair> userKeyPairs = new ArrayList<>();
 
     @ManyToMany
@@ -38,7 +37,6 @@ public class User extends BaseModel implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @JsonIgnore
     @Column
     private String password;
 
@@ -71,7 +69,6 @@ public class User extends BaseModel implements UserDetails {
     private String oAuth2Id;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
     private Set<RefreshToken> refreshToken = new HashSet<>();
 
     public User() {}
@@ -112,5 +109,9 @@ public class User extends BaseModel implements UserDetails {
     @Override
     public Set<SimpleGrantedAuthority> getAuthorities() {
         return role.getGrantedAuthorities();
+    }
+
+    public boolean hasAuthority(UserAuthority userAuthority){
+        return role.getPermissions().contains(userAuthority);
     }
 }

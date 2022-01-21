@@ -65,6 +65,13 @@ public class AmazonS3StorageService implements StorageService{
         }
     }
 
+    //TODO implement this
+    @Override
+    public void delete(Path filePath) {
+
+    }
+
+    //TODO implement this
     @Override
     public void deleteAll() {
 

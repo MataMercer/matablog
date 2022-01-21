@@ -2,30 +2,28 @@ package com.matamercer.microblog.services;
 
 import com.matamercer.microblog.Exceptions.NotFoundException;
 import com.matamercer.microblog.models.entities.Blog;
-import com.matamercer.microblog.models.entities.Follow;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.BlogRepository;
-import com.matamercer.microblog.models.repositories.FollowRepository;
-import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.web.api.v1.dto.requests.FollowRequestDto;
+import com.matamercer.microblog.web.api.v1.dto.mappers.response.BlogResponseDtoMapper;
+import com.matamercer.microblog.web.api.v1.dto.responses.BlogResponseDto;
+import lombok.val;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.security.Principal;
 
 @Service
 public class BlogService {
     private final BlogRepository blogRepository;
-    private final FollowRepository followRepository;
     private final UserService userService;
+    private final BlogResponseDtoMapper blogResponseDtoMapper;
 
     @Autowired
-    public BlogService(BlogRepository blogRepository, UserRepository userRepository, FollowRepository followRepository, UserService userService) {
+    public BlogService(BlogRepository blogRepository, UserService userService, BlogResponseDtoMapper blogResponseDtoMapper) {
         this.blogRepository = blogRepository;
-        this.followRepository = followRepository;
         this.userService = userService;
+        this.blogResponseDtoMapper = blogResponseDtoMapper;
     }
 
     @Transactional
@@ -43,7 +41,7 @@ public class BlogService {
     }
 
     public Blog getBlog(Long id) {
-        var blog = blogRepository.findById(id);
+        val blog = blogRepository.findById(id);
         if (!blog.isPresent()) {
             throw new NotFoundException("Blog with id " + id + " is not found.");
         } else {
@@ -52,7 +50,7 @@ public class BlogService {
     }
 
     public Blog getBlog(String blogName) {
-        var blog = blogRepository.findByBlogName(blogName);
+        val blog = blogRepository.findByBlogName(blogName);
         if (!blog.isPresent()) {
             throw new NotFoundException("Blog with name " + blogName + " is not found.");
         } else {
@@ -60,24 +58,8 @@ public class BlogService {
         }
     }
 
-    @Transactional
-    public void followBlog(Principal principal, long followeeId, FollowRequestDto followRequestDTO) {
-        var currentUserBlog = getActiveBlog(principal);
-        var followeeBlog = getBlog(followeeId);
-        Follow follow = new Follow(currentUserBlog, followeeBlog, followRequestDTO.isNotificationsEnabled(), followRequestDTO.isMuted());
-        followRepository.save(follow);
+    public BlogResponseDto getBlogResponseDto(long id){
+        Blog blog = getBlog(id);
+        return blogResponseDtoMapper.map(blog);
     }
-
-    public void unfollowBlog(Principal principal, long followeeId){
-        var currentUserBlog = getActiveBlog(principal);
-        var followeeBlog = getBlog(followeeId);
-        var follow = followRepository.findByFollowerAndFollowee(currentUserBlog, followeeBlog );
-        followRepository.delete(follow);
-    }
-
-    public Blog getActiveBlog(Principal principal) {
-        var user = userService.getUser(principal);
-        return user.getActiveBlog();
-    }
-
 }

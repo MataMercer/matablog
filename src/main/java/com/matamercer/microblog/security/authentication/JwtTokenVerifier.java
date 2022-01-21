@@ -1,11 +1,10 @@
-package com.matamercer.microblog.security.jwt;
+package com.matamercer.microblog.security.authentication;
 
 import com.google.common.base.Strings;
-import com.matamercer.microblog.security.UserRole;
-import io.jsonwebtoken.*;
+import com.matamercer.microblog.models.entities.Blog;
+import com.matamercer.microblog.models.entities.User;
+import com.matamercer.microblog.security.authorization.UserRole;
 import lombok.val;
-import lombok.var;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -45,12 +44,23 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         try{
             val body = jwtUtil.extractAllClaims(token);
 
+            val userId =  Long.parseLong((String)body.get("userId"));
             val username = (String) body.get("username");
             val userRole = UserRole.valueOf((String)body.get("userRole"));
+            val activeBlogId = Long.parseLong((String) body.get("activeBlogId"));
             val simpleGrantedAuthorities = userRole.getGrantedAuthorities();
 
+            val user = new User();
+            user.setId(userId);
+            user.setUsername(username);
+            user.setRole(userRole);
+            Blog activeBlog = new Blog();
+            activeBlog.setId(activeBlogId);
+            user.setActiveBlog(activeBlog);
+
+
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    username,
+                    user,
                     null,
                     simpleGrantedAuthorities
             );

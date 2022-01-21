@@ -1,17 +1,12 @@
-package com.matamercer.microblog.security.jwt;
+package com.matamercer.microblog.security.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.services.UserService;
-import lombok.var;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +45,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         String accessToken = jwtUtil.createAccessToken(authResult.getName());
         String refreshToken = jwtUtil.createRefreshToken(authResult.getName());
 
-        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + accessToken);
+        response.addHeader(jwtConfig.getAuthorizationHeader(), accessToken);
         response.addHeader(jwtConfig.getRefreshTokenHeader(), refreshToken);
     }
 }

@@ -4,9 +4,9 @@ import com.matamercer.microblog.web.api.v1.dto.requests.LoginUserRequestDto;
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.security.UserRole;
-import com.matamercer.microblog.security.jwt.JwtConfig;
-import com.matamercer.microblog.security.jwt.JwtUtil;
+import com.matamercer.microblog.security.authorization.UserRole;
+import com.matamercer.microblog.security.authentication.JwtConfig;
+import com.matamercer.microblog.security.authentication.JwtUtil;
 import com.matamercer.microblog.services.UserService;
 import com.matamercer.microblog.utilities.EnvironmentUtil;
 import lombok.val;
@@ -67,7 +67,7 @@ public class LoginControllerTest {
         user = new User("username@gmail.com",
                 "username",
                 passwordEncoder.encode(unencodedPassword),
-                UserRole.USER,
+                UserRole.BLOGGER,
                 true,
                 true,
                 true,
@@ -91,7 +91,7 @@ public class LoginControllerTest {
     }
 
     private RequestEntity<Void> getCurrentUserRequestEntity(String accessToken) throws UnknownHostException {
-        HttpHeaders headers = new HttpHeaders();
+        val headers = new HttpHeaders();
         headers.add(jwtConfig.getAuthorizationHeader(), accessToken);
         return RequestEntity.get(URI.create(environmentUtil.getServerUrl() + "/api/v1/user/currentuser"))
                 .headers(headers)

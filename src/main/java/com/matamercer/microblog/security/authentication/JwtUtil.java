@@ -1,23 +1,20 @@
-package com.matamercer.microblog.security.jwt;
+package com.matamercer.microblog.security.authentication;
 
 import com.matamercer.microblog.models.entities.RefreshToken;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.RefreshTokenRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.security.UserRole;
-import com.matamercer.microblog.web.error.AuthenticationException;
-import com.matamercer.microblog.web.error.UserNotFoundException;
+import com.matamercer.microblog.security.authorization.UserRole;
+import com.matamercer.microblog.web.error.exceptions.AuthenticationException;
+import com.matamercer.microblog.web.error.exceptions.UserNotFoundException;
 import io.jsonwebtoken.*;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
-import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -36,8 +33,6 @@ public class JwtUtil {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-
-
     @Transactional
     public String createAccessToken(Long userId){
         var optionalUser = userRepository.findById(userId);
@@ -53,7 +48,8 @@ public class JwtUtil {
     private String createAccessTokenHelper(Optional<User> optionalUser){
         if(optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return createToken(getUserClaims(user.getId(), user.getUsername(), user.getRole()), addHoursToCurrentDate(jwtConfig.getAccessTokenExpirationInHours()));
+            return jwtConfig.getTokenPrefix() + createToken(getUserClaims(user.getId(), user.getUsername(), user.getRole(), user.getActiveBlog().getId()),
+                    addHoursToCurrentDate(jwtConfig.getAccessTokenExpirationInHours()));
         }else{
             throw new UserNotFoundException("Error creating access token. User not found.");
         }
@@ -84,7 +80,7 @@ public class JwtUtil {
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
             RefreshToken refreshTokenEntity = refreshTokenRepository.save(new RefreshToken(user));
-            var claims = getUserClaims(user.getId(), user.getUsername(), user.getRole());
+            var claims = getUserClaims(user.getId(), user.getUsername(), user.getRole(), user.getActiveBlog().getId());
             claims.put("refreshTokenEntityId", refreshTokenEntity.getId().toString());
             return createToken(claims, java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getRefreshTokenExpirationInDays())));
         }else{
@@ -92,18 +88,19 @@ public class JwtUtil {
         }
     }
 
-    private Map<String, String> getUserClaims(Long userId, String username, UserRole userRole ){
+    private Map<String, String> getUserClaims(Long userId, String username, UserRole userRole, Long activeBlogId ){
         Map<String, String> claims = new HashMap<>();
         claims.put("userId", userId.toString());
         claims.put("username", username);
         claims.put("userRole", userRole.toString());
+        claims.put("activeBlogId", activeBlogId.toString());
         return claims;
     }
 
     private Date addHoursToCurrentDate(int hours){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.HOUR_OF_DAY, hours);
+        calendar.add(Calendar.SECOND, hours);
         return calendar.getTime();
     }
 

@@ -1,4 +1,4 @@
-package com.matamercer.microblog.security.jwt;
+package com.matamercer.microblog.security.authentication;
 
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -17,7 +17,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class PostTag extends BaseModel {
     @ManyToMany(mappedBy="postTags")
-    @JsonBackReference
     private Set<Post> posts = new HashSet<Post>();
 
     @Column(nullable = false, unique = true)

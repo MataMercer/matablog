@@ -3,7 +3,7 @@ package com.matamercer.microblog.unit.repository;
 import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.security.UserRole;
+import com.matamercer.microblog.security.authorization.UserRole;
 import lombok.var;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ class UserRepositoryTest {
         user = new User("username@gmail.com",
                 "username",
                 "password",
-                UserRole.USER,
+                UserRole.BLOGGER,
                 true,
                 true,
                 true,

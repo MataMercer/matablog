@@ -16,7 +16,7 @@ public class PostRequestDto {
     @Size(min=1, max=10000, message = "Length should be between 1 and 10000 characters.")
     private String content;
 
-    @Size(min=0, max=100, message = "Length should be between 1 and 100 characters.")
+    @Size(min=0, max=100, message = "Length should be between 0 and 100 characters.")
     private String title;
 
     private List<String> postTags;
@@ -29,4 +29,5 @@ public class PostRequestDto {
 
     private String parentPostId;
 
+    private List<Long> attachments;
 }

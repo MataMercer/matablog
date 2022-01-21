@@ -1,15 +1,16 @@
 package com.matamercer.microblog.security;
 
-import com.matamercer.microblog.security.jwt.JwtConfig;
-import com.matamercer.microblog.security.jwt.JwtTokenVerifier;
-import com.matamercer.microblog.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
-import com.matamercer.microblog.security.jwt.JwtUtil;
+import com.matamercer.microblog.security.authentication.JwtConfig;
+import com.matamercer.microblog.security.authentication.JwtTokenVerifier;
+import com.matamercer.microblog.security.authentication.JwtUsernameAndPasswordAuthenticationFilter;
+import com.matamercer.microblog.security.authentication.JwtUtil;
+import com.matamercer.microblog.security.authorization.UserAuthority;
 import com.matamercer.microblog.services.UserService;
-import lombok.val;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -59,29 +60,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(jwtUsernameAndPasswordAuthenticationFilter)
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, jwtUtil), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers(
-                        "/",
-                        "/api/user/*",
-                        "/api/v1/auth/login",
-                        "/api/v1/auth/currentuser",
-                        "/api/v1/post/*",
-                        "/api/v1/files/**",
-                        "index",
-                        "/users/*",
-                        "/register",
-                        "/registerSuccess",
-                        "/registerOAuth2Failure",
-                        "/registration/confirm*",
-                        "/baduser",
-                        "/dist/*",
-                        "/stylesheets/*",
-                        "/img/*",
-                        "/profile/*",
-                        "/posts/*",
-                        "/login/**",
-                        "/api/user/refreshtoken",
-                        "/error")
-                .permitAll().anyRequest().authenticated()
+                .antMatchers("/api/v1/post/create").hasAuthority(UserAuthority.POST_CREATE_NEW.toString())
+                .antMatchers("/api/v1/post/reply").hasAuthority(UserAuthority.POST_CREATE_COMMENT.toString())
+                .antMatchers(HttpMethod.POST, "/api/v1/post/*").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/v1/post/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/blog/*").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/*").permitAll()
+                .anyRequest().authenticated()
                 ;
     }
 

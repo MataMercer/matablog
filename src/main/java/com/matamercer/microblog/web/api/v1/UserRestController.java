@@ -1,6 +1,9 @@
 package com.matamercer.microblog.web.api.v1;
 
+import com.matamercer.microblog.models.entities.User;
+import com.matamercer.microblog.security.CurrentUser;
 import com.matamercer.microblog.services.UserService;
+import com.matamercer.microblog.web.api.v1.dto.responses.UserResponseDto;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +24,8 @@ public class UserRestController {
     }
 
     @GetMapping("/currentuser")
-    public ResponseEntity<?> currentUser(Principal principal) {
-       val user = userService.getUser(principal);
+    public ResponseEntity<UserResponseDto> currentUser(@CurrentUser User userPrincipal) {
+       val user = userService.getUser(userPrincipal.getId());
         return ResponseEntity.ok(user);
     }
 }

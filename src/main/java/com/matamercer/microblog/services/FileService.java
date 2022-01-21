@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -32,6 +33,7 @@ public class FileService {
         this.storageService = storageService;
     }
 
+    @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).FILE_CREATE.toString())")
     public File createFile(MultipartFile multipartFile, Blog blog){
         File file = new File();
         file.setName(StringUtils.cleanPath(multipartFile.getOriginalFilename()));
@@ -54,7 +56,18 @@ public class FileService {
     }
 
     public Resource getResourceFromFile(File file){
-        return storageService.loadAsResource(Paths.get(file.getId() + "\\" + file.getName()));
+        return storageService.loadAsResource(getPath(file));
+    }
+
+
+    @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).FILE_UPDATE.toString())")
+    public void deleteFile(File file){
+        fileRepository.delete(file);
+        storageService.delete(getPath(file));
+    }
+
+    private Path getPath(File file){
+        return Paths.get(file.getId() + "\\" + file.getName());
     }
 
 

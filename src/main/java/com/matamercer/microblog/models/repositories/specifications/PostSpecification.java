@@ -50,6 +50,8 @@ public class PostSpecification implements Specification<Post> {
             }
         }
 
+        predicates.add(criteriaBuilder.isTrue(root.get("published")));
+
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
 }

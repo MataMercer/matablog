@@ -5,17 +5,16 @@ import com.matamercer.microblog.models.entities.RefreshToken;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.RefreshTokenRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.security.UserRole;
-import com.matamercer.microblog.security.jwt.JwtConfig;
-import com.matamercer.microblog.security.jwt.JwtSecretKey;
-import com.matamercer.microblog.security.jwt.JwtUtil;
+import com.matamercer.microblog.security.authorization.UserRole;
+import com.matamercer.microblog.security.authentication.JwtConfig;
+import com.matamercer.microblog.security.authentication.JwtSecretKey;
+import com.matamercer.microblog.security.authentication.JwtUtil;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -48,7 +47,7 @@ public class JwtUtilTest {
         user = new User("username@gmail.com",
                 "username",
                 "password",
-                UserRole.USER,
+                UserRole.BLOGGER,
                 true,
                 true,
                 true,

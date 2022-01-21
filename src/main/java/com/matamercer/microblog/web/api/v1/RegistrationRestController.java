@@ -11,7 +11,7 @@ import com.matamercer.microblog.models.entities.AuthenticationProvider;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
 import com.matamercer.microblog.security.OnRegistrationCompleteEvent;
-import com.matamercer.microblog.security.UserRole;
+import com.matamercer.microblog.security.authorization.UserRole;
 import com.matamercer.microblog.services.UserService;
 import com.matamercer.microblog.utilities.GenericResponse;
 
@@ -51,7 +51,7 @@ public class RegistrationRestController {
             registerUserRequestDTO.getEmail(),
             registerUserRequestDTO.getUsername(),
             passwordEncoder.encode(registerUserRequestDTO.getPassword()),
-            UserRole.USER,
+            UserRole.BLOGGER,
             true,
             true,
             true,

@@ -1,25 +1,23 @@
 package com.matamercer.microblog.services;
 
-import com.matamercer.microblog.security.jwt.JwtUtil;
-import com.matamercer.microblog.models.entities.Blog;
+import com.matamercer.microblog.security.authentication.JwtUtil;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.entities.VerificationToken;
 import com.matamercer.microblog.models.repositories.VerificationTokenRepository;
-import com.matamercer.microblog.models.repositories.UserKeyPairRepository;
 import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.models.entities.*;
 import com.matamercer.microblog.models.repositories.*;
-import com.matamercer.microblog.security.UserRole;
-import com.matamercer.microblog.web.error.RevokedRefreshTokenException;
-import com.matamercer.microblog.web.error.UserAlreadyExistsException;
-import com.matamercer.microblog.web.error.UserNotFoundException;
+import com.matamercer.microblog.security.authorization.UserRole;
+import com.matamercer.microblog.web.api.v1.dto.mappers.response.UserResponseDtoMapper;
+import com.matamercer.microblog.web.api.v1.dto.responses.UserResponseDto;
+import com.matamercer.microblog.web.error.exceptions.RevokedRefreshTokenException;
+import com.matamercer.microblog.web.error.exceptions.UserAlreadyExistsException;
+import com.matamercer.microblog.web.error.exceptions.UserNotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User.UserBuilder;
@@ -30,34 +28,33 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.security.*;
-import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final UserKeyPairRepository userKeyPairRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final UserKeyPairService userKeyPairService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final SecretKey secretKey;
     private final JwtUtil jwtUtil;
+    private final UserResponseDtoMapper userResponseDtoMapper;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       UserKeyPairRepository userKeyPairRepository,
                        VerificationTokenRepository verificationTokenRepository,
-                       UserKeyPairService userKeyPairService, RefreshTokenRepository refreshTokenRepository, SecretKey secretKey, JwtUtil jwtUtil) {
+                       UserKeyPairService userKeyPairService,
+                       RefreshTokenRepository refreshTokenRepository,
+                       SecretKey secretKey,
+                       JwtUtil jwtUtil, UserResponseDtoMapper userResponseDtoMapper) {
         this.userRepository = userRepository;
-        this.userKeyPairRepository = userKeyPairRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.userKeyPairService = userKeyPairService;
         this.refreshTokenRepository = refreshTokenRepository;
         this.secretKey = secretKey;
         this.jwtUtil = jwtUtil;
+        this.userResponseDtoMapper = userResponseDtoMapper;
     }
 
     @Transactional
@@ -84,7 +81,7 @@ public class UserService implements UserDetailsService {
         var optionalUser = userRepository.findByUsername(username);
         UserBuilder builder = null;
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+            var user = optionalUser.get();
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
             builder.disabled(!user.isEnabled());
             builder.password(user.getPassword());
@@ -106,7 +103,7 @@ public class UserService implements UserDetailsService {
             var body = claimsJws.getBody();
             var userId = Long.parseLong((String) body.get("userId"));
             var userRole = UserRole.valueOf((String) body.get("userRole"));
-            var refreshTokenId = Long.parseLong(body.getId());
+            var refreshTokenId = Long.parseLong((String) body.get("refreshTokenEntityId"));
 
             var persistedRefreshToken = refreshTokenRepository.findById(refreshTokenId);
             if(persistedRefreshToken.isPresent()){
@@ -143,16 +140,20 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public User getUser(Principal principal){
-        var optionalUser = userRepository.findByUsername(principal.getName());
+    public UserResponseDto getUser(long id){
+        var optionalUser = userRepository.findById(id);
         if(!optionalUser.isPresent()){
             throw new UserNotFoundException("Unable to create post because unable to find logged in user.");
         }
-        return optionalUser.get();
+        return userResponseDtoMapper.map(optionalUser.get());
     }
 
     public User save(User user){
         return userRepository.save(user);
+    }
+
+    public void delete(User user){
+        userRepository.delete(user);
     }
 
     public boolean emailExists(final String email) {
@@ -162,5 +163,4 @@ public class UserService implements UserDetailsService {
     public boolean usernameExists(final String username) {
         return userRepository.findByUsername(username).isPresent();
     }
-
 }
