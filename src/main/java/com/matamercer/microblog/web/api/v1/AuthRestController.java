@@ -21,7 +21,7 @@ public class AuthRestController {
     }
 
     @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshTokenRequestDto refreshTokenRequestDTO, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDTO) {
         String accessToken = userService.grantAccessToken(refreshTokenRequestDTO.getRefreshToken());
         return ResponseEntity.ok(new AuthenticationResponse(accessToken));
     }

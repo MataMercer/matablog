@@ -29,7 +29,7 @@ public class Post extends BaseModel {
     )
     private Set<PostTag> postTags = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="file_id")
     private List<File> attachments = new ArrayList<>();
 
@@ -60,7 +60,7 @@ public class Post extends BaseModel {
     @Column(nullable = false)
     private boolean published;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Like> likes = new HashSet<>();
 
 
