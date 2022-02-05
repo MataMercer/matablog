@@ -68,7 +68,6 @@ public class PostService {
     @Caching(evict = {
             @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true),
     })
-    @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).POST_CREATE_NEW.toString())")
     public PostResponseDto createNewPost(PostRequestDto postRequestDTO, MultipartFile[] files, Blog blog ) {
         Post post = createPostHelper(postRequestDTO, files, blog);
         return postResponseDtoMapper.map(post);
@@ -77,7 +76,6 @@ public class PostService {
     @Caching(evict = {
             @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true),
     })
-    @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).POST_CREATE_COMMENT.toString())")
     public PostResponseDto createReplyPost(PostRequestDto postRequestDTO, MultipartFile[] files, Blog blog ) {
         Post post = createPostHelper(postRequestDTO, files, blog);
         addReplyToParentPost(Long.parseLong(postRequestDTO.getParentPostId()), post);
@@ -100,7 +98,6 @@ public class PostService {
 
     }
 
-
     private void addReplyToParentPost(long parentPostId, Post replyPost){
         Post parentPost = getPost(parentPostId);
             replyPost.setParentPost(parentPost);
@@ -113,7 +110,6 @@ public class PostService {
             @CacheEvict(value = CACHE_NAME, key = "#post.id"),
             @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true)
     })
-    @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).POST_UPDATE.toString())")
     public PostResponseDto updatePost(PostRequestDto updatePostRequest, MultipartFile[] files, Blog blog){
         Post updatedPost = postRequestDtoMapper.map(updatePostRequest);
         Post post = getPost(updatedPost.getId());
@@ -152,14 +148,11 @@ public class PostService {
             @CacheEvict(value = CACHE_NAME, key = "#post.id"),
             @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true),
     })
-    @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).POST_UPDATE.toString())")
     public void deletePost(Post post){
         checkOwnership(post);
         postRepository.delete(post);
     }
 
-
-    @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).POST_UPDATE.toString())")
     public void deletePost(long id){
         checkOwnership(getPost(id));
         postRepository.deleteById(id);
@@ -209,8 +202,6 @@ public class PostService {
         Post post = getPost(postId);
         return postResponseDtoMapper.map(post);
     }
-
-
 
     private void checkOwnership(Post post){
         boolean isAnon = SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
