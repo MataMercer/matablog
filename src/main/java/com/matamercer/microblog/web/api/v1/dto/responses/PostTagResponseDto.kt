@@ -1,5 +1,13 @@
-package com.matamercer.microblog.web.api.v1.dto.responses;
+package com.matamercer.microblog.web.api.v1.dto.responses
 
-public class PostTagResponseDto{
-    public String name;
+import lombok.EqualsAndHashCode
+import com.matamercer.microblog.web.api.v1.dto.responses.BaseModelResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.BlogResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.PostTagResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.FileResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.LikeResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
+
+class PostTagResponseDto : BaseModelResponseDto() {
+    var name: String? = null
 }

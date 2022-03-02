@@ -34,10 +34,6 @@ public class PostControllerTest {
                 "username",
                 "",
                 UserRole.BLOGGER,
-                true,
-                true,
-                true,
-                true,
                 AuthenticationProvider.LOCAL);
         user = userService.createUser(user);
         testRestTemplate = new TestRestTemplate();

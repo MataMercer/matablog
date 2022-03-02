@@ -1,4 +1,3 @@
-package com.matamercer.microblog.unit.service;
+package com.matamercer.microblog.unit.service
 
-public class LikeServiceTest {
-}
+class LikeServiceTest

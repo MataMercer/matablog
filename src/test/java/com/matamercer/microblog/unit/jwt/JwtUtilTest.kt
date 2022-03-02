@@ -1,101 +1,111 @@
-package com.matamercer.microblog.unit.jwt;
+package com.matamercer.microblog.unit.jwt
 
-import com.matamercer.microblog.models.entities.AuthenticationProvider;
-import com.matamercer.microblog.models.entities.RefreshToken;
-import com.matamercer.microblog.models.entities.User;
-import com.matamercer.microblog.models.repositories.RefreshTokenRepository;
-import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.security.authorization.UserRole;
-import com.matamercer.microblog.security.authentication.JwtConfig;
-import com.matamercer.microblog.security.authentication.JwtSecretKey;
-import com.matamercer.microblog.security.authentication.JwtUtil;
-import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import com.matamercer.microblog.models.entities.AuthenticationProvider
+import com.matamercer.microblog.models.entities.RefreshToken
+import com.matamercer.microblog.models.entities.User
+import com.matamercer.microblog.models.repositories.RefreshTokenRepository
+import com.matamercer.microblog.models.repositories.UserRepository
+import com.matamercer.microblog.security.authentication.JwtConfig
+import com.matamercer.microblog.security.authentication.JwtSecretKey
+import com.matamercer.microblog.security.authentication.JwtUtil
+import com.matamercer.microblog.security.authorization.UserRole
+import org.assertj.core.api.Assertions
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
+import org.springframework.test.context.junit4.SpringRunner
+import java.util.*
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-
-import javax.crypto.SecretKey;
-
-@RunWith(SpringRunner.class)
+@RunWith(SpringRunner::class)
 @TestPropertySource("/application.properties")
 @ActiveProfiles("test")
-public class JwtUtilTest {
+class JwtUtilTest {
+    @Value("\${application.jwt.secretKey}")
+    private val jwtConfigSecretKey: String? = null
 
-    @Value("${application.jwt.secretKey}")
-    private String jwtConfigSecretKey;
-    @Value("${application.jwt.tokenPrefix}")
-    private String jwtConfigTokenPrefix;
-    @Value("${application.jwt.refreshTokenExpirationInDays}")
-    private Integer jwtConfigRefreshTokenExpirationInDays;
-    @Value("${application.jwt.accessTokenExpirationInHours}")
-    private Integer getJwtConfigAccessTokenExpirationInHours;
+    @Value("\${application.jwt.tokenPrefix}")
+    private val jwtConfigTokenPrefix: String? = null
 
+    @Value("\${application.jwt.refreshTokenExpirationInDays}")
+    private val jwtConfigRefreshTokenExpirationInDays: Int? = null
 
-    private User user;
-    private JwtUtil jwtUtil;
-
+    @Value("\${application.jwt.accessTokenExpirationInHours}")
+    private val getJwtConfigAccessTokenExpirationInHours: Int? = null
+    private var user: User? = null
+    private var jwtUtil: JwtUtil? = null
     @Before
-    public void setup(){
-        user = new User("username@gmail.com",
-                "username",
-                "password",
-                UserRole.BLOGGER,
-                true,
-                true,
-                true,
-                true,
-                AuthenticationProvider.LOCAL);
-        user.setId(0L);
-        JwtConfig jwtConfig = new JwtConfig();
-        jwtConfig.setSecretKey(jwtConfigSecretKey);
-        jwtConfig.setTokenPrefix(jwtConfigTokenPrefix);
-        jwtConfig.setRefreshTokenExpirationInDays(jwtConfigRefreshTokenExpirationInDays);
-        jwtConfig.setAccessTokenExpirationInHours(getJwtConfigAccessTokenExpirationInHours);
-
-        JwtSecretKey jwtSecretKey = new JwtSecretKey(jwtConfig);
-        SecretKey secretKey = jwtSecretKey.getSecretKey();
-
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        Mockito.when(userRepository.findByUsername(user.getUsername()))
-                .thenReturn(java.util.Optional.ofNullable(user));
-        Mockito.when(userRepository.findById(user.getId()))
-                .thenReturn(java.util.Optional.ofNullable(user));
-
-        RefreshToken refreshToken = new RefreshToken(user);
-        refreshToken.setId(0L);
-        RefreshTokenRepository refreshTokenRepository = Mockito.mock(RefreshTokenRepository.class);
-        Mockito.when(refreshTokenRepository.save(any(RefreshToken.class)))
-                .thenReturn(refreshToken);
-
-        jwtUtil = new JwtUtil(secretKey, jwtConfig, userRepository, refreshTokenRepository);
+    fun setup() {
+        user = User(
+            "username@gmail.com",
+            "username",
+            "password",
+            UserRole.BLOGGER,
+            AuthenticationProvider.LOCAL
+        )
+        user!!.id = 0L
+        val jwtConfig = JwtConfig()
+        jwtConfig.secretKey = jwtConfigSecretKey
+        jwtConfig.tokenPrefix = jwtConfigTokenPrefix
+        if (jwtConfigRefreshTokenExpirationInDays != null) {
+            jwtConfig.refreshTokenExpirationInDays = jwtConfigRefreshTokenExpirationInDays
+        }
+        if (getJwtConfigAccessTokenExpirationInHours != null) {
+            jwtConfig.accessTokenExpirationInHours = getJwtConfigAccessTokenExpirationInHours
+        }
+        val jwtSecretKey = JwtSecretKey(jwtConfig)
+        val secretKey = jwtSecretKey.secretKey
+        val userRepository = Mockito.mock(UserRepository::class.java)
+        Mockito.`when`(
+            userRepository.findByUsername(
+                user!!.username
+            )
+        )
+            .thenReturn(Optional.ofNullable(user))
+        Mockito.`when`(userRepository.findById(user!!.id))
+            .thenReturn(Optional.ofNullable(user))
+        val refreshToken = RefreshToken(user)
+        refreshToken.id = 0L
+        val refreshTokenRepository = Mockito.mock(
+            RefreshTokenRepository::class.java
+        )
+        Mockito.`when`(
+            refreshTokenRepository.save(
+                ArgumentMatchers.any(
+                    RefreshToken::class.java
+                )
+            )
+        )
+            .thenReturn(refreshToken)
+        jwtUtil = JwtUtil(secretKey, jwtConfig, userRepository, refreshTokenRepository)
     }
 
-
     @Test
-    public void whenCreateAccessToken_returnValidAccessToken(){
-        String token = jwtUtil.createAccessToken(user.getId());
-        val claims = jwtUtil.extractAllClaims(token);
-        assertThat(jwtUtil.isTokenExpired(claims)).isFalse();
-        assertThat(jwtUtil.getUserId(claims)).isEqualTo(user.getId());
-        assertThat(jwtUtil.getUserName(claims)).isEqualTo(user.getUsername());
-        assertThat(jwtUtil.getUserRole(claims)).isEqualTo(user.getRole());
+    fun whenCreateAccessToken_returnValidAccessToken() {
+        val token = jwtUtil!!.createAccessToken(user!!.id!!)
+        val claims = jwtUtil!!.extractAllClaims(token)
+        Assertions.assertThat(jwtUtil!!.isTokenExpired(claims)).isFalse
+        Assertions.assertThat(jwtUtil!!.getUserId(claims)).isEqualTo(user!!.id)
+        Assertions.assertThat(jwtUtil!!.getUserName(claims)).isEqualTo(user!!.username)
+        Assertions.assertThat(jwtUtil!!.getUserRole(claims)).isEqualTo(
+            user!!.role
+        )
     }
 
     @Test
-    public void whenCreateRefreshToken_returnValidRefreshToken(){
-        String token = jwtUtil.createRefreshToken(user.getId());
-        val claims = jwtUtil.extractAllClaims(token);
-        assertThat(jwtUtil.isTokenExpired(claims)).isFalse();
-        assertThat(jwtUtil.getUserId(claims)).isEqualTo(user.getId());
-        assertThat(jwtUtil.getUserName(claims)).isEqualTo(user.getUsername());
-        assertThat(jwtUtil.getUserRole(claims)).isEqualTo(user.getRole());   assertThat(jwtUtil.isTokenExpired(claims)).isFalse();
+    fun whenCreateRefreshToken_returnValidRefreshToken() {
+        val token = jwtUtil!!.createRefreshToken(user!!.id!!)
+        val claims = jwtUtil!!.extractAllClaims(token)
+        Assertions.assertThat(jwtUtil!!.isTokenExpired(claims)).isFalse
+        Assertions.assertThat(jwtUtil!!.getUserId(claims)).isEqualTo(user!!.id)
+        Assertions.assertThat(jwtUtil!!.getUserName(claims)).isEqualTo(user!!.username)
+        Assertions.assertThat(jwtUtil!!.getUserRole(claims)).isEqualTo(
+            user!!.role
+        )
+        Assertions.assertThat(jwtUtil!!.isTokenExpired(claims)).isFalse
     }
 }

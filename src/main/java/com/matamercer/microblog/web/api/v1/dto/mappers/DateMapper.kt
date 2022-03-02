@@ -1,18 +1,8 @@
-package com.matamercer.microblog.web.api.v1.dto.mappers;
+package com.matamercer.microblog.web.api.v1.dto.mappers
 
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-@Mapper(componentModel = "spring")
-public class DateMapper {
-    public String asString(ZonedDateTime zonedDateTime){
-        if(zonedDateTime == null){
-            return null;
-        }
-        return zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-    }
+fun ZonedDateTime.asString(): String? {
+    return format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 }

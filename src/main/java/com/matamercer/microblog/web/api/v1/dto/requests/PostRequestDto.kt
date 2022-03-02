@@ -1,37 +1,15 @@
-package com.matamercer.microblog.web.api.v1.dto.requests;
+package com.matamercer.microblog.web.api.v1.dto.requests
 
-import lombok.Data;
+data class PostRequestDto(
+    val id: String? = null,
+    val content: String? = null,
+    val title: String? = null,
+    val postTags: List<String>? = null,
+    val communityTaggingEnabled: Boolean? = false,
+    val sensitive: Boolean?,
+    val published: Boolean? = false,
+    val parentPostId: String? = null,
+    val attachments: List<Long?>? = null,
+) {
 
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-@Data
-public class PostRequestDto {
-
-    private String id;
-
-    @NotNull(message = "Content cannot be null.")
-    @NotBlank
-    @NotEmpty
-    @Size(min=1, max=10000, message = "Length should be between 1 and 10000 characters.")
-    private String content;
-
-    @Size(min=0, max=100, message = "Length should be between 0 and 100 characters.")
-    private String title;
-
-    private List<String> postTags;
-
-    private boolean communityTaggingEnabled;
-
-    private boolean sensitive;
-
-    private boolean published;
-
-    private String parentPostId;
-
-    private List<Long> attachments;
 }

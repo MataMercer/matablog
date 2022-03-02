@@ -1,68 +1,67 @@
-package com.matamercer.microblog.unit.repository;
+package com.matamercer.microblog.unit.repository
 
-import com.matamercer.microblog.models.entities.AuthenticationProvider;
-import com.matamercer.microblog.models.entities.User;
-import com.matamercer.microblog.models.repositories.UserRepository;
-import com.matamercer.microblog.security.authorization.UserRole;
-import lombok.var;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.ActiveProfiles;
-
-import static org.assertj.core.api.Assertions.*;
+import com.matamercer.microblog.models.entities.AuthenticationProvider
+import com.matamercer.microblog.models.entities.User
+import com.matamercer.microblog.models.repositories.UserRepository
+import com.matamercer.microblog.security.authorization.UserRole
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
+import org.springframework.test.context.ActiveProfiles
 
 @DataJpaTest
 @ActiveProfiles("test")
-class UserRepositoryTest {
+internal class UserRepositoryTest {
+    @Autowired
+    private val entityManager: TestEntityManager? = null
 
     @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private User user;
-
+    private val userRepository: UserRepository? = null
+    private var user: User? = null
     @BeforeEach
-    public void initData(){
-        user = new User("username@gmail.com",
-                "username",
-                "password",
-                UserRole.BLOGGER,
-                true,
-                true,
-                true,
-                true,
-                AuthenticationProvider.LOCAL);
-        user = entityManager.persist(user);
+    fun initData() {
+        user = User(
+            "username@gmail.com",
+            "username",
+            "password",
+            UserRole.BLOGGER,
+            AuthenticationProvider.LOCAL
+        )
+        user = entityManager!!.persist(user)
     }
 
     @AfterEach
-    public void flushAfter() {
-        entityManager.flush();
-        entityManager.clear();
+    fun flushAfter() {
+        entityManager!!.flush()
+        entityManager.clear()
     }
 
     @Test
-    public void whenFindByUsername_thenReturnUser() {
-        var foundUser = userRepository.findByUsername(user.getUsername());
-        assertThat(foundUser.get()).isEqualTo(user);
+    fun whenFindByUsername_thenReturnUser() {
+        val foundUser = userRepository!!.findByUsername(
+            user!!.username
+        )
+        Assertions.assertThat(foundUser!!.get()).isEqualTo(user)
     }
 
     @Test
-    public void whenFindByEmail_thenReturnUser() {
-        var foundUser = userRepository.findByEmail(user.getEmail());
-        assertThat(foundUser.get()).isEqualTo(user);
+    fun whenFindByEmail_thenReturnUser() {
+        val foundUser = userRepository!!.findByEmail(
+            user!!.email
+        )
+        Assertions.assertThat(foundUser!!.get()).isEqualTo(user)
     }
 
     @Test
-    public void whenFindByoAuth2IdAndAuthenticationProvider_thenReturnUser() {
-        var foundOptionalUser = userRepository.findByoAuth2IdAndAuthenticationProvider(user.getOAuth2Id(),
-                user.getAuthenticationProvider());
-        assertThat(foundOptionalUser.get()).isEqualTo(user);
+    fun whenFindByoAuth2IdAndAuthenticationProvider_thenReturnUser() {
+        val foundOptionalUser = userRepository!!.findByoAuth2IdAndAuthenticationProvider(
+            user!!.oAuth2Id,
+            user!!.authenticationProvider
+        )
+        Assertions.assertThat(foundOptionalUser!!.get()).isEqualTo(user)
     }
 }

@@ -41,16 +41,15 @@ public class WellKnownController {
             jsonResourceDescriptor.setSubject(resource.get());
             try {
                 jsonResourceDescriptor.setLinks(Collections.singletonList(new Link("self", "application/activity+json", environmentUtil.getServerUrl() + "/activitypub/users/" + user.getId())));
-                return jsonResourceDescriptor;
-            } catch (UnknownHostException e) {
+            }catch (Exception e){
                 e.printStackTrace();
             }
+            return jsonResourceDescriptor;
 
         }else{
             throw new NotFoundException();
         }
 
-        return jsonResourceDescriptor;
     }
 
     @Getter

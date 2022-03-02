@@ -68,10 +68,6 @@ public class LoginControllerTest {
                 "username",
                 passwordEncoder.encode(unencodedPassword),
                 UserRole.BLOGGER,
-                true,
-                true,
-                true,
-                true,
                 AuthenticationProvider.LOCAL);
         user = userService.createUser(user);
         testRestTemplate = new TestRestTemplate();

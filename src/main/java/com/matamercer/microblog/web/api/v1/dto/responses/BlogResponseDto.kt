@@ -1,12 +1,18 @@
-package com.matamercer.microblog.web.api.v1.dto.responses;
+package com.matamercer.microblog.web.api.v1.dto.responses
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode
+import com.matamercer.microblog.web.api.v1.dto.responses.BaseModelResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.BlogResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.PostTagResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.FileResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.LikeResponseDto
+import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
+import lombok.Data
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class BlogResponseDto extends BaseModelResponseDto{
-    private String blogName;
-    private String preferredBlogName;
-    private boolean sensitive;
+class BlogResponseDto : BaseModelResponseDto() {
+    var blogName: String? = null
+    var preferredBlogName: String? = null
+    var sensitive = false
 }
