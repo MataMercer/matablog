@@ -51,6 +51,14 @@ class FileService @Autowired constructor(
         fileRepository.delete(file)
         storageService.delete(getPath(file))
     }
+    @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).FILE_UPDATE.toString())")
+    fun deleteFile(id: Long) {
+        val file = fileRepository.findById(id)
+        if(file.isPresent){
+            storageService.delete(getPath(file.get()))
+        }
+        fileRepository.deleteById(id)
+    }
 
     private fun getPath(file: File): Path {
         return Paths.get(file.id.toString() + "\\" + file.name)

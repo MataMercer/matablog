@@ -4,11 +4,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "files")
-class File : BaseModel() {
-    @Column(nullable = false)
-    var name: String? = null
+class File(
+    @field:Column(nullable = false)
+    var name: String? = null,
 
-    @ManyToOne
-    @JoinColumn(name = "blog_id")
-    var owner: Blog? = null
+    @field:ManyToOne
+    @field:JoinColumn(name = "blog_id")
+    var owner: Blog? = null,
+    ) : BaseModel() {
+
 }

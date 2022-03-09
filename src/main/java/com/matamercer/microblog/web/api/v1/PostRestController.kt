@@ -86,9 +86,9 @@ class PostRestController @Autowired constructor(
     @PostMapping("/reply")
     fun createReplyPostForm(
         postRequestDto: @Valid PostRequestDto,
-        @RequestParam(name = "files", required = false) files: Array<MultipartFile>, @CurrentUser userPrincipal: UserPrincipal
+        @RequestParam(name = "files", required = false) files: Array<MultipartFile>?, @CurrentUser userPrincipal: UserPrincipal
     ): ResponseEntity<PostResponseDto> {
-        val post = postService.createReplyPost(postRequestDto, files, userPrincipal.activeBlog)
+        val post = postService.createReplyPost(postRequestDto, files ?: emptyArray(), userPrincipal.activeBlog)
         val location = ServletUriComponentsBuilder.fromCurrentRequest().path(
             "/{id}"
         ).buildAndExpand(post.id).toUri()
@@ -98,10 +98,10 @@ class PostRestController @Autowired constructor(
     @PutMapping("/update")
     fun updatePostForm(
         updatePostRequest: @Valid PostRequestDto,
-        @RequestParam(name = "files", required = false) files: Array<MultipartFile>,
+        @RequestParam(name = "files", required = false) files: Array<MultipartFile>?,
         @CurrentUser userPrincipal: UserPrincipal
     ): ResponseEntity<PostResponseDto> {
-        val post = postService.updatePost(updatePostRequest, files, userPrincipal.activeBlog)
+        val post = postService.updatePost(updatePostRequest, files ?: emptyArray(), userPrincipal.activeBlog)
         return ResponseEntity.ok().body(post)
     }
 

@@ -73,24 +73,30 @@ class PostService @Autowired constructor(
             allEntries = true
         )]
     )
-    fun updatePost(updatePostRequest: PostRequestDto, files: Array<MultipartFile>?, blog: Blog?): PostResponseDto {
+    fun updatePost(updatePostRequest: PostRequestDto, files: Array<MultipartFile>, blog: Blog?): PostResponseDto {
         var post = getPost(updatePostRequest.id?.toLong())
         checkOwnership(post)
 
-        val filesToDelete: Set<File> =
-            Sets.difference(HashSet(post.attachments), HashSet(updatePostRequest.attachments))
-        filesToDelete.forEach { fileService.deleteFile(it) }
+        post.title = updatePostRequest.title
+        post.content = updatePostRequest.content
+        post.isSensitive = updatePostRequest.sensitive ?: false
+        post.published = updatePostRequest.published ?: false
+
+        val fileIdsToDelete: Set<Long> =
+            Sets.difference(HashSet(post.attachments.map { it.id }), HashSet(updatePostRequest.attachments ?: emptyList()))
+        fileIdsToDelete.forEach { fileService.deleteFile(it) }
         attachFilesToPost(files, post)
 
-        val postTags = updatePostRequest.postTags
+        updatePostRequest.postTags
             ?.map { postTagService.findOrCreateByName(it) }?.toSet()
             ?.forEach { post.addPostTag(it) }
+
         post = postRepository.save(post)
         return post.toPostResponseDto()
     }
 
-    private fun attachFilesToPost(files: Array<MultipartFile>?, post: Post) {
-        files?.forEach { post.attachments.add(fileService.createFile(it, post.blog)) }
+    private fun attachFilesToPost(files: Array<MultipartFile>, post: Post) {
+        files.forEach { post.attachments.add(fileService.createFile(it, post.blog)) }
     }
 
     @Caching(
