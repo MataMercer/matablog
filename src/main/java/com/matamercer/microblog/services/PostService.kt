@@ -30,7 +30,6 @@ import java.util.*
 
 @Service
 @Transactional
-@Slf4j
 class PostService @Autowired constructor(
     private val postRepository: PostRepository,
     private val postTagService: PostTagService,
@@ -84,8 +83,16 @@ class PostService @Autowired constructor(
 
         val fileIdsToDelete: Set<Long> =
             Sets.difference(HashSet(post.attachments.map { it.id }), HashSet(updatePostRequest.attachments ?: emptyList()))
-        fileIdsToDelete.forEach { fileService.deleteFile(it) }
-        attachFilesToPost(files, post)
+        fileIdsToDelete.forEach {
+            post.attachments.remove(fileService.getFile(it))
+            fileService.deleteFile(it)
+        }
+
+        val validReordering = updatePostRequest.attachments?.all { it -> post.attachments.contains(fileService.getFile(it)) }
+        if (validReordering == true){
+            post.attachments = updatePostRequest.attachments.map { fileService.getFile(it) }.toMutableList()
+            updatePostRequest.attachmentInsertions?.let { attachFilesToPost(files, post, it.map { insertions -> insertions.toInt() }) }
+        }
 
         updatePostRequest.postTags
             ?.map { postTagService.findOrCreateByName(it) }?.toSet()
@@ -95,6 +102,9 @@ class PostService @Autowired constructor(
         return post.toPostResponseDto()
     }
 
+    private fun attachFilesToPost(files: Array<MultipartFile>, post: Post, attachmentInsertions: List<Int>) {
+        files.forEachIndexed { index, multipartFile -> post.attachments.add(attachmentInsertions[index], fileService.createFile(multipartFile, post.blog)) }
+    }
     private fun attachFilesToPost(files: Array<MultipartFile>, post: Post) {
         files.forEach { post.attachments.add(fileService.createFile(it, post.blog)) }
     }
@@ -114,6 +124,7 @@ class PostService @Autowired constructor(
         checkOwnership(getPost(id))
         postRepository.deleteById(id)
     }
+    
 
     //    @Cacheable(value = CACHE_NAME_PAGE, key = "T(java.lang.String).valueOf(#page).concat('-').concat(#pageSize)")
     fun searchPosts(

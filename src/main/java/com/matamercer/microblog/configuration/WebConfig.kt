@@ -48,7 +48,6 @@ class WebConfig : WebMvcConfigurer {
     @Bean
     fun init(@Qualifier("fileSystemStorage") storageService: StorageService): CommandLineRunner {
         return CommandLineRunner { args: Array<String?>? ->
-            storageService.deleteAll()
             storageService.init()
         }
     }

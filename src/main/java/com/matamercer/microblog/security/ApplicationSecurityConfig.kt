@@ -18,6 +18,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import javax.crypto.SecretKey
 
 @Configuration
@@ -50,15 +52,17 @@ class ApplicationSecurityConfig @Autowired constructor(
                 JwtTokenVerifier(secretKey, jwtConfig, jwtUtil),
                 JwtUsernameAndPasswordAuthenticationFilter::class.java
             )
-            .authorizeRequests()
-            .antMatchers("/api/v1/post/create").hasAuthority(UserAuthority.POST_CREATE_NEW.toString())
-            .antMatchers("/api/v1/post/reply").hasAuthority(UserAuthority.POST_CREATE_COMMENT.toString())
-            .antMatchers(HttpMethod.POST, "/api/v1/post/*").authenticated()
-            .antMatchers(HttpMethod.GET, "/api/v1/post/*").permitAll()
-            .antMatchers(HttpMethod.GET, "/api/v1/blog/*").permitAll()
-            .antMatchers(HttpMethod.POST, "/api/v1/auth/*").permitAll()
-            .antMatchers(HttpMethod.GET, "/api/v1/files/serve/**").permitAll()
-            .anyRequest().authenticated()
+            .authorizeRequests {
+                it.antMatchers("/api/v1/post/create").hasAuthority(UserAuthority.POST_CREATE_NEW.toString())
+                    .antMatchers("/api/v1/post/reply").hasAuthority(UserAuthority.POST_CREATE_COMMENT.toString())
+                    .antMatchers(HttpMethod.POST, "/api/v1/post/*").authenticated()
+                    .antMatchers(HttpMethod.GET, "/api/v1/post/*").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/v1/blog/*").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/v1/auth/*").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/v1/files/serve/**").permitAll()
+                    .anyRequest().authenticated()
+            }
+
     }
 
     @Throws(Exception::class)

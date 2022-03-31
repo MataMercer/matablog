@@ -10,6 +10,7 @@ data class PostRequestDto(
     val published: Boolean? = false,
     val parentPostId: String? = null,
     val attachments: List<Long>? = null,
+    val attachmentInsertions: List<Long>? = null,
 ) {
 
 }
