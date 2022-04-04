@@ -6,7 +6,7 @@ import com.matamercer.microblog.models.repositories.RefreshTokenRepository
 import com.matamercer.microblog.models.repositories.UserRepository
 import com.matamercer.microblog.models.repositories.VerificationTokenRepository
 import com.matamercer.microblog.security.authentication.JwtUtil
-import com.matamercer.microblog.security.authorization.UserRole
+import com.matamercer.microblog.security.authorization.oauth.GithubOauthConfig
 import com.matamercer.microblog.web.api.v1.dto.mappers.toUserResponseDto
 import com.matamercer.microblog.web.api.v1.dto.responses.UserResponseDto
 import com.matamercer.microblog.web.error.exceptions.RevokedRefreshTokenException
@@ -15,11 +15,14 @@ import com.matamercer.microblog.web.error.exceptions.UserNotFoundException
 import io.jsonwebtoken.Jwts
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.reactive.function.client.WebClient
 import java.util.*
 import javax.crypto.SecretKey
 
@@ -31,7 +34,8 @@ class UserService @Autowired constructor(
     private val userKeyPairService: UserKeyPairService,
     private val refreshTokenRepository: RefreshTokenRepository,
     private val secretKey: SecretKey,
-    private val jwtUtil: JwtUtil
+    private val jwtUtil: JwtUtil,
+    private val githubOauthConfig: GithubOauthConfig
 ) : UserDetailsService {
     @Transactional
     fun createUser(user: User): User {
@@ -67,7 +71,7 @@ class UserService @Autowired constructor(
             .build()
             .parseClaimsJws(refreshToken)
         val body = claimsJws!!.body
-        val userId= body!!["userId"].toString().toLong()
+        val userId = body!!["userId"].toString().toLong()
         val refreshTokenId = body["refreshTokenEntityId"].toString().toLong()
         val persistedRefreshToken = refreshTokenRepository.findById(refreshTokenId)
         return if (persistedRefreshToken.isPresent) {

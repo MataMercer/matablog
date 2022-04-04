@@ -1,6 +1,6 @@
 package com.matamercer.microblog.services
 
-import com.matamercer.microblog.Exceptions.NotFoundException
+import com.matamercer.microblog.exceptions.NotFoundException
 import com.matamercer.microblog.models.entities.Blog
 import com.matamercer.microblog.models.entities.Like
 import com.matamercer.microblog.models.repositories.LikeRepository

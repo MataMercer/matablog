@@ -18,7 +18,7 @@ class SeederConfig(private val userRepository: UserRepository, private val passw
     fun seedData(): CommandLineRunner {
         return CommandLineRunner {
             val adminUser = User(
-                    "developer.mercer@gmail.com",
+                    "developer.mercer@googlemail.com",
                     "a",
                     passwordEncoder.encode("1"),
                     UserRole.ADMIN,

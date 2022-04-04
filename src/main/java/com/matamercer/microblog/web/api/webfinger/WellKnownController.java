@@ -1,6 +1,6 @@
 package com.matamercer.microblog.web.api.webfinger;
 
-import com.matamercer.microblog.Exceptions.NotFoundException;
+import com.matamercer.microblog.exceptions.NotFoundException;
 import com.matamercer.microblog.models.entities.User;
 import com.matamercer.microblog.models.repositories.UserRepository;
 import com.matamercer.microblog.utilities.EnvironmentUtil;
@@ -10,7 +10,6 @@ import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.UnknownHostException;
 import java.util.*;
 
 @RestController

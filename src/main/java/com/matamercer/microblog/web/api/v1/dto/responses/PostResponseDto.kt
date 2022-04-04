@@ -1,8 +1,5 @@
 package com.matamercer.microblog.web.api.v1.dto.responses
 
-import lombok.Data
-
-@Data
 class PostResponseDto : BaseModelResponseDto() {
     var blog: BlogResponseDto? = null
     var content: String? = null

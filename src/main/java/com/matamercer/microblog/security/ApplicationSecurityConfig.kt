@@ -60,6 +60,7 @@ class ApplicationSecurityConfig @Autowired constructor(
                     .antMatchers(HttpMethod.GET, "/api/v1/blog/*").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/v1/auth/*").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/v1/files/serve/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/v1/oauth/**").permitAll()
                     .anyRequest().authenticated()
             }
 

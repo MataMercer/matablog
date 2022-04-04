@@ -1,7 +1,7 @@
 package com.matamercer.microblog.services
 
 import com.google.common.collect.Sets
-import com.matamercer.microblog.Exceptions.NotFoundException
+import com.matamercer.microblog.exceptions.NotFoundException
 import com.matamercer.microblog.models.entities.*
 import com.matamercer.microblog.models.enums.PostCategory
 import com.matamercer.microblog.models.repositories.PostRepository
@@ -13,7 +13,6 @@ import com.matamercer.microblog.web.api.v1.dto.mappers.toPost
 import com.matamercer.microblog.web.api.v1.dto.mappers.toPostResponseDto
 import com.matamercer.microblog.web.api.v1.dto.requests.PostRequestDto
 import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
-import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
@@ -124,7 +123,7 @@ class PostService @Autowired constructor(
         checkOwnership(getPost(id))
         postRepository.deleteById(id)
     }
-    
+
 
     //    @Cacheable(value = CACHE_NAME_PAGE, key = "T(java.lang.String).valueOf(#page).concat('-').concat(#pageSize)")
     fun searchPosts(

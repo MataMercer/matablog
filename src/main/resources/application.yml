@@ -1,5 +1,11 @@
 support.email: extremelywealthnigerianprince@gmail.com
 ---
+application:
+  oauth:
+    github:
+      client-id: ${GITHUB_CLIENT_ID}
+      client-secret: ${GITHUB_CLIENT_SECRET}
+---
 spring:
   mvc:
     throw-exception-if-no-handler-found: true

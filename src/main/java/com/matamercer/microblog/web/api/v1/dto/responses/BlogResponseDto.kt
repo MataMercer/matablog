@@ -9,8 +9,6 @@ import com.matamercer.microblog.web.api.v1.dto.responses.LikeResponseDto
 import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
 import lombok.Data
 
-@EqualsAndHashCode(callSuper = true)
-@Data
 class BlogResponseDto : BaseModelResponseDto() {
     var blogName: String? = null
     var preferredBlogName: String? = null
