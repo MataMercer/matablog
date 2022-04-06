@@ -37,15 +37,16 @@ class PostService @Autowired constructor(
     @Caching(evict = [CacheEvict(value = arrayOf(CACHE_NAME_PAGE), allEntries = true)])
     fun createNewPost(postRequestDTO: PostRequestDto, files: Array<MultipartFile>, blog: Blog): PostResponseDto {
         val post = createPostHelper(postRequestDTO, files, blog)
-        return post.toPostResponseDto()
-    }
-
-    @Caching(evict = [CacheEvict(value = arrayOf(CACHE_NAME_PAGE), allEntries = true)])
-    fun createReplyPost(postRequestDTO: PostRequestDto, files: Array<MultipartFile>, blog: Blog): PostResponseDto {
-        val post = createPostHelper(postRequestDTO, files, blog)
         postRequestDTO.parentPostId?.let { addReplyToParentPost(it.toLong(), post) }
         return post.toPostResponseDto()
     }
+
+//    @Caching(evict = [CacheEvict(value = arrayOf(CACHE_NAME_PAGE), allEntries = true)])
+//    fun createReplyPost(postRequestDTO: PostRequestDto, files: Array<MultipartFile>, blog: Blog): PostResponseDto {
+//        val post = createPostHelper(postRequestDTO, files, blog)
+//        postRequestDTO.parentPostId?.let { addReplyToParentPost(it.toLong(), post) }
+//        return post.toPostResponseDto()
+//    }
 
     private fun createPostHelper(postRequestDTO: PostRequestDto, files: Array<MultipartFile>, blog: Blog): Post {
         val post = postRequestDTO.toPost()
@@ -59,7 +60,6 @@ class PostService @Autowired constructor(
 
     private fun addReplyToParentPost(parentPostId: Long, replyPost: Post) {
         val parentPost = getPost(parentPostId)
-        replyPost.parentPost = parentPost
         parentPost.addReply(replyPost)
         postRepository.save(replyPost)
         postRepository.save(parentPost)

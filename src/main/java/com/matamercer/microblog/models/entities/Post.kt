@@ -78,7 +78,7 @@ class Post(
 
     fun addReply(post: Post) {
         replies.add(post)
-        post.replies.add(this)
+        post.parentPost = this;
     }
 
     fun removeReply(post: Post) {

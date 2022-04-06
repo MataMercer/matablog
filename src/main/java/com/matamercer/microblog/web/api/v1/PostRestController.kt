@@ -83,17 +83,17 @@ class PostRestController @Autowired constructor(
         return ResponseEntity.created(location).body(post)
     }
 
-    @PostMapping("/reply")
-    fun createReplyPostForm(
-        postRequestDto: @Valid PostRequestDto,
-        @RequestParam(name = "files", required = false) files: Array<MultipartFile>?, @CurrentUser userPrincipal: UserPrincipal
-    ): ResponseEntity<PostResponseDto> {
-        val post = postService.createReplyPost(postRequestDto, files ?: emptyArray(), userPrincipal.activeBlog)
-        val location = ServletUriComponentsBuilder.fromCurrentRequest().path(
-            "/{id}"
-        ).buildAndExpand(post.id).toUri()
-        return ResponseEntity.created(location).body(post)
-    }
+//    @PostMapping("/reply")
+//    fun createReplyPostForm(
+//        postRequestDto: @Valid PostRequestDto,
+//        @RequestParam(name = "files", required = false) files: Array<MultipartFile>?, @CurrentUser userPrincipal: UserPrincipal
+//    ): ResponseEntity<PostResponseDto> {
+//        val post = postService.createReplyPost(postRequestDto, files ?: emptyArray(), userPrincipal.activeBlog)
+//        val location = ServletUriComponentsBuilder.fromCurrentRequest().path(
+//            "/{id}"
+//        ).buildAndExpand(post.id).toUri()
+//        return ResponseEntity.created(location).body(post)
+//    }
 
     @PutMapping("/update")
     fun updatePostForm(

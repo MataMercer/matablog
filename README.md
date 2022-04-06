@@ -4,4 +4,7 @@
 Early work in progress. Suggestions are welcome.
 
 # Building from Source
-Coming soon
+See docs folder.
+
+# Early Screenshots
+![Screenshot](https://i.imgur.com/rfjVNMC.png)
