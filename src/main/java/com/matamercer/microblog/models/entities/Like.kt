@@ -12,13 +12,13 @@ import javax.persistence.*
 @Entity
 @Table(name = "likes", uniqueConstraints = [UniqueConstraint(columnNames = ["fk_liker", "fk_post"])])
 class Like(
-    @field:ManyToOne
-    @field:JoinColumn(name = "fk_liker")
-    var liker: Blog,
+    @ManyToOne
+    @JoinColumn(name = "fk_liker")
+    var liker: Blog? = null,
 
-    @field:ManyToOne
-    @field:JoinColumn(name = "fk_post")
-    var post: Post
+    @ManyToOne
+    @JoinColumn(name = "fk_post")
+    var post: Post? = null
 ) : BaseModel() {
 
 }

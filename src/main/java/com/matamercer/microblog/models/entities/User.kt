@@ -11,43 +11,43 @@ import javax.persistence.*
 @Entity
 @Table(name = "users")
 class User(
-    @field:Column(unique = true)
+    @Column(unique = true)
     var email: String? = null,
 
-    @field:OneToMany(cascade = [CascadeType.ALL], mappedBy = "user")
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "user")
     var userKeyPairs: List<UserKeyPair> = ArrayList(),
 
-    @field:ManyToMany
-    @field:JoinTable(
+    @ManyToMany
+    @JoinTable(
         name = "user_blog",
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "blog_id")]
     )
     var blogs: MutableSet<Blog> = HashSet(),
 
-    @field:Column(unique = true)
+    @Column(unique = true)
     private var username: String? = null,
 
-    @field:Column
+    @Column
     private var password: String? = null,
 
-    @field:Column(nullable = false)
+    @Column(nullable = false)
     private var isAccountNonExpired: Boolean = true,
 
-    @field:Column(nullable = false)
+    @Column(nullable = false)
     var accountNonLocked: Boolean = true,
 
-    @field:Column(nullable = false)
+    @Column(nullable = false)
     var credentialsNonExpired: Boolean = true,
 
-    @field:Column(nullable = false)
+    @Column(nullable = false)
     var enabled: Boolean = true,
 
-    @field:OneToOne
-    @field:JoinColumn(name = "blog_id")
+    @OneToOne
+    @JoinColumn(name = "blog_id")
     var activeBlog: Blog? = null,
 
-    @field:Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     @Column
     var authenticationProvider: AuthenticationProvider? = null,
 

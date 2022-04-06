@@ -7,7 +7,7 @@ import com.matamercer.microblog.models.enums.PostCategory
 import com.matamercer.microblog.models.repositories.PostRepository
 import com.matamercer.microblog.models.repositories.searches.PostSearch
 import com.matamercer.microblog.models.repositories.specifications.PostSpecification
-import org.assertj.core.api.AssertionsForClassTypes
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -58,7 +58,7 @@ class PostRepositoryTest {
         val postPage = postRepository!!.findAll(postSpecification, pageRequest)
         val postList = postPage.get().collect(Collectors.toList())
         val foundPost = postList[0]
-        AssertionsForClassTypes.assertThat(foundPost).isEqualTo(post)
+        assertThat(foundPost).isEqualTo(post)
     }
 
     @Test
@@ -89,7 +89,7 @@ class PostRepositoryTest {
         val postPage = postRepository!!.findAll(postSpecification, pageRequest)
         val postList = postPage.get().collect(Collectors.toList())
         val foundPost = postList[0]
-        AssertionsForClassTypes.assertThat(foundPost).isEqualTo(post2)
-        AssertionsForClassTypes.assertThat(postList.size).isEqualTo(1)
+        assertThat(foundPost).isEqualTo(post2)
+        assertThat(postList.size).isEqualTo(1)
     }
 }

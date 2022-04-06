@@ -2,7 +2,7 @@ package com.matamercer.microblog.unit.repository
 
 import com.matamercer.microblog.models.entities.Blog
 import com.matamercer.microblog.models.repositories.BlogRepository
-import org.assertj.core.api.AssertionsForClassTypes
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -26,6 +26,6 @@ class BlogRepositoryTest {
         if (optionalFoundBlog!!.isPresent) {
             foundBlog = optionalFoundBlog.get()
         }
-        AssertionsForClassTypes.assertThat(foundBlog).isEqualTo(blog)
+        assertThat(foundBlog).isEqualTo(blog)
     }
 }

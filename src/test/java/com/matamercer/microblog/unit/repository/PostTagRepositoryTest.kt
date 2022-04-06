@@ -4,7 +4,7 @@ import com.matamercer.microblog.models.entities.Blog
 import com.matamercer.microblog.models.entities.Post
 import com.matamercer.microblog.models.entities.PostTag
 import com.matamercer.microblog.models.repositories.PostTagRepository
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest

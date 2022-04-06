@@ -17,12 +17,12 @@ class VerificationToken : BaseModel {
     var user: User? = null
     var expiryDate: Date
 
-    constructor(token: String) : super() {
-        this.token = token
+    constructor(): super(){
+        this.token = ""
         expiryDate = calculateExpiryDate(EXPIRATION)
     }
 
-    constructor(token: String, user: User?) : super() {
+    constructor(token: String, user: User? = null) : super() {
         this.token = token
         this.user = user
         expiryDate = calculateExpiryDate(EXPIRATION)
