@@ -60,13 +60,13 @@ class PostRestController @Autowired constructor(
         val postAttachmentList = postService.getPost(
             id!!.toLong()
         ).attachments
-        val postAttachmentURIList = postAttachmentList.stream().map { postAttachment: File ->
+        val postAttachmentURIList = postAttachmentList.map { postAttachment: File ->
             WebMvcLinkBuilder.linkTo(
                 WebMvcLinkBuilder.methodOn(
                     FileRestController::class.java
                 ).serveFile(postAttachment.id!!, postAttachment.name)
             ).toUri()
-        }.collect(Collectors.toList())
+        }
         return ResponseEntity.ok(postAttachmentURIList)
     }
 
