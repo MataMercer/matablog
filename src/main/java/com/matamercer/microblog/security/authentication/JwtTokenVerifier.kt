@@ -2,7 +2,6 @@ package com.matamercer.microblog.security.authentication
 
 import com.google.common.base.Strings
 import com.matamercer.microblog.models.entities.Blog
-import com.matamercer.microblog.models.entities.User
 import com.matamercer.microblog.security.UserPrincipal
 import com.matamercer.microblog.security.authorization.UserRole
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -24,16 +23,16 @@ class JwtTokenVerifier(
 ) : OncePerRequestFilter() {
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        filterChain: FilterChain?
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
     ) {
-        val authorizationHeader = request!!.getHeader(jwtConfig.authorizationHeader)
+        val authorizationHeader = request.getHeader(jwtConfig.authorizationHeader)
         if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader!!.startsWith(
                 jwtConfig.tokenPrefix!!
             )
         ) {
-            filterChain!!.doFilter(request, response)
+            filterChain.doFilter(request, response)
             return
         }
         val token = authorizationHeader.replace(jwtConfig.tokenPrefix!!, "")
@@ -64,6 +63,6 @@ class JwtTokenVerifier(
         } catch (e: AuthenticationException) {
             request.setAttribute("exception", e)
         }
-        filterChain!!.doFilter(request, response)
+        filterChain.doFilter(request, response)
     }
 }

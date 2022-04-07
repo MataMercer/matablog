@@ -4,7 +4,7 @@ import com.matamercer.microblog.models.entities.Blog
 import com.matamercer.microblog.models.entities.Like
 import com.matamercer.microblog.models.entities.Post
 import com.matamercer.microblog.models.repositories.LikeRepository
-import org.assertj.core.api.AssertionsForClassTypes
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -31,6 +31,6 @@ class LikeRepositoryTest {
         like = entityManager.persist(like)
         likes.add(like)
         val count = post?.let { likeRepository!!.countLikesByPost(it) }!!
-        AssertionsForClassTypes.assertThat(count).isEqualTo(likes.size.toLong())
+        assertThat(count).isEqualTo(likes.size.toLong())
     }
 }

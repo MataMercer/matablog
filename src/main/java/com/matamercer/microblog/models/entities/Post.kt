@@ -10,59 +10,56 @@ import com.matamercer.microblog.models.entities.Like
 import jdk.jfr.Enabled
 import lombok.Getter
 import lombok.Setter
-import org.hibernate.annotations.Type
 import java.util.ArrayList
 import javax.persistence.*
 
 @Entity
 @Table(name = "posts")
 class Post(
-    @field:JoinColumn(name = "blog_id", nullable = false)
-    @field:ManyToOne
+    @JoinColumn(name = "blog_id", nullable = false)
+    @ManyToOne
     var blog: Blog? = null,
 
-    @field:Column(
+    @Column(
         nullable = true
     )
     var title: String? = null,
 
-    @field:Column(
+    @Column(
         columnDefinition = "text"
     ) var content: String? = null,
 
-    @field:Column(nullable = false) @field:Type(type = "boolean")
+    @Column(nullable = false)
     var isCommunityTaggingEnabled: Boolean = false,
 
-    @field:Column(nullable = false) @field:Type(type = "boolean")
+    @Column(nullable = false)
     var isSensitive: Boolean = false,
 
-    @field:Column(
+    @Column(
         nullable = false
-    ) @field:Type(
-        type = "boolean"
     )
     var published: Boolean = false,
 
-    @field:ManyToMany
-    @field:JoinTable(
+    @ManyToMany
+    @JoinTable(
         name = "post_posttag",
         joinColumns = [JoinColumn(name = "post_id")],
         inverseJoinColumns = [JoinColumn(name = "posttag_id")]
     )
     var postTags: MutableSet<PostTag> = HashSet(),
 
-    @field:OneToMany(cascade = [CascadeType.ALL])
-    @field:JoinColumn(name = "file_id")
+    @OneToMany(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "file_id")
     var attachments: MutableList<File> = ArrayList(),
 
-    @field:ManyToOne
-    @field:JoinColumn(name = "post_id")
+    @ManyToOne
+    @JoinColumn(name = "post_id")
     var parentPost: Post? = null,
 
-    @field:OneToMany(mappedBy = "parentPost")
+    @OneToMany(mappedBy = "parentPost")
     var replies: MutableList<Post> = ArrayList(),
 
-    @field:OneToMany(mappedBy = "post", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "post", cascade = [CascadeType.ALL])
     var likes: Set<Like> = HashSet()
 ) : BaseModel() {
 
@@ -78,7 +75,7 @@ class Post(
 
     fun addReply(post: Post) {
         replies.add(post)
-        post.parentPost = this;
+        post.parentPost = this
     }
 
     fun removeReply(post: Post) {

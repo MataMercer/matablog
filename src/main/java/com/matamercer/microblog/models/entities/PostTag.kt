@@ -16,19 +16,14 @@ import javax.persistence.Table
 @Getter
 @Setter
 @NoArgsConstructor
-class PostTag : BaseModel {
+class PostTag(
     @ManyToMany(mappedBy = "postTags")
-    var posts: MutableSet<Post> = HashSet()
+    var posts: MutableSet<Post> = HashSet(),
 
     @Column(nullable = false, unique = true)
-    var name: String
-
-    constructor(posts: MutableSet<Post>, name: String) {
-        this.posts = posts
-        this.name = name
-    }
-
-    constructor(name: String) {
+    var name: String? = null
+) : BaseModel() {
+    constructor(name: String): this(){
         this.name = name
     }
 }

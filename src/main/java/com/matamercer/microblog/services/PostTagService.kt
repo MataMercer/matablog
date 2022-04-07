@@ -14,7 +14,9 @@ import java.util.stream.Collectors
 @Service
 class PostTagService @Autowired constructor(private val postTagRepository: PostTagRepository) {
     fun findOrCreateByName(name: String): PostTag {
-        return postTagRepository.findByName(name) ?: postTagRepository.save(PostTag(name))
+        return postTagRepository.findByName(name) ?: postTagRepository.save(PostTag().apply {
+            this.name = name
+        })
     }
 
     fun getTag(name: String): PostTag {

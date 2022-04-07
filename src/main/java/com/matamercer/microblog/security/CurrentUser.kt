@@ -1,12 +1,10 @@
 package com.matamercer.microblog.security
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import java.lang.annotation.Documented
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
+import kotlin.annotation.Retention
 
 @Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
 @AuthenticationPrincipal
 annotation class CurrentUser 

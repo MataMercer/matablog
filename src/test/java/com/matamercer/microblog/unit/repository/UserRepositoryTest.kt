@@ -4,7 +4,7 @@ import com.matamercer.microblog.models.entities.AuthenticationProvider
 import com.matamercer.microblog.models.entities.User
 import com.matamercer.microblog.models.repositories.UserRepository
 import com.matamercer.microblog.security.authorization.UserRole
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -45,7 +45,7 @@ internal class UserRepositoryTest {
         val foundUser = userRepository!!.findByUsername(
             user!!.username
         )
-        Assertions.assertThat(foundUser!!.get()).isEqualTo(user)
+        assertThat(foundUser!!.get()).isEqualTo(user)
     }
 
     @Test
@@ -53,7 +53,7 @@ internal class UserRepositoryTest {
         val foundUser = userRepository!!.findByEmail(
             user!!.email
         )
-        Assertions.assertThat(foundUser!!.get()).isEqualTo(user)
+        assertThat(foundUser!!.get()).isEqualTo(user)
     }
 
     @Test
@@ -62,6 +62,6 @@ internal class UserRepositoryTest {
             user!!.oAuth2Id,
             user!!.authenticationProvider
         )
-        Assertions.assertThat(foundOptionalUser!!.get()).isEqualTo(user)
+        assertThat(foundOptionalUser!!.get()).isEqualTo(user)
     }
 }

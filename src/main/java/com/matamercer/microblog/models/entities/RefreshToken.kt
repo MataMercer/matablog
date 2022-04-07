@@ -7,8 +7,8 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "refresh_tokens")
-class RefreshToken(user: User?): BaseModel() {
+class RefreshToken(
     @ManyToOne
     @JoinColumn(name = "fk_user")
     val user: User? = null
-}
+): BaseModel() {}

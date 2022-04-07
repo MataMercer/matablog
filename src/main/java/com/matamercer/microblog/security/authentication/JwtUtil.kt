@@ -10,11 +10,11 @@ import com.matamercer.microblog.web.error.exceptions.UserNotFoundException
 import io.jsonwebtoken.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.sql.Date
 import java.time.LocalDate
 import java.util.*
 import javax.crypto.SecretKey
+import javax.transaction.Transactional
 
 @Service
 class JwtUtil @Autowired constructor(
