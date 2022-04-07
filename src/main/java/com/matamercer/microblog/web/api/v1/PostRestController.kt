@@ -1,7 +1,6 @@
 package com.matamercer.microblog.web.api.v1
 
 import com.matamercer.microblog.models.entities.File
-import com.matamercer.microblog.models.entities.User
 import com.matamercer.microblog.security.CurrentUser
 import com.matamercer.microblog.security.UserPrincipal
 import com.matamercer.microblog.services.LikeService
@@ -74,7 +73,8 @@ class PostRestController @Autowired constructor(
     @PostMapping("/create")
     fun createNewPostForm(
         postRequestDto: @Valid PostRequestDto,
-        @RequestParam(name = "files", required = false) files: Array<MultipartFile>?, @CurrentUser userPrincipal: UserPrincipal
+        @RequestParam(name = "files", required = false) files: Array<MultipartFile>?,
+        @CurrentUser userPrincipal: UserPrincipal
     ): ResponseEntity<PostResponseDto> {
         val post = postService.createNewPost(postRequestDto, files ?: emptyArray(), userPrincipal.activeBlog)
         val location = ServletUriComponentsBuilder.fromCurrentRequest().path(
