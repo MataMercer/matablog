@@ -18,7 +18,7 @@ For more details, see [design doc](/docs/design.md) .
 
 # Trello Board (for both front and backend)
 
-[Trello](https://trello.com/invite/b/wtfTFGc1/9c5aed5c0a2dbc547c90858b2501ba59/matablog)
+[Trello Board Link](https://trello.com/b/wtfTFGc1/matablog)
 
 # Contact 
 - Discord: mes0marker#2033
