@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -24,27 +25,25 @@ class GithubOAuthService @Autowired constructor(
     private val userRepository: UserRepository,
     private val blogService: BlogService,
     private val jwtUtil: JwtUtil
-) {
+    ) {
     fun getOrCreateOauthUser(code: String): User? {
         val accessToken = getOauthAccessToken(code)
-        if (!accessToken.isNullOrBlank()) {
-            val oidcUser = getOidcUser(accessToken)
-            if (oidcUser != null) {
-                val existingOauthUser =
-                    userRepository.findByoAuth2IdAndAuthenticationProvider(oidcUser.id, AuthenticationProvider.GITHUB)
-                if (existingOauthUser.isPresent) {
+        if (!accessToken.isNullOrBlank()){
+            val oidcUser =getOidcUser(accessToken)
+            if(oidcUser!=null){
+               val existingOauthUser = userRepository.findByoAuth2IdAndAuthenticationProvider(oidcUser.id, AuthenticationProvider.GITHUB)
+                if (existingOauthUser.isPresent){
                     return existingOauthUser.get()
-                } else {
-                    val createdUser = userService.createUser(
-                        User(
-                            email = oidcUser.email,
-                            username = oidcUser.login,
-                            oAuth2Id = oidcUser.id,
-                            role = UserRole.BLOGGER,
-                            authenticationProvider = AuthenticationProvider.GITHUB
+                }
+                else{
+                    val createdUser = userService.createUser(User(
+                        email = oidcUser.email,
+                        username = oidcUser.login,
+                        oAuth2Id = oidcUser.id,
+                        role = UserRole.BLOGGER,
+                        authenticationProvider = AuthenticationProvider.GITHUB
 
-                        )
-                    )
+                    ))
                     blogService.createDefaultBlogForUser(createdUser)
                 }
             }
@@ -69,14 +68,14 @@ class GithubOAuthService @Autowired constructor(
                 .retrieve()
                 .bodyToMono(GithubAccessTokenResponseDto::class.java)
                 .block()?.accessToken
-        } catch (e: WebClientResponseException) {
+        }catch (e: WebClientResponseException){
             throw ResponseStatusException(HttpStatus.BAD_GATEWAY, "Github Oauth failed. Could not get access token.")
         }
 
     }
 
     fun getOidcUser(accessToken: String): GithubOauthUserResponseDto? {
-        try {
+        try{
             return WebClient.create("https://api.github.com/")
                 .get()
                 .uri("/user")
@@ -85,13 +84,14 @@ class GithubOAuthService @Autowired constructor(
                 .retrieve()
                 .bodyToMono(GithubOauthUserResponseDto::class.java)
                 .block()
-        } catch (e: WebClientResponseException) {
+        }
+        catch (e: WebClientResponseException){
             throw ResponseStatusException(HttpStatus.BAD_GATEWAY, "Github Oauth failed. Could not get Github user.")
         }
 
     }
 
-    fun getAuthentication(code: String): AuthenticationResponseDto? {
+    fun getAuthentication(code: String): AuthenticationResponseDto?{
         val oauthUser = getOrCreateOauthUser(code)
         oauthUser?.let {
             oauthUser.id?.let {
