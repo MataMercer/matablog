@@ -6,7 +6,6 @@ import com.matamercer.microblog.web.error.exceptions.RevokedRefreshTokenExceptio
 import com.matamercer.microblog.web.error.exceptions.UserAlreadyExistsException
 import com.matamercer.microblog.web.error.exceptions.UserNotFoundException
 import io.jsonwebtoken.ExpiredJwtException
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
