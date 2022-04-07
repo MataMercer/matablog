@@ -6,7 +6,7 @@ import com.matamercer.microblog.security.authorization.UserRole
 import com.matamercer.microblog.services.UserService
 import org.junit.After
 import org.junit.Before
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,11 +17,10 @@ import org.springframework.test.context.junit4.SpringRunner
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class PostControllerTest {
+class PostControllerTest(
+    private val userService: UserService?
+) {
     private var user: User? = null
-
-    @Autowired
-    private val userService: UserService? = null
     private var testRestTemplate: TestRestTemplate? = null
     @Before
     fun initData() {

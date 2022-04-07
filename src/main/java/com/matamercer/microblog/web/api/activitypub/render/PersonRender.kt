@@ -1,12 +1,13 @@
 package com.matamercer.microblog.web.api.activitypub.render
 
-class PersonRender : ActivityRender() {
-    var id: String? = null
-    var type = "Person"
-    var preferredUsername: String? = null
-    var name: String? = null
-    var inbox: String? = null
-    var outbox: String? = null
-    var liked: String? = null
-    var publicKey: KeyRender? = null
-}
+
+class PersonRender(
+    var id: String? = null,
+    val type: String? = "Person",
+    val preferredUsername: String? = null,
+    val name: String? = null,
+    var inbox: String? = null,
+    val outbox: String? = null,
+    val liked: String? = null,
+    val publicKey: KeyRender? = null
+) : ActivityRender()
