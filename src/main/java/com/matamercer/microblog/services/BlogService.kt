@@ -38,12 +38,9 @@ class BlogService @Autowired constructor(
         }
     }
 
-    fun getBlog(blogName: String): Blog {
-        val blog = blogRepository.findByBlogName(blogName)
-        return if (!blog!!.isPresent) {
+    fun getBlog(blogName: String): Blog? {
+        return blogRepository.findByBlogName(blogName)?.orElseThrow {
             throw NotFoundException("Blog with name $blogName is not found.")
-        } else {
-            blog.get()
         }
     }
 
