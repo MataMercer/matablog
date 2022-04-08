@@ -48,7 +48,10 @@ class Post(
     )
     var postTags: MutableSet<PostTag> = HashSet(),
 
-    @OneToMany(cascade = [CascadeType.ALL])
+    @OneToMany(cascade = [
+        CascadeType.PERSIST,
+        CascadeType.MERGE
+    ])
     @JoinColumn(name = "file_id")
     var attachments: MutableList<File> = ArrayList(),
 
