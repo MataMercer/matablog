@@ -29,12 +29,9 @@ class BlogService @Autowired constructor(
         userService.save(user)
     }
 
-    fun getBlog(id: Long): Blog {
-        val blog = blogRepository.findById(id)
-        return if (!blog.isPresent) {
+    fun getBlog(id: Long): Blog? {
+        return blogRepository.findById(id).orElseThrow {
             throw NotFoundException("Blog with id $id is not found.")
-        } else {
-            blog.get()
         }
     }
 
@@ -46,6 +43,6 @@ class BlogService @Autowired constructor(
 
     fun getBlogResponseDto(id: Long): BlogResponseDto {
         val blog = getBlog(id)
-        return blog.toBlogResponseDto()
+        return blog!!.toBlogResponseDto()
     }
 }
