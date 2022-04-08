@@ -2,6 +2,7 @@ package com.matamercer.microblog.storage
 
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.model.DeleteObjectRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.util.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +13,7 @@ import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.nio.file.Path
+import kotlin.io.path.name
 
 @Service("amazonS3Storage")
 class AmazonS3StorageService @Autowired constructor(private val s3: AmazonS3) : StorageService {
@@ -45,8 +47,14 @@ class AmazonS3StorageService @Autowired constructor(private val s3: AmazonS3) : 
         }
     }
 
-    //TODO implement this
-    override fun delete(filePath: Path) {}
+    //TODO check implement this
+    override fun delete(filePath: Path) {
+        try{
+            s3.deleteObject(filePath.parent.toString(), filePath.fileName.toString())
+        } catch (e: AmazonServiceException) {
+            throw IllegalStateException("Failed to delete file " + filePath.fileName + " from Amazon S3.", e)
+        }
+    }
 
     //TODO implement this
     override fun deleteAll() {}
