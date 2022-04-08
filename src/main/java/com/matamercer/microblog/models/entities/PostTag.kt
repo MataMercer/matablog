@@ -19,8 +19,4 @@ class PostTag(
 
     @Column(nullable = false, unique = true)
     var name: String? = null
-) : BaseModel() {
-    constructor(name: String) : this() {
-        this.name = name
-    }
-}
+) : BaseModel()
