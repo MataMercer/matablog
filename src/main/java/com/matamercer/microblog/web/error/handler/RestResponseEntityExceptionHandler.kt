@@ -6,7 +6,6 @@ import com.matamercer.microblog.web.error.exceptions.RevokedRefreshTokenExceptio
 import com.matamercer.microblog.web.error.exceptions.UserAlreadyExistsException
 import com.matamercer.microblog.web.error.exceptions.UserNotFoundException
 import io.jsonwebtoken.ExpiredJwtException
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -53,7 +52,7 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
     fun handleConstraintViolationException(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
         logger.error("400 Status Code", ex)
         val bodyOfResponse = GenericResponse(
-            messageSource!!.getMessage("auth.message.accessDenied", null, request.locale),
+            messageSource.getMessage("auth.message.accessDenied", null, request.locale),
             "AccessDenied"
         )
         return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
@@ -64,7 +63,7 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
     fun handleExpiredAccessToken(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
         logger.error("401 Status Code", ex)
         val bodyOfResponse = GenericResponse(
-            messageSource!!.getMessage("message.expiredAccessToken", null, request.locale),
+            messageSource.getMessage("message.expiredAccessToken", null, request.locale),
             "ExpiredAccessToken"
         )
         val headers = HttpHeaders()
@@ -77,7 +76,7 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
     fun handleRevokedRefreshToken(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
         logger.error("403 Status Code", ex)
         val bodyOfResponse = GenericResponse(
-            messageSource!!.getMessage("message.revokedRefreshToken", null, request.locale),
+            messageSource.getMessage("message.revokedRefreshToken", null, request.locale),
             "RevokedRefreshToken"
         )
         return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.FORBIDDEN, request)
@@ -87,7 +86,7 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
     fun handleAccessDenied(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
         logger.error("403 Status Code", ex)
         val bodyOfResponse = GenericResponse(
-            messageSource!!.getMessage("auth.message.accessDenied", null, request.locale),
+            messageSource.getMessage("auth.message.accessDenied", null, request.locale),
             "AccessDenied"
         )
         return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.FORBIDDEN, request)
@@ -98,7 +97,7 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
     fun handleUserNotFound(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
         logger.error("404 Status Code", ex)
         val bodyOfResponse =
-            GenericResponse(messageSource!!.getMessage("message.userNotFound", null, request.locale), "UserNotFound")
+            GenericResponse(messageSource.getMessage("message.userNotFound", null, request.locale), "UserNotFound")
         return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.NOT_FOUND, request)
     }
 
@@ -107,7 +106,7 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
     fun handleUserAlreadyExist(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
         logger.error("409 Status Code", ex)
         val bodyOfResponse =
-            GenericResponse(messageSource!!.getMessage("message.regError", null, request.locale), "UserAlreadyExist")
+            GenericResponse(messageSource.getMessage("message.regError", null, request.locale), "UserAlreadyExist")
         return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.CONFLICT, request)
     }
 
@@ -115,7 +114,7 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
     fun handleResourceAlreadyExist(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
         logger.error("409 Status Code", ex)
         val bodyOfResponse = GenericResponse(
-            messageSource!!.getMessage("message.regError", null, request.locale),
+            messageSource.getMessage("message.regError", null, request.locale),
             "ResourceAlreadyExist"
         )
         return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.CONFLICT, request)
@@ -126,7 +125,7 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
     fun handleMail(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
         logger.error("500 Status Code", ex)
         val bodyOfResponse =
-            GenericResponse(messageSource!!.getMessage("message.email.config.error", null, request.locale), "MailError")
+            GenericResponse(messageSource.getMessage("message.email.config.error", null, request.locale), "MailError")
         return ResponseEntity(bodyOfResponse, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 }

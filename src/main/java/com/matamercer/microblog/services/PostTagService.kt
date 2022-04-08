@@ -24,7 +24,7 @@ class PostTagService @Autowired constructor(private val postTagRepository: PostT
     }
 
     fun getTags(postTagNames: List<String>): Set<PostTag> {
-        return postTagNames.stream().map { name: String -> getTag(name) }.collect(Collectors.toSet())
+        return postTagNames.map { name: String -> getTag(name) }.toSet()
     }
 
     fun getTopTagsByPosts(blog: Blog, page: Int, pageSize: Int): Map<PostTag, Int>? {

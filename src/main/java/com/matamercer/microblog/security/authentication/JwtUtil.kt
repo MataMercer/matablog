@@ -36,15 +36,13 @@ class JwtUtil @Autowired constructor(
     }
 
     private fun createAccessTokenHelper(optionalUser: Optional<User>): String {
-        return if (optionalUser.isPresent) {
-            val user = optionalUser.get()
-            jwtConfig.tokenPrefix + createToken(
-                getUserClaims(user.id, user.username, user.role, user.activeBlog?.id),
-                addHoursToCurrentDate(jwtConfig.accessTokenExpirationInHours)
-            )
-        } else {
+        val user = optionalUser.orElseThrow {
             throw UserNotFoundException("Error creating access token. User not found.")
         }
+        return jwtConfig.tokenPrefix + createToken(
+            getUserClaims(user.id, user.username, user.role, user.activeBlog?.id),
+            addHoursToCurrentDate(jwtConfig.accessTokenExpirationInHours)
+        )
     }
 
     @Transactional
@@ -69,18 +67,16 @@ class JwtUtil @Autowired constructor(
     }
 
     private fun createRefreshTokenHelper(optionalUser: Optional<User>): String {
-        return if (optionalUser.isPresent) {
-            val user = optionalUser.get()
-            val refreshTokenEntity = refreshTokenRepository.save(RefreshToken(user))
-            val claims = getUserClaims(user.id, user.username, user.role, user.activeBlog?.id)
-            claims["refreshTokenEntityId"] = refreshTokenEntity.id.toString()
-            createToken(
-                claims,
-                Date.valueOf(LocalDate.now().plusDays(jwtConfig.refreshTokenExpirationInDays.toLong()))
-            )
-        } else {
+        val user = optionalUser.orElseThrow {
             throw UserNotFoundException("Error creating refresh token. User not found.")
         }
+        val refreshTokenEntity = refreshTokenRepository.save(RefreshToken(user))
+        val claims = getUserClaims(user.id, user.username, user.role, user.activeBlog?.id)
+        claims["refreshTokenEntityId"] = refreshTokenEntity.id.toString()
+        return createToken(
+            claims,
+            Date.valueOf(LocalDate.now().plusDays(jwtConfig.refreshTokenExpirationInDays.toLong()))
+        )
     }
 
     private fun getUserClaims(

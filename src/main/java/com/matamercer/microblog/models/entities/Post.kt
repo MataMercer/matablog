@@ -1,16 +1,5 @@
 package com.matamercer.microblog.models.entities
 
-import lombok.NoArgsConstructor
-import com.matamercer.microblog.models.entities.Blog
-import com.matamercer.microblog.models.entities.BaseModel
-import com.matamercer.microblog.models.entities.PostTag
-import java.util.HashSet
-import com.matamercer.microblog.models.entities.Post
-import com.matamercer.microblog.models.entities.Like
-import jdk.jfr.Enabled
-import lombok.Getter
-import lombok.Setter
-import java.util.ArrayList
 import javax.persistence.*
 
 @Entity

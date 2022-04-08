@@ -1,10 +1,9 @@
 package com.matamercer.microblog.security.authorization
 
 import com.google.common.collect.Sets
-import lombok.Getter
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
-enum class UserRole( val permissions: Set<UserAuthority>) {
+enum class UserRole(val permissions: Set<UserAuthority>) {
     READER(
         Sets.newHashSet(
             UserAuthority.FILE_READ,
