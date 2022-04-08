@@ -117,10 +117,10 @@ class PostService @Autowired constructor(
     )
     fun deletePost(post: Post) {
         checkOwnership(post)
-        postRepository.delete(post)
         post.attachments.forEach {
             it.id?.let { id -> fileService.deleteFile(id) }
         }
+        postRepository.delete(post)
     }
 
     fun deletePost(id: Long) {
