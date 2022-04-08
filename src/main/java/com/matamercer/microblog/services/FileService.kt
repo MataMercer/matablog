@@ -27,18 +27,15 @@ class FileService @Autowired constructor(
     @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).FILE_CREATE.toString())")
     fun createFile(multipartFile: MultipartFile, blog: Blog?): File {
         var file = File()
-        file.name = StringUtils.cleanPath(multipartFile.originalFilename)
+        file.name = StringUtils.cleanPath(multipartFile.originalFilename!!)
         file = fileRepository.save(file)
         storageService.store(Paths.get(file.id.toString()), multipartFile)
         return file
     }
 
     fun getFile(fileId: Long): File {
-        val file = fileRepository.findById(fileId)
-        return if (!file.isPresent) {
+        return fileRepository.findById(fileId).orElseThrow {
             throw NotFoundException("File with id $fileId is not found.")
-        } else {
-            file.get()
         }
     }
 
