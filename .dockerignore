@@ -1,0 +1,7 @@
+# IntelliJ
+.idea
+ide
+
+**/target/
+
+**/.md

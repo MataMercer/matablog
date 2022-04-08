@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -31,25 +32,24 @@ class UserController @Autowired constructor(
     ): String {
         val locale = request.locale
         val verificationToken = userService.getVerificationToken(token)
-        if (verificationToken == null) {
+        return if (verificationToken == null) {
             val message = messageSource.getMessage("auth.message.invalidToken", null, locale)
-            model.addAttribute("message", message)
-            return "redirect:/badUser.html?lang=" + locale.language
-        }
-        val user = verificationToken.user
-        val cal = Calendar.getInstance()
-        if (verificationToken.expiryDate.time - cal.time.time <= 0) {
+            model["message"] = message
+            "redirect:/badUser.html?lang=" + locale.language
+        } else if ((verificationToken.expiryDate.time.minus(Calendar.getInstance().time.time)) <= 0) {
             val messageValue = messageSource.getMessage("auth.message.expired", null, locale)
-            model.addAttribute("message", messageValue)
-            return "redirect:/baduser.html?lang=" + locale.language
+            model["message"] = messageValue
+            "redirect:/baduser.html?lang=" + locale.language
+        } else {
+            val user = verificationToken.user
+            user!!.enabled = true
+            userRepository.save(user)
+            redirectAttributes.addFlashAttribute(
+                "message",
+                messageSource.getMessage("message.regSuccConfirmed", null, locale)
+            )
+            "redirect:/login"
         }
-        user!!.enabled = true
-        userRepository.save(user)
-        redirectAttributes.addFlashAttribute(
-            "message",
-            messageSource.getMessage("message.regSuccConfirmed", null, locale)
-        )
-        return "redirect:/login"
     }
 
     companion object {

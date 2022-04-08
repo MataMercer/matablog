@@ -29,26 +29,20 @@ class BlogService @Autowired constructor(
         userService.save(user)
     }
 
-    fun getBlog(id: Long): Blog {
-        val blog = blogRepository.findById(id)
-        return if (!blog.isPresent) {
+    fun getBlog(id: Long): Blog? {
+        return blogRepository.findById(id).orElseThrow {
             throw NotFoundException("Blog with id $id is not found.")
-        } else {
-            blog.get()
         }
     }
 
-    fun getBlog(blogName: String): Blog {
-        val blog = blogRepository.findByBlogName(blogName)
-        return if (!blog!!.isPresent) {
+    fun getBlog(blogName: String): Blog? {
+        return blogRepository.findByBlogName(blogName)?.orElseThrow {
             throw NotFoundException("Blog with name $blogName is not found.")
-        } else {
-            blog.get()
         }
     }
 
     fun getBlogResponseDto(id: Long): BlogResponseDto {
         val blog = getBlog(id)
-        return blog.toBlogResponseDto()
+        return blog!!.toBlogResponseDto()
     }
 }

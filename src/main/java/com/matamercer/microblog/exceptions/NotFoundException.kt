@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 class NotFoundException : RuntimeException {
     override var message: String? = null
 
-    constructor() {}
+    constructor()
     constructor(message: String?) {
         this.message = message
     }
