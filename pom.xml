@@ -60,10 +60,25 @@
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ninja-squad</groupId>
+			<artifactId>springmockk</artifactId>
+			<version>3.1.0</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -127,11 +142,6 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.2</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -222,13 +232,11 @@
 			</plugin>
         </plugins>
 	</build>
-
 	<profiles>
 		<profile>
 			<id>production</id>
 			<properties>
 			</properties>
-
 			<build>
 				<plugins>
 					<plugin>
@@ -242,7 +250,6 @@
 				</plugins>
 			</build>
 		</profile>
-
 		<profile>
 			<id>dev</id>
 			<properties>
@@ -252,7 +259,6 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
-
 		<profile>
 			<id>prod</id>
 			<properties>

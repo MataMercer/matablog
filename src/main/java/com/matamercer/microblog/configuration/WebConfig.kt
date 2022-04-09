@@ -47,7 +47,7 @@ class WebConfig : WebMvcConfigurer {
     //File Storage
     @Bean
     fun init(@Qualifier("fileSystemStorage") storageService: StorageService): CommandLineRunner {
-        return CommandLineRunner { args: Array<String?>? ->
+        return CommandLineRunner {
             storageService.init()
         }
     }
@@ -87,9 +87,9 @@ class WebConfig : WebMvcConfigurer {
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
         configuration.allowCredentials = true
-        configuration.allowedOrigins = Arrays.asList("http://localhost:3000")
-        configuration.allowedMethods = Arrays.asList("GET", "POST", "PUT", "DELETE")
-        configuration.allowedHeaders = Arrays.asList(
+        configuration.allowedOrigins = listOf("http://localhost:3000")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
+        configuration.allowedHeaders = listOf(
             "X-Requested-With",
             "Origin",
             "Access-Control-Allow-Origin",
@@ -102,7 +102,7 @@ class WebConfig : WebMvcConfigurer {
         )
 
         // This allow us to expose the headers
-        configuration.exposedHeaders = Arrays.asList(
+        configuration.exposedHeaders = listOf(
             "Access-Control-Allow-Headers",
             "Authorization",
             "authorization",

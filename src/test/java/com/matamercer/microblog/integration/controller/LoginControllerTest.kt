@@ -9,11 +9,12 @@ import com.matamercer.microblog.security.authorization.UserRole
 import com.matamercer.microblog.services.UserService
 import com.matamercer.microblog.utilities.EnvironmentUtil
 import com.matamercer.microblog.web.api.v1.dto.requests.LoginUserRequestDto
+import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpHeaders
@@ -22,11 +23,10 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
 import java.net.URI
 import java.net.UnknownHostException
 
-@RunWith(SpringRunner::class)
+@ExtendWith(MockKExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class LoginControllerTest(
@@ -42,7 +42,7 @@ class LoginControllerTest(
     private var user: User? = null
     private var unencodedPassword: String? = null
 
-    @Before
+    @BeforeEach
     fun initData() {
         unencodedPassword = "password"
         user = User(
@@ -56,7 +56,7 @@ class LoginControllerTest(
         testRestTemplate = TestRestTemplate()
     }
 
-    @After
+    @AfterEach
     fun disposeData() {
         userRepository!!.deleteById(user!!.id)
     }
