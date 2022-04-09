@@ -57,7 +57,7 @@ class JwtUtil @Autowired constructor(
         return createRefreshTokenHelper(optionalUser)
     }
 
-    private fun createToken(claims: Map<String, *>, exp: java.util.Date): String {
+    private fun createToken(claims: Map<String, String>, exp: java.util.Date): String {
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(Date())

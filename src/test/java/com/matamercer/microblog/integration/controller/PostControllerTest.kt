@@ -4,17 +4,16 @@ import com.matamercer.microblog.models.entities.AuthenticationProvider
 import com.matamercer.microblog.models.entities.User
 import com.matamercer.microblog.security.authorization.UserRole
 import com.matamercer.microblog.services.UserService
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
+import io.mockk.junit5.MockKExtension
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
 
-@RunWith(SpringRunner::class)
+@ExtendWith(MockKExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class PostControllerTest(
@@ -22,7 +21,8 @@ class PostControllerTest(
 ) {
     private var user: User? = null
     private var testRestTemplate: TestRestTemplate? = null
-    @Before
+
+    @BeforeEach
     fun initData() {
         user = User(
             "username@gmail.com",
@@ -35,7 +35,7 @@ class PostControllerTest(
         testRestTemplate = TestRestTemplate()
     }
 
-    @After
+    @AfterEach
     fun disposeData() {
         userService!!.delete(user!!)
     }

@@ -10,37 +10,51 @@ import com.matamercer.microblog.services.BlogService
 import com.matamercer.microblog.services.FileService
 import com.matamercer.microblog.services.PostService
 import com.matamercer.microblog.services.PostTagService
-import org.junit.Before
-import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
+import com.matamercer.microblog.web.api.v1.dto.requests.PostRequestDto
+import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.mockkClass
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.web.multipart.MultipartFile
 
-@RunWith(SpringRunner::class)
+@ExtendWith(MockKExtension::class)
 @ActiveProfiles("Test")
 class PostServiceTest {
-    private var postService: PostService? = null
-    private var post: Post? = null
+    @MockK
+    private lateinit var postService: PostService
+
+    @MockK
+    private lateinit var postRepository: PostRepository
+
+    @MockK
+    private lateinit var postTagService: PostTagService
+
+    @MockK
+    private lateinit var blogService: BlogService
+
+    @MockK
+    private lateinit var fileService: FileService
+    private lateinit var post: Post
     private var user: User? = null
-    @Before
+
+    @BeforeEach
     fun setup() {
+        clearAllMocks()
         post = Post(
-            Mockito.mock(Blog::class.java),
+            mockkClass(Blog::class),
             "title",
             "content",
             false,
             false, true
         )
-        post!!.id = 1L
-        val postRepository: PostRepository = Mockito.mock<PostRepository>(PostRepository::class.java)
-        Mockito.`when`<Post>(postRepository.save<Post>(ArgumentMatchers.any<Post>(Post::class.java)))
-            .thenAnswer(Answer<Any> { i: InvocationOnMock -> i.getArguments().get(0) })
-        val postTagService: PostTagService = Mockito.mock<PostTagService>(PostTagService::class.java)
-        val blogService: BlogService = Mockito.mock<BlogService>(BlogService::class.java)
-        val fileService: FileService = Mockito.mock<FileService>(FileService::class.java)
+        post.id = 1L
         user = User(
             "username@gmail.com",
             "username",
@@ -54,26 +68,20 @@ class PostServiceTest {
             blogService,
             fileService,
         )
-    } //   @Test
-    //   public void whenCreatePost_returnCreatedPost(){
-    //      PostRequestDto postRequestDto = new PostRequestDto();
-    //      postRequestDto.setContent(post.getContent());
-    //      postRequestDto.setTitle(post.getTitle());
-    //      MultipartFile[] files = new MultipartFile[0];
-    //      Post createdPost = postService.createNewPost(postRequestDto, files, user.getActiveBlog());
-    //      assertThat(createdPost.getContent()).isEqualTo(postRequestDto.getContent());
-    //      assertThat(createdPost.getTitle()).isEqualTo(postRequestDto.getTitle());
-    //   }
-    //
-    //   @Test
-    //   public void whenConvertPost_returnResponseDto(){
-    //      PostRequestDto postRequestDto = new PostRequestDto();
-    //      postRequestDto.setContent(post.getContent());
-    //      postRequestDto.setTitle(post.getTitle());
-    //      MultipartFile[] files = new MultipartFile[0];
-    //      Post createdPost = postService.createNewPost(postRequestDto, files, user.getActiveBlog());
-    //
-    //      PostResponseDto postResponseDto = postService.convertEntityToDtoResponse(createdPost);
-    //      assertThat(postResponseDto.getContent()).isEqualTo(createdPost.getContent());
-    //   }
-}
+    }
+
+    @Test
+    fun whenCreatePost_returnCreatedPost() {
+        val postRequestDto = PostRequestDto(sensitive = true)
+        postRequestDto.content = post.content
+        postRequestDto.title = post.title
+        val blog = Blog()
+        blog.id = 1L
+        post.blog = blog
+        val files = emptyArray<MultipartFile>()
+        every { postRepository.save(any()) } returns post
+        val createdPost = postService.createNewPost(postRequestDto, files, blog)
+        assertThat(createdPost.content).isEqualTo(postRequestDto.content)
+        assertThat(createdPost.title).isEqualTo(postRequestDto.title)
+    }
+ }
