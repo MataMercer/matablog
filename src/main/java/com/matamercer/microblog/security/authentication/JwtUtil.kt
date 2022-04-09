@@ -39,7 +39,7 @@ class JwtUtil @Autowired constructor(
         val user = optionalUser.orElseThrow {
             throw UserNotFoundException("Error creating access token. User not found.")
         }
-        return jwtConfig.tokenPrefix + createToken(
+        return createToken(
             getUserClaims(user.id, user.username, user.role, user.activeBlog?.id),
             addHoursToCurrentDate(jwtConfig.accessTokenExpirationInHours)
         )
