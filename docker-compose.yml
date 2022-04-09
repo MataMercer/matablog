@@ -11,7 +11,7 @@ services:
       - external_network
     command: mvn spring-boot:run
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=prod
   redis:
     restart: always
     image: "redis:alpine"

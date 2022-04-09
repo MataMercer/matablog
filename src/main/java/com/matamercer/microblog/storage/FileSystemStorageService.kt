@@ -66,7 +66,8 @@ class FileSystemStorageService @Autowired constructor(properties: StorageConfig)
 
     override fun delete(filePath: Path) {
         try {
-            FileSystemUtils.deleteRecursively(rootLocation.resolve(filePath).toAbsolutePath())
+            FileSystemUtils.deleteRecursively(rootLocation.resolve(filePath).toAbsolutePath().parent)
+
         } catch (e: IOException) {
             throw StorageFileNotFoundException("Could not read file: " + filePath.fileName, e)
         }
