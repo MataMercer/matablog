@@ -21,7 +21,7 @@ spring:
     locations: classpath:/db/migration,classpath:/db/testdata
     baseline-on-migrate: true
   datasource:
-    url: jdbc:postgresql://db:5432/microblog
+    url: jdbc:postgresql://127.0.0.1:5432/microblog
     username: postgres
     password: password
   jpa:
@@ -53,7 +53,7 @@ spring:
     host: redis
     port: 6379
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/microblog
+    url: jdbc:postgresql://db:5432/microblog
     username: postgres
     password: password
   config:

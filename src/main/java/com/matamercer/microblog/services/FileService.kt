@@ -58,6 +58,6 @@ class FileService @Autowired constructor(
     }
 
     private fun getPath(file: File): Path {
-        return Paths.get(file.id.toString() + "\\" + file.name)
+        return Paths.get(file.id.toString() + "/" + file.name)
     }
 }

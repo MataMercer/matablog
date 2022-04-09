@@ -32,7 +32,8 @@ import java.util.*
 class PostService @Autowired constructor(
     private val postRepository: PostRepository,
     private val postTagService: PostTagService,
-    private val blogService: BlogService, private val fileService: FileService,
+    private val blogService: BlogService,
+    private val fileService: FileService,
 ) {
     @Caching(evict = [CacheEvict(value = arrayOf(CACHE_NAME_PAGE), allEntries = true)])
     fun createNewPost(postRequestDTO: PostRequestDto, files: Array<MultipartFile>, blog: Blog): PostResponseDto {
@@ -116,14 +117,15 @@ class PostService @Autowired constructor(
     )
     fun deletePost(post: Post) {
         checkOwnership(post)
+        post.attachments.forEach {
+            it.id?.let { id -> fileService.deleteFile(id) }
+        }
         postRepository.delete(post)
     }
 
     fun deletePost(id: Long) {
-        checkOwnership(getPost(id))
-        postRepository.deleteById(id)
+        deletePost(getPost(id))
     }
-
 
     //    @Cacheable(value = CACHE_NAME_PAGE, key = "T(java.lang.String).valueOf(#page).concat('-').concat(#pageSize)")
     fun searchPosts(
