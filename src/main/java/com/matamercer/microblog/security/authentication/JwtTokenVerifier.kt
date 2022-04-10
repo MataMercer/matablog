@@ -59,9 +59,7 @@ class JwtTokenVerifier(
                 null,
                 simpleGrantedAuthorities
             )
-            authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication
-            println(authentication.details)
         } catch (e: AuthenticationException) {
             request.setAttribute("exception", e)
         }
