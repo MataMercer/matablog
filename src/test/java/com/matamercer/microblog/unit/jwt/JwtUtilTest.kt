@@ -91,8 +91,9 @@ class JwtUtilTest {
 
     @Test
     fun whenCreateRefreshToken_returnValidRefreshToken() {
-        val token = jwtUtil.createRefreshToken(user.id!!)
-        val claims = jwtUtil.extractAllClaims(token)
+        var rToken = jwtUtil.createRefreshToken(user.id!!)
+        rToken = rToken.substring(6)
+        val claims = jwtUtil.extractAllClaims(rToken)
         assertThat(jwtUtil.isTokenExpired(claims)).isFalse
         assertThat(jwtUtil.getUserId(claims)).isEqualTo(user.id)
         assertThat(jwtUtil.getUserName(claims)).isEqualTo(user.username)

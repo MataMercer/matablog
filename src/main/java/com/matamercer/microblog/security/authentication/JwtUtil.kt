@@ -73,7 +73,7 @@ class JwtUtil @Autowired constructor(
         val refreshTokenEntity = refreshTokenRepository.save(RefreshToken(user))
         val claims = getUserClaims(user.id, user.username, user.role, user.activeBlog?.id)
         claims["refreshTokenEntityId"] = refreshTokenEntity.id.toString()
-        return createToken(
+        return "Bearer" + createToken(
             claims,
             Date.valueOf(LocalDate.now().plusDays(jwtConfig.refreshTokenExpirationInDays.toLong()))
         )
