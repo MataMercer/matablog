@@ -79,7 +79,8 @@ class JwtUtilTest {
 
     @Test
     fun whenCreateAccessToken_returnValidAccessToken() {
-        val token = jwtUtil.createAccessToken(user.id!!)
+        var token = jwtUtil.createAccessToken(user.id!!)
+        token = token.substring(6)
         val claims = jwtUtil.extractAllClaims(token)
         assertThat(jwtUtil.getUserId(claims)).isEqualTo(user.id)
         assertThat(jwtUtil.getUserName(claims)).isEqualTo(user.username)
@@ -91,9 +92,9 @@ class JwtUtilTest {
 
     @Test
     fun whenCreateRefreshToken_returnValidRefreshToken() {
-        var rToken = jwtUtil.createRefreshToken(user.id!!)
-        rToken = rToken.substring(6)
-        val claims = jwtUtil.extractAllClaims(rToken)
+        var token = jwtUtil.createRefreshToken(user.id!!)
+        token = token.substring(6)
+        val claims = jwtUtil.extractAllClaims(token)
         assertThat(jwtUtil.isTokenExpired(claims)).isFalse
         assertThat(jwtUtil.getUserId(claims)).isEqualTo(user.id)
         assertThat(jwtUtil.getUserName(claims)).isEqualTo(user.username)

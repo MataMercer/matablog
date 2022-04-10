@@ -7,7 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class UserPrincipal(
-    private var id: Long,
+    var id: Long,
     private var username: String = "",
     private var password: String? = null,
     private var isAccountNonExpired: Boolean = true,
