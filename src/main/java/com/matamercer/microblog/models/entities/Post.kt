@@ -37,7 +37,9 @@ class Post(
     )
     var postTags: MutableSet<PostTag> = HashSet(),
 
-    @OneToMany(cascade = [CascadeType.ALL])
+    @OneToMany(cascade = [
+        CascadeType.ALL
+    ])
     @JoinColumn(name = "file_id")
     var attachments: MutableList<File> = ArrayList(),
 
@@ -45,7 +47,8 @@ class Post(
     @JoinColumn(name = "post_id")
     var parentPost: Post? = null,
 
-    @OneToMany(mappedBy = "parentPost")
+    @OneToMany(mappedBy = "parentPost", cascade = [CascadeType.ALL]
+    )
     var replies: MutableList<Post> = ArrayList(),
 
     @OneToMany(mappedBy = "post", cascade = [CascadeType.ALL])

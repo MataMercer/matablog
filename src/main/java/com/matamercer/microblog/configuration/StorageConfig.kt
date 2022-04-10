@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration
 @ConfigurationProperties("storage")
 class StorageConfig {
     //FileSystem Settings
-    var location = "upload-dir\\"
+    var location = "upload-dir"
 
     //AWS3 Settings
     @Bean
