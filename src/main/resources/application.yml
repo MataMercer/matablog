@@ -58,7 +58,7 @@ spring:
     password: password
   config:
     activate:
-      on-profile: prod
+      on-profile: docker
 ---
 spring:
   config:

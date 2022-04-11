@@ -1,29 +1,62 @@
-# How To Use
+# How to Build MataBlog (WIP)
 
-## Production
-Have docker-compose on your computer. I discourage running this on Windows 10 Home unless you have a powerful computer. It is VERY
-slow due to running the app on the WSL 2 Virtual Machine. A Linux machine is recommended for this. 
+## Overview
+Matablog is currently not ready for production. This guide is only for development.
 
-Clone the repository.
+## Tools
+All tools listed are free to download. Make sure you have all these before proceeding.
 
-`cd microblog`
+### Backend
+- IntelliJ 
+- Docker
+- Git
+### Frontend
+- VSCode
+- NodeJS
+- Yarn
+- Git
+
+## Run Matablog API
+
+Clone the repository and go into it
+
+`git clone https://github.com/MataMercer/matablog.git`
+
+`cd matablog/microblog`
+
+Run docker compose. This starts the matablog app, database, and cache containers all in one. API will be available
+on port 8080.
 
 `docker-compose up`
 
-Docker should run everything automatically after it builds microblog. Note: currently I haven't 
-configured Profiles properly yet. You must change the postgres and redis IPs to 127.0.0.1.
+### Debug
+In IntelliJ
+- Run -> Edit Configurations...
+- In run config, add Remote JVM Debug config by clicking + button.
+- In "Before Launch" make sure run Docker Compose is added.
 
-## Development (Build + Run Microblog natively (use Docker for Postgres/Redis still))
+## Configuring Matablog API
+### Github Oauth Support
 
-Run Postgres in Docker
+TODO
 
-`docker run --name postgres-desktop-microblog -e POSTGRES_PASSWORD=password -e POSTGRES_USER=postgres -e POSTGRES_DB=microblog -p 5432:5432 -d postgres:alpine`
+## Run Matablog Frontend
+Download the front end web app repository and go into it.
 
-Run Redis in Docker
+`git clone https://github.com/MataMercer/matablog-frontend.git`
 
-`docker run --name redis-desktop-microblog -p 6379:6379 -d redis:alpine`
+`cd matablog-frontend`
 
-Git clone the repository to your PC.
-Run npm run dev in the resources/static folder to build react code. 
+Install dependencies
 
-Open the project in Intellij or VSCode and build with maven and run it.
+`yarn install`
+
+Start the client
+
+`yarn dev`
+
+Go to `localhost:3000` in your browser to see the web page. 
+
+## Questions / Concerns
+
+Create an issue or a discussion in Matablog repository if you have any trouble. 
