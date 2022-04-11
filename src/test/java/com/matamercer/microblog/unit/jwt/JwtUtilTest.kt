@@ -28,7 +28,7 @@ class JwtUtilTest {
 
     private val jwtConfigSecretKey: String = "securesecuresecuresecuresecuresecuresecuresecuresecuresecuresecure"
 
-    private val jwtConfigTokenPrefix: String = "Bearer"
+    private val jwtConfigTokenPrefix: String = "Bearer "
 
     private val jwtConfigRefreshTokenExpirationInDays: Int = 10
 
@@ -80,7 +80,7 @@ class JwtUtilTest {
     @Test
     fun whenCreateAccessToken_returnValidAccessToken() {
         var token = jwtUtil.createAccessToken(user.id!!)
-        token = token.substring(6)
+        token = token.substring(7)
         val claims = jwtUtil.extractAllClaims(token)
         assertThat(jwtUtil.getUserId(claims)).isEqualTo(user.id)
         assertThat(jwtUtil.getUserName(claims)).isEqualTo(user.username)
@@ -93,7 +93,6 @@ class JwtUtilTest {
     @Test
     fun whenCreateRefreshToken_returnValidRefreshToken() {
         var token = jwtUtil.createRefreshToken(user.id!!)
-        token = token.substring(6)
         val claims = jwtUtil.extractAllClaims(token)
         assertThat(jwtUtil.isTokenExpired(claims)).isFalse
         assertThat(jwtUtil.getUserId(claims)).isEqualTo(user.id)

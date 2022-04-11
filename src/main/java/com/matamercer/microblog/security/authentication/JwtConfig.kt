@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties(prefix = "application.jwt")
 class JwtConfig {
     var secretKey: String? = null
-    var tokenPrefix: String = "Bearer"
+    var tokenPrefix: String = "Bearer "
     var refreshTokenExpirationInDays: Int = 0
     var accessTokenExpirationInHours: Int = 0
     val authorizationHeader: String

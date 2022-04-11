@@ -28,13 +28,13 @@ class JwtTokenVerifier(
     ) {
         val authorizationHeader = request.getHeader(jwtConfig.authorizationHeader)
         if (authorizationHeader.isEmpty() || !authorizationHeader.startsWith(
-                "Bearer"
+                jwtConfig.tokenPrefix
             )
         ) {
             filterChain.doFilter(request, response)
             return
         }
-        val token = authorizationHeader.replace("Bearer", "")
+        val token = authorizationHeader.replace(jwtConfig.tokenPrefix, "")
         try {
             val body = jwtUtil.extractAllClaims(token)
             val userId = body["userId"].toString().toLong()
