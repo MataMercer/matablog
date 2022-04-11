@@ -40,7 +40,7 @@ class PostControllerTest(
         userService!!.delete(user!!)
     }
 
-    @Test
-    fun createPost_thenReturnOk() {
-    }
+//    @Test
+//    fun createPost_thenReturnOk() {
+//    }
 }
