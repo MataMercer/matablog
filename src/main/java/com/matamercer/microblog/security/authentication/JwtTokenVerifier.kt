@@ -1,13 +1,12 @@
 package com.matamercer.microblog.security.authentication
 
-import com.google.common.base.Strings
 import com.matamercer.microblog.models.entities.Blog
 import com.matamercer.microblog.security.UserPrincipal
 import com.matamercer.microblog.security.authorization.UserRole
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
 import javax.crypto.SecretKey
@@ -28,14 +27,14 @@ class JwtTokenVerifier(
         filterChain: FilterChain
     ) {
         val authorizationHeader = request.getHeader(jwtConfig.authorizationHeader)
-        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader!!.startsWith(
-                jwtConfig.tokenPrefix!!
+        if (authorizationHeader.isEmpty() || !authorizationHeader.startsWith(
+                "Bearer"
             )
         ) {
             filterChain.doFilter(request, response)
             return
         }
-        val token = authorizationHeader.replace(jwtConfig.tokenPrefix!!, "")
+        val token = authorizationHeader.replace("Bearer", "")
         try {
             val body = jwtUtil.extractAllClaims(token)
             val userId = body["userId"].toString().toLong()
@@ -48,13 +47,14 @@ class JwtTokenVerifier(
 
             val activeBlog = Blog()
             activeBlog.id = activeBlogId
-            val userPrincipal= UserPrincipal(
+            val userPrincipal = UserPrincipal(
                 id = userId,
-                username=username,
+                username = username,
                 activeBlog = activeBlog,
-                role = userRole )
+                role = userRole
+            )
 
-            val authentication: Authentication = UsernamePasswordAuthenticationToken(
+            val authentication = UsernamePasswordAuthenticationToken(
                 userPrincipal,
                 null,
                 simpleGrantedAuthorities
