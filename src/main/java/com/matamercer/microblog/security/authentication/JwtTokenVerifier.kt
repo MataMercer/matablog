@@ -1,5 +1,6 @@
 package com.matamercer.microblog.security.authentication
 
+import com.google.common.base.Strings
 import com.matamercer.microblog.models.entities.Blog
 import com.matamercer.microblog.security.UserPrincipal
 import com.matamercer.microblog.security.authorization.UserRole
@@ -27,8 +28,8 @@ class JwtTokenVerifier(
         filterChain: FilterChain
     ) {
         val authorizationHeader = request.getHeader(jwtConfig.authorizationHeader)
-        if (authorizationHeader.isEmpty() || !authorizationHeader.startsWith(
-                jwtConfig.tokenPrefix
+        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader!!.startsWith(
+                jwtConfig.tokenPrefix!!
             )
         ) {
             filterChain.doFilter(request, response)
