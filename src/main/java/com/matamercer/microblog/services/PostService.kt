@@ -42,13 +42,6 @@ class PostService @Autowired constructor(
         return post.toPostResponseDto()
     }
 
-//    @Caching(evict = [CacheEvict(value = arrayOf(CACHE_NAME_PAGE), allEntries = true)])
-//    fun createReplyPost(postRequestDTO: PostRequestDto, files: Array<MultipartFile>, blog: Blog): PostResponseDto {
-//        val post = createPostHelper(postRequestDTO, files, blog)
-//        postRequestDTO.parentPostId?.let { addReplyToParentPost(it.toLong(), post) }
-//        return post.toPostResponseDto()
-//    }
-
     private fun createPostHelper(postRequestDTO: PostRequestDto, files: Array<MultipartFile>, blog: Blog): Post {
         val post = postRequestDTO.toPost()
         post.blog = blog
