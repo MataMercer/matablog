@@ -12,18 +12,6 @@ ARG JAR_FILE=/app/target/matablog-*.jar
 ARG PROFILE="docker"
 ENV profile_env ${PROFILE}
 
-#ARG DB_HOSTNAME
-#ENV db_hostname_env ${DB_HOSTNAME}
-#ARG DB_PORT
-#ENV db_port_env ${DB_PORT}
-#ARG DB_NAME
-#ENV db_name_env ${DB_NAME}
-#ARG DB_USERNAME
-#ENV db_username_env ${DB_USERNAME}
-#ARG DB_PASSWORD
-#ENV db_password_env ${DB_PASSWORD}
-ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005
-
 COPY --from=builder $JAR_FILE /opt/app.jar
 WORKDIR /opt/
 
