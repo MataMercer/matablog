@@ -54,12 +54,7 @@ The frontend is developed in TypeScript with React/NextJS as a framework. React 
 -   There is a cooldown for every 10 searches if they are not a registered user.
 
 #### Create Post Button
-
--   Clicking the button opens up a new post creation page.
-
-#### Quick Post Button
-
--   Clicking the button opens up a modal for creating a new post.
+Clicking the button opens up a new post creation page.
 
 #### Switch Active blog
 
@@ -179,7 +174,6 @@ The API currently uses a mostly RESTful architecture style. The API is being doc
 
 -   Site must load fast
 -   Possible PWA support.
--   Possible Flutter app
 
 ### Deployment
 
