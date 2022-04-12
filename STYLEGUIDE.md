@@ -4,8 +4,8 @@
 Follow [this](https://kotlinlang.org/docs/coding-conventions.html). Should be the default in IntelliJ already.
 
 ## Other Rules
-- Keep functions short. One function should generally not take up your whole screen. If it's too long, split it up into
-smaller functions, even if they're private. 
+- Keep functions short. One function should not take up much more than your whole screen (<75 lines). If it's too long, split it up into
+smaller functions, even if they're private. Each function should do one thing. 
 - Don't repeat yourself (DRY). 
 - Don't inline everything. Make separate variables. It helps with debugging and reading the code. For example:
 ```
