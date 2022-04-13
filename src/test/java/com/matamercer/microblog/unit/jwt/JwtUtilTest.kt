@@ -68,7 +68,7 @@ class JwtUtilTest {
             userRepository.findByUsername(
                 user.username
             )
-        } returns Optional.ofNullable(user)
+        } returns user
         every { userRepository.findById(user.id!!) } returns Optional.ofNullable(user)
         val refreshToken = RefreshToken(user)
         refreshToken.id = 0L

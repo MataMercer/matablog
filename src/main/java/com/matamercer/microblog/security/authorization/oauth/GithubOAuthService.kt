@@ -32,8 +32,8 @@ class GithubOAuthService @Autowired constructor(
             if (oidcUser != null) {
                 val existingOauthUser =
                     userRepository.findByoAuth2IdAndAuthenticationProvider(oidcUser.id, AuthenticationProvider.GITHUB)
-                if (existingOauthUser.isPresent) {
-                    return existingOauthUser.get()
+                if (existingOauthUser!=null) {
+                    return existingOauthUser
                 } else {
                     val createdUser = userService.createUser(
                         User(
