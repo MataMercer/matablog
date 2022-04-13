@@ -25,11 +25,11 @@ class PostControllerTest(
     @BeforeEach
     fun initData() {
         user = User(
-            "username@gmail.com",
-            "username",
-            "",
-            UserRole.BLOGGER,
-            AuthenticationProvider.LOCAL
+            email = "username@gmail.com",
+            username = "username",
+            password = "",
+            role = UserRole.BLOGGER,
+            authenticationProvider = AuthenticationProvider.LOCAL
         )
         user = userService!!.createUser(user!!)
         testRestTemplate = TestRestTemplate()

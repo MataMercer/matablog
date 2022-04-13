@@ -49,11 +49,11 @@ class JwtUtilTest {
     fun setup() {
         clearAllMocks()
         user = User(
-            "username@gmail.com",
-            "username",
-            "password",
-            UserRole.BLOGGER,
-            AuthenticationProvider.LOCAL
+            email = "username@gmail.com",
+            username = "username",
+            password = "password",
+            role = UserRole.BLOGGER,
+            authenticationProvider = AuthenticationProvider.LOCAL
         )
         user.id = 0L
         val jwtConfig = JwtConfig()
@@ -92,7 +92,7 @@ class JwtUtilTest {
 
     @Test
     fun whenCreateRefreshToken_returnValidRefreshToken() {
-        var token = jwtUtil.createRefreshToken(user.id!!)
+        val token = jwtUtil.createRefreshToken(user.id!!)
         val claims = jwtUtil.extractAllClaims(token)
         assertThat(jwtUtil.isTokenExpired(claims)).isFalse
         assertThat(jwtUtil.getUserId(claims)).isEqualTo(user.id)

@@ -57,11 +57,11 @@ class LoginControllerTest @Autowired constructor(
         blogRepository.deleteAll()
         unencodedPassword = "password"
         user = User(
-            "username@gmail.com",
-            "username",
-            passwordEncoder.encode(unencodedPassword),
-            UserRole.BLOGGER,
-            AuthenticationProvider.LOCAL
+            email = "username@gmail.com",
+            username = "username",
+            password = passwordEncoder.encode(unencodedPassword),
+            role = UserRole.BLOGGER,
+            authenticationProvider = AuthenticationProvider.LOCAL
         )
         val blog = Blog(isSensitive = true, preferredBlogName = "Testermourne", blogName = "Tester Agony")
         blogRepository.save(blog)

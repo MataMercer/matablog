@@ -25,11 +25,11 @@ internal class UserRepositoryTest {
     @BeforeEach
     fun initData() {
         user = User(
-            "username@gmail.com",
-            "username",
-            "password",
-            UserRole.BLOGGER,
-            AuthenticationProvider.LOCAL
+            email = "username@gmail.com",
+            username = "username",
+            password = "password",
+            role = UserRole.BLOGGER,
+            authenticationProvider = AuthenticationProvider.LOCAL
         )
         user = entityManager!!.persist(user)
     }
@@ -45,7 +45,7 @@ internal class UserRepositoryTest {
         val foundUser = userRepository!!.findByUsername(
             user!!.username
         )
-        assertThat(foundUser!!.get()).isEqualTo(user)
+        assertThat(foundUser.get()).isEqualTo(user)
     }
 
     @Test
@@ -53,7 +53,7 @@ internal class UserRepositoryTest {
         val foundUser = userRepository!!.findByEmail(
             user!!.email
         )
-        assertThat(foundUser!!.get()).isEqualTo(user)
+        assertThat(foundUser.get()).isEqualTo(user)
     }
 
     @Test
@@ -62,6 +62,6 @@ internal class UserRepositoryTest {
             user!!.oAuth2Id,
             user!!.authenticationProvider
         )
-        assertThat(foundOptionalUser!!.get()).isEqualTo(user)
+        assertThat(foundOptionalUser.get()).isEqualTo(user)
     }
 }
