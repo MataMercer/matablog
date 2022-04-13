@@ -51,7 +51,6 @@ class SeederConfig(
     }
 
     private fun addUserToApp(user: User) {
-        val foundUser = userRepository.findByEmail(user.email)
         val userEntity = userService.createUser(user)
         blogService.createDefaultBlogForUser(userEntity)
 
