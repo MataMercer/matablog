@@ -50,7 +50,7 @@ class UserService @Autowired constructor(
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(username: String): UserDetails? {
         val optionalUser = userRepository.findByUsername(username)
-        var builder: org.springframework.security.core.userdetails.User.UserBuilder? = null
+        val builder: org.springframework.security.core.userdetails.User.UserBuilder?
         if (optionalUser.isPresent) {
             val user = optionalUser.get()
             builder = org.springframework.security.core.userdetails.User.withUsername(username)
