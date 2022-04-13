@@ -24,7 +24,7 @@ class FileSystemStorageService @Autowired constructor(properties: StorageConfig)
     }
 
     override fun store(fileDestPath: Path, file: MultipartFile) {
-        val filename = StringUtils.cleanPath(file.originalFilename)
+        val filename = StringUtils.cleanPath(file.originalFilename!!)
         try {
             if (file.isEmpty) {
                 throw StorageException("Failed to store empty file $filename")

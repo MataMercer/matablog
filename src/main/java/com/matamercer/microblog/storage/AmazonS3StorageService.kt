@@ -19,7 +19,7 @@ import kotlin.io.path.name
 class AmazonS3StorageService @Autowired constructor(private val s3: AmazonS3) : StorageService {
     override fun init() {}
     override fun store(fileDestPath: Path, file: MultipartFile) {
-        val filename = StringUtils.cleanPath(file.originalFilename)
+        val filename = StringUtils.cleanPath(file.originalFilename!!)
         val metadata = ObjectMetadata()
         extractMetadata(file).forEach { (key: String?, value: String?) -> metadata.addUserMetadata(key, value) }
         try {
@@ -60,7 +60,7 @@ class AmazonS3StorageService @Autowired constructor(private val s3: AmazonS3) : 
     override fun deleteAll() {}
     private fun extractMetadata(file: MultipartFile): Map<String, String> {
         val metadata: MutableMap<String, String> = HashMap()
-        metadata["Content-Type"] = file.contentType
+        metadata["Content-Type"] = file.contentType!!
         metadata["Content-Length"] = file.size.toString()
         return metadata
     }
