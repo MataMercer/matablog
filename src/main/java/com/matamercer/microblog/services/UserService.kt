@@ -25,7 +25,7 @@ import javax.crypto.SecretKey
 
 @Service
 @Slf4j
-class UserService @Autowired constructor(
+class UserService(
     private val userRepository: UserRepository,
     private val verificationTokenRepository: VerificationTokenRepository,
     private val userKeyPairService: UserKeyPairService,
