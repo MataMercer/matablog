@@ -1,13 +1,11 @@
 package com.matamercer.microblog.security.authentication
 
-import com.google.common.base.Strings
 import com.matamercer.microblog.models.entities.Blog
 import com.matamercer.microblog.security.UserPrincipal
 import com.matamercer.microblog.security.authorization.UserRole
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
 import javax.crypto.SecretKey
@@ -28,7 +26,7 @@ class JwtTokenVerifier(
         filterChain: FilterChain
     ) {
         val authorizationHeader = request.getHeader(jwtConfig.authorizationHeader)
-        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader!!.startsWith(
+        if (authorizationHeader.isNullOrEmpty() || !authorizationHeader.startsWith(
                 jwtConfig.tokenPrefix
             )
         ) {
