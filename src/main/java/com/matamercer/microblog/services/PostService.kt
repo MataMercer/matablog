@@ -2,7 +2,8 @@ package com.matamercer.microblog.services
 
 import com.google.common.collect.Sets
 import com.matamercer.microblog.exceptions.NotFoundException
-import com.matamercer.microblog.models.entities.*
+import com.matamercer.microblog.models.entities.Blog
+import com.matamercer.microblog.models.entities.Post
 import com.matamercer.microblog.models.enums.PostCategory
 import com.matamercer.microblog.models.repositories.PostRepository
 import com.matamercer.microblog.models.repositories.searches.PostSearch
@@ -25,7 +26,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
-import java.util.*
 
 @Service
 @Transactional
@@ -68,23 +68,31 @@ class PostService @Autowired constructor(
     fun updatePost(updatePostRequest: PostRequestDto, files: Array<MultipartFile>, blog: Blog?): PostResponseDto {
         var post = getPost(updatePostRequest.id?.toLong())
         checkOwnership(post)
-
         post.title = updatePostRequest.title
         post.content = updatePostRequest.content
         post.isSensitive = updatePostRequest.sensitive ?: false
         post.published = updatePostRequest.published ?: false
 
         val fileIdsToDelete: Set<Long> =
-            Sets.difference(HashSet(post.attachments.map { it.id }), HashSet(updatePostRequest.attachments ?: emptyList()))
+            Sets.difference(
+                HashSet(post.attachments.map { it.id }),
+                HashSet(updatePostRequest.attachments ?: emptyList())
+            )
         fileIdsToDelete.forEach {
             post.attachments.remove(fileService.getFile(it))
             fileService.deleteFile(it)
         }
 
-        val validReordering = updatePostRequest.attachments?.all { it -> post.attachments.contains(fileService.getFile(it)) }
-        if (validReordering == true){
+        val validReordering =
+            updatePostRequest.attachments?.all { it -> post.attachments.contains(fileService.getFile(it)) }
+        if (validReordering == true) {
             post.attachments = updatePostRequest.attachments.map { fileService.getFile(it) }.toMutableList()
-            updatePostRequest.attachmentInsertions?.let { attachFilesToPost(files, post, it.map { insertions -> insertions.toInt() }) }
+            updatePostRequest.attachmentInsertions?.let {
+                attachFilesToPost(
+                    files,
+                    post,
+                    it.map { insertions -> insertions.toInt() })
+            }
         }
 
         updatePostRequest.postTags
@@ -96,8 +104,14 @@ class PostService @Autowired constructor(
     }
 
     private fun attachFilesToPost(files: Array<MultipartFile>, post: Post, attachmentInsertions: List<Int>) {
-        files.forEachIndexed { index, multipartFile -> post.attachments.add(attachmentInsertions[index], fileService.createFile(multipartFile, post.blog)) }
+        files.forEachIndexed { index, multipartFile ->
+            post.attachments.add(
+                attachmentInsertions[index],
+                fileService.createFile(multipartFile, post.blog)
+            )
+        }
     }
+
     private fun attachFilesToPost(files: Array<MultipartFile>, post: Post) {
         files.forEach { post.attachments.add(fileService.createFile(it, post.blog)) }
     }
@@ -122,25 +136,22 @@ class PostService @Autowired constructor(
 
     //    @Cacheable(value = CACHE_NAME_PAGE, key = "T(java.lang.String).valueOf(#page).concat('-').concat(#pageSize)")
     fun searchPosts(
-        optionalBlogName: Optional<String>,
-        optionalCategory: Optional<String>,
-        optionalTagNames: Optional<List<String>>,
+        optionalBlogName: String?,
+        optionalCategory: String?,
+        optionalTagNames: List<String>?,
         pageRequest: PageRequest?
     ): Page<PostResponseDto> {
         val postSearch = PostSearch()
-        if (optionalBlogName.isPresent) {
-            val blogName = optionalBlogName.get()
-            val blog = blogService.getBlog(blogName)
+        if (!optionalBlogName.isNullOrEmpty()) {
+            val blog = blogService.getBlog(optionalBlogName)
             postSearch.blog = blog
         }
-        if (optionalTagNames.isPresent) {
-            val tagNames = optionalTagNames.get()
-            val postTags = postTagService.getTags(tagNames)
+        if (optionalTagNames.isNullOrEmpty()) {
+            val postTags = optionalTagNames?.let { postTagService.getTags(it) }
             postSearch.postTags = postTags
         }
-        if (optionalCategory.isPresent) {
-            val category = optionalCategory.get()
-            postSearch.postCategory = PostCategory.valueOf(category)
+        if (!optionalCategory.isNullOrEmpty()) {
+            postSearch.postCategory = PostCategory.valueOf(optionalCategory)
         } else {
             postSearch.postCategory = PostCategory.ROOT
         }
@@ -151,20 +162,15 @@ class PostService @Autowired constructor(
 
     @Cacheable(CACHE_NAME)
     fun getPost(postId: Long?): Post {
-        val post = postRepository.findById(postId!!)
-        return if (!post.isPresent) {
+        val post = postRepository.findById(postId!!).orElseThrow {
             throw NotFoundException("Post with id $postId is not found.")
-        } else {
-            if (!post.get().published) {
-                checkOwnership(post.get())
-            }
-            post.get()
         }
+        checkOwnership(post)
+        return post
     }
 
     fun getPostResponseDto(postId: Long?): PostResponseDto {
-        val post = getPost(postId)
-        return post.toPostResponseDto()
+        return getPost(postId).toPostResponseDto()
     }
 
     private fun checkOwnership(post: Post) {
