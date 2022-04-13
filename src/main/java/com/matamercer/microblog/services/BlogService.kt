@@ -36,9 +36,9 @@ class BlogService @Autowired constructor(
     }
 
     fun getBlog(blogName: String): Blog? {
-        return blogRepository.findByBlogName(blogName)?.orElseThrow {
-            throw NotFoundException("Blog with name $blogName is not found.")
-        }
+        return blogRepository.findByBlogName(blogName)?:throw
+            NotFoundException("Blog with name $blogName is not found.")
+
     }
 
     fun getBlogResponseDto(id: Long): BlogResponseDto {
