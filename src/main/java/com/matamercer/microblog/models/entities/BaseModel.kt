@@ -13,10 +13,10 @@ abstract class BaseModel : Comparable<BaseModel>, Serializable {
     var id: Long? = null
 
     @Column(nullable = false)
-    var createdAt: ZonedDateTime? = null
+    var createdAt: ZonedDateTime = ZonedDateTime.now()
 
     @Column(nullable = false)
-    var updatedAt: ZonedDateTime? = null
+    var updatedAt: ZonedDateTime = ZonedDateTime.now()
     @PrePersist
     fun prePersist() {
         updatedAt = ZonedDateTime.now()

@@ -5,12 +5,15 @@ import javax.persistence.*
 @Entity
 @Table(name = "blogs")
 class Blog(
-    @Column(nullable = false) var blogName: String? = null,
+    @Column(nullable = false)
+    var blogName: String = "My Awesome Blog",
     @Column(
         nullable = false
-    ) var preferredBlogName: String? = null,
+    )
+    var preferredBlogName: String ="My Even Awesome Blog",
 
-    @Column(nullable = false) val isSensitive: Boolean = false,
+    @Column(nullable = false)
+    val isSensitive: Boolean = false,
 
     @ManyToMany(mappedBy = "blogs")
     var users: MutableSet<User> = HashSet(),

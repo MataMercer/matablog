@@ -29,7 +29,7 @@ class JwtTokenVerifier(
     ) {
         val authorizationHeader = request.getHeader(jwtConfig.authorizationHeader)
         if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader!!.startsWith(
-                jwtConfig.tokenPrefix!!
+                jwtConfig.tokenPrefix
             )
         ) {
             filterChain.doFilter(request, response)
