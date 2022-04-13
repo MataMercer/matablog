@@ -76,7 +76,7 @@ class RegistrationRestController @Autowired constructor(
         val email = SimpleMailMessage()
         email.subject = subject
         email.text = body
-        email.setTo(user!!.email)
+        email.setTo(user?.email!!)
         return email
     }
 }
