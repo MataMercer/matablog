@@ -20,6 +20,6 @@ class FollowService(private val followRepository: FollowRepository, private val 
     fun unfollowBlog(currentUserBlog: Blog, followeeId: Long) {
         val followeeBlog = blogService.getBlog(followeeId)
         val follow = followRepository.findByFollowerAndFollowee(currentUserBlog, followeeBlog)
-        followRepository.delete(follow)
+        followRepository.delete(follow!!)
     }
 }

@@ -22,7 +22,7 @@ class BlogService @Autowired constructor(
 
     @Transactional
     fun createDefaultBlogForUser(user: User) {
-        var blog = Blog(user.username, user.username, false)
+        var blog = Blog(user.username!!, user.username!!, false)
         blog = save(blog)
         user.addBlog(blog)
         user.activeBlog = blog

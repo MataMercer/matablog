@@ -19,7 +19,7 @@ class LikeService(private val likeRepository: LikeRepository, private val postSe
     }
 
     fun unlikePost(blog: Blog, postId: Long) {
-        likeRepository.delete(findByPostIdAndLiker(postId, blog))
+        likeRepository.delete(findByPostIdAndLiker(postId, blog)!!)
     }
 
     fun findByPostIdAndLiker(postId: Long, blog: Blog): Like? {

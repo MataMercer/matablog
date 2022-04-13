@@ -151,7 +151,7 @@ class PostService @Autowired constructor(
 
     @Cacheable(CACHE_NAME)
     fun getPost(postId: Long?): Post {
-        val post = postRepository.findById(postId)
+        val post = postRepository.findById(postId!!)
         return if (!post.isPresent) {
             throw NotFoundException("Post with id $postId is not found.")
         } else {
