@@ -25,20 +25,17 @@ class JwtUtil @Autowired constructor(
 ) {
     @Transactional
     fun createAccessToken(userId: Long): String {
-        val optionalUser = userRepository.findById(userId)
-        return createAccessTokenHelper(optionalUser)
+        val user = userRepository.findById(userId).get()
+        return createAccessTokenHelper(user)
     }
 
     @Transactional
     fun createAccessToken(username: String?): String {
-        val optionalUser = userRepository.findByUsername(username)
-        return createAccessTokenHelper(optionalUser)
+        val user = userRepository.findByUsername(username)
+        return createAccessTokenHelper(user!!)
     }
 
-    private fun createAccessTokenHelper(optionalUser: Optional<User>): String {
-        val user = optionalUser.orElseThrow {
-            throw UserNotFoundException("Error creating access token. User not found.")
-        }
+    private fun createAccessTokenHelper(user: User): String {
         return jwtConfig.tokenPrefix + createToken(
             getUserClaims(user.id, user.username, user.role, user.activeBlog?.id),
             addHoursToCurrentDate(jwtConfig.accessTokenExpirationInHours)
@@ -47,14 +44,14 @@ class JwtUtil @Autowired constructor(
 
     @Transactional
     fun createRefreshToken(userId: Long): String {
-        val optionalUser = userRepository.findById(userId)
-        return createRefreshTokenHelper(optionalUser)
+        val user = userRepository.findById(userId).get()
+        return createRefreshTokenHelper(user)
     }
 
     @Transactional
     fun createRefreshToken(username: String?): String {
-        val optionalUser = userRepository.findByUsername(username)
-        return createRefreshTokenHelper(optionalUser)
+        val user = userRepository.findByUsername(username)
+        return createRefreshTokenHelper(user!!)
     }
 
     private fun createToken(claims: Map<String, String>, exp: java.util.Date): String {
@@ -66,10 +63,7 @@ class JwtUtil @Autowired constructor(
             .compact()
     }
 
-    private fun createRefreshTokenHelper(optionalUser: Optional<User>): String {
-        val user = optionalUser.orElseThrow {
-            throw UserNotFoundException("Error creating refresh token. User not found.")
-        }
+    private fun createRefreshTokenHelper(user: User): String {
         val refreshTokenEntity = refreshTokenRepository.save(RefreshToken(user))
         val claims = getUserClaims(user.id, user.username, user.role, user.activeBlog?.id)
         claims["refreshTokenEntityId"] = refreshTokenEntity.id.toString()

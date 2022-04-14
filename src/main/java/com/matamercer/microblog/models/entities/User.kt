@@ -63,18 +63,6 @@ class User(
 
 ) : BaseModel(), UserDetails {
 
-    constructor(email: String?,
-                username: String?,
-                password: String?,
-                role: UserRole,
-                authenticationProvider: AuthenticationProvider?) : this() {
-        this.email = email
-        this.username = username
-        this.password = password
-        this.role = role
-        this.authenticationProvider = authenticationProvider
-    }
-
     override fun getUsername() = username
     fun setUsername(username: String) {
         this.username = username

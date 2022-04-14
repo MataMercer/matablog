@@ -15,8 +15,6 @@ import com.matamercer.microblog.web.error.exceptions.UserNotFoundException
 import io.jsonwebtoken.Jwts
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -27,7 +25,7 @@ import javax.crypto.SecretKey
 
 @Service
 @Slf4j
-class UserService @Autowired constructor(
+class UserService(
     private val userRepository: UserRepository,
     private val verificationTokenRepository: VerificationTokenRepository,
     private val userKeyPairService: UserKeyPairService,
@@ -49,17 +47,12 @@ class UserService @Autowired constructor(
     @Transactional(readOnly = true)
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(username: String): UserDetails? {
-        val optionalUser = userRepository.findByUsername(username)
-        var builder: org.springframework.security.core.userdetails.User.UserBuilder? = null
-        if (optionalUser.isPresent) {
-            val user = optionalUser.get()
-            builder = org.springframework.security.core.userdetails.User.withUsername(username)
-            builder.disabled(!user.isEnabled)
-            builder.password(user.password)
-            builder.authorities(user.authorities)
-        } else {
-            throw UsernameNotFoundException("User not found.")
-        }
+        val user = userRepository.findByUsername(username) ?: throw UsernameNotFoundException("User not found.")
+        val builder: org.springframework.security.core.userdetails.User.UserBuilder?
+        builder = org.springframework.security.core.userdetails.User.withUsername(username)
+        builder.disabled(!user.isEnabled)
+        builder.password(user.password)
+        builder.authorities(user.authorities)
         return builder.build()
     }
 
@@ -72,12 +65,10 @@ class UserService @Autowired constructor(
         val body = claimsJws!!.body
         val userId = body!!["userId"].toString().toLong()
         val refreshTokenId = body["refreshTokenEntityId"].toString().toLong()
-        val persistedRefreshToken = refreshTokenRepository.findById(refreshTokenId)
-        return if (persistedRefreshToken.isPresent) {
-            jwtUtil.createAccessToken(userId)
-        } else {
+        refreshTokenRepository.findById(refreshTokenId).orElseThrow {
             throw RevokedRefreshTokenException()
         }
+        return jwtUtil.createAccessToken(userId)
     }
 
     fun createVerificationTokenForUser(user: User?, token: String) {
@@ -102,11 +93,11 @@ class UserService @Autowired constructor(
     }
 
     fun getUser(id: Long): UserResponseDto? {
-        val optionalUser = userRepository.findById(id)
-        if (!optionalUser.isPresent) {
+        val user = userRepository.findById(id).orElseThrow {
             throw UserNotFoundException("Unable to create post because unable to find logged in user.")
+
         }
-        return optionalUser.get().toUserResponseDto()
+        return user.toUserResponseDto()
     }
 
     fun save(user: User): User? {
@@ -118,10 +109,10 @@ class UserService @Autowired constructor(
     }
 
     fun emailExists(email: String?): Boolean {
-        return userRepository.findByEmail(email).isPresent
+        return userRepository.findByEmail(email) != null
     }
 
     fun usernameExists(username: String?): Boolean {
-        return userRepository.findByUsername(username).isPresent
+        return userRepository.findByUsername(username) != null
     }
 }

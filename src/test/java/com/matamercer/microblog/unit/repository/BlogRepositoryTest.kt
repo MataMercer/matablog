@@ -22,10 +22,7 @@ class BlogRepositoryTest {
         var blog = Blog("BlogName", "PreferredBlogName", false)
         blog = entityManager!!.persist(blog)
         val optionalFoundBlog = blogRepository!!.findByBlogName(blog.blogName)
-        var foundBlog: Blog? = null
-        if (optionalFoundBlog!!.isPresent) {
-            foundBlog = optionalFoundBlog.get()
-        }
+        val foundBlog: Blog? = optionalFoundBlog
         assertThat(foundBlog).isEqualTo(blog)
     }
 }

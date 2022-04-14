@@ -6,7 +6,7 @@ import javax.persistence.*
 @Table(name = "files")
 class File(
     @Column(nullable = false)
-    var name: String? = null,
+    var name: String,
 
     @ManyToOne
     @JoinColumn(name = "blog_id")

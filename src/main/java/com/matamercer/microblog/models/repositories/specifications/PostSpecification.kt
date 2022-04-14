@@ -29,7 +29,7 @@ class PostSpecification(private val postSearch: PostSearch) : Specification<Post
             when (postSearch.postCategory) {
                 PostCategory.ROOT -> predicates.add(criteriaBuilder.isNull(root.get<Any>("parentPost")))
                 PostCategory.MEDIA -> predicates.add(criteriaBuilder.isNotEmpty(root.get("attachments")))
-                PostCategory.REPLY -> predicates.add(criteriaBuilder.isNotNull(root.get<Any>("parentPost")))
+                else -> predicates.add(criteriaBuilder.isNotNull(root.get<Any>("parentPost")))
             }
         }
         predicates.add(criteriaBuilder.isTrue(root.get("published")))

@@ -36,12 +36,11 @@ class RegistrationRestController @Autowired constructor(
         request: HttpServletRequest
     ): GenericResponse {
         var registeredUser = User(
-            registerUserRequestDTO!!.email,
-            registerUserRequestDTO.username,
-            passwordEncoder.encode(registerUserRequestDTO.password),
-
-            UserRole.BLOGGER,
-            AuthenticationProvider.LOCAL
+            email = registerUserRequestDTO!!.email,
+            username = registerUserRequestDTO.username,
+            password = passwordEncoder.encode(registerUserRequestDTO.password),
+            role = UserRole.BLOGGER,
+            authenticationProvider = AuthenticationProvider.LOCAL
         )
         registeredUser = userService.createUser(registeredUser)
         blogService.createDefaultBlogForUser(registeredUser)
@@ -77,7 +76,7 @@ class RegistrationRestController @Autowired constructor(
         val email = SimpleMailMessage()
         email.subject = subject
         email.text = body
-        email.setTo(user!!.email)
+        email.setTo(user?.email!!)
         return email
     }
 }

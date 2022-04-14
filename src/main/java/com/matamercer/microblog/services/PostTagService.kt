@@ -4,15 +4,13 @@ import com.matamercer.microblog.exceptions.NotFoundException
 import com.matamercer.microblog.models.entities.Blog
 import com.matamercer.microblog.models.entities.PostTag
 import com.matamercer.microblog.models.repositories.PostTagRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import java.util.stream.Collectors
 
 @Service
-class PostTagService @Autowired constructor(private val postTagRepository: PostTagRepository) {
+class PostTagService(private val postTagRepository: PostTagRepository) {
     fun findOrCreateByName(name: String): PostTag {
         return postTagRepository.findByName(name) ?: postTagRepository.save(PostTag().apply {
             this.name = name
@@ -35,7 +33,8 @@ class PostTagService @Autowired constructor(private val postTagRepository: PostT
     }
 
     fun findByBlogSortedByMostUsedMap(blog: Blog, pageRequest: Pageable?): Map<PostTag, Int>? {
-        return postTagRepository.findByBlogSortedByMostUsed(blog, pageRequest).toList().associate { it.postTag to it.postTagCount }
+        return postTagRepository.findByBlogSortedByMostUsed(blog, pageRequest).toList()
+            .associate { it.postTag to it.postTagCount }
             .toList().sortedBy { it.second }.toMap()
     }
 

@@ -37,9 +37,9 @@ class PostRestController @Autowired constructor(
     fun getPosts(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") pageSize: Int,
-        @RequestParam(name = "blogName", required = false) optionalBlogName: Optional<String>,
-        @RequestParam(name = "category", required = false) optionalCategory: Optional<String>,
-        @RequestParam(name = "tags", required = false) optionalTagNames: Optional<List<String>>
+        @RequestParam(name = "blogName", required = false) optionalBlogName: String?,
+        @RequestParam(name = "category", required = false) optionalCategory: String?,
+        @RequestParam(name = "tags", required = false) optionalTagNames: List<String>?
     ): ResponseEntity<Page<PostResponseDto>> {
         val posts = postService.searchPosts(
             optionalBlogName,

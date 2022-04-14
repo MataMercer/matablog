@@ -26,8 +26,9 @@ class FileService @Autowired constructor(
 ) {
     @PreAuthorize("hasAuthority(T(com.matamercer.microblog.security.authorization.UserAuthority).FILE_CREATE.toString())")
     fun createFile(multipartFile: MultipartFile, blog: Blog?): File {
-        var file = File()
-        file.name = StringUtils.cleanPath(multipartFile.originalFilename!!)
+        var file = File(
+            name = StringUtils.cleanPath(multipartFile.originalFilename!!)
+        )
         file = fileRepository.save(file)
         storageService.store(Paths.get(file.id.toString()), multipartFile)
         return file

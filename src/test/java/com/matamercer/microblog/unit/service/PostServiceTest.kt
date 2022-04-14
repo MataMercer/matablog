@@ -56,11 +56,11 @@ class PostServiceTest {
         )
         post.id = 1L
         user = User(
-            "username@gmail.com",
-            "username",
-            "password",
-            UserRole.BLOGGER,
-            AuthenticationProvider.LOCAL
+            email = "username@gmail.com",
+            username = "username",
+            password = "password",
+            role = UserRole.BLOGGER,
+            authenticationProvider = AuthenticationProvider.LOCAL
         )
         postService = PostService(
             postRepository,

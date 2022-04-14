@@ -21,9 +21,7 @@ class WellKnownController(
         return if (resource.isPresent) {
             val splitResource = resource.get().split("[:@]".toRegex(), 3).toTypedArray()
             val username = splitResource[1]
-            val user = userRepository.findByUsername(username).orElseThrow {
-                throw NotFoundException()
-            }
+            val user = userRepository.findByUsername(username) ?: throw NotFoundException()
             jsonResourceDescriptor.subject = resource.get()
             try {
                 jsonResourceDescriptor.links =
