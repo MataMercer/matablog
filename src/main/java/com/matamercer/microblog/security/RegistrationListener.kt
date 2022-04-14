@@ -30,11 +30,11 @@ class RegistrationListener : ApplicationListener<OnRegistrationCompleteEvent> {
         val recipientAddress = user.email
         val subject = "Registration Confirmation"
         val confirmationUrl = event.appUrl + "/registration/confirm?token=" + token
-        val message = messageSource!!.getMessage("message.regSucc", null, event.locale)
+        val message = messageSource!!.getMessage("message.user.register.success", null, event.locale)
         val simpleMailMessage = SimpleMailMessage()
         simpleMailMessage.setTo(recipientAddress)
         simpleMailMessage.subject = subject
-        simpleMailMessage.text = "$message\r\nhttps://localhost:8443$confirmationUrl"
+        simpleMailMessage.text = "$message\r\nhttps://localhost:8080$confirmationUrl"
         mailSender!!.send(simpleMailMessage)
     }
 }

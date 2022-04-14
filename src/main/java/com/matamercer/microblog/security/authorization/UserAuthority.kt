@@ -4,17 +4,16 @@ import com.matamercer.microblog.models.entities.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 enum class UserAuthority(private val domainObjectClass: Class<out BaseModel?>, private val permission: String) {
-    //User
     USER_READ(User::class.java, "read"), USER_WRITE(User::class.java, "write"), USER_MANAGE(
         User::class.java, "manage"
-    ),  //Blog
+    ),
     BLOG_READ(Blog::class.java, "read"), BLOG_CREATE(Blog::class.java, "create"), BLOG_UPDATE(
         Blog::class.java,
         "update"
     ),
     BLOG_MANAGE(
         Blog::class.java, "manage"
-    ),  //Post
+    ),
     POST_READ(Post::class.java, "read"), POST_CREATE_NEW(
         Post::class.java,
         "create_new"
@@ -22,7 +21,7 @@ enum class UserAuthority(private val domainObjectClass: Class<out BaseModel?>, p
     POST_CREATE_COMMENT(Post::class.java, "create_reply"), POST_UPDATE(
         Post::class.java, "update"
     ),
-    POST_MANAGE(Post::class.java, "manage"),  //File
+    POST_MANAGE(Post::class.java, "manage"),
     FILE_READ(File::class.java, "read"), FILE_CREATE(File::class.java, "create"), FILE_UPDATE(
         File::class.java, "update"
     ),

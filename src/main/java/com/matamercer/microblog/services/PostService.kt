@@ -134,7 +134,6 @@ class PostService @Autowired constructor(
         deletePost(getPost(id))
     }
 
-    //    @Cacheable(value = CACHE_NAME_PAGE, key = "T(java.lang.String).valueOf(#page).concat('-').concat(#pageSize)")
     fun searchPosts(
         optionalBlogName: String?,
         optionalCategory: String?,

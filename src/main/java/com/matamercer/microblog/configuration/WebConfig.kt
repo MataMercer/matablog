@@ -18,33 +18,6 @@ import java.util.*
 
 @Configuration
 class WebConfig : WebMvcConfigurer {
-    //HTTPS
-    //    @Bean
-    //    public ServletWebServerFactory servletContainer() {
-    //        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
-    //            @Override
-    //            protected void postProcessContext(Context context) {
-    //                SecurityConstraint securityConstraint = new SecurityConstraint();
-    //                securityConstraint.setUserConstraint("CONFIDENTIAL");
-    //                SecurityCollection collection = new SecurityCollection();
-    //                collection.addPattern("/*");
-    //                securityConstraint.addCollection(collection);
-    //                context.addConstraint(securityConstraint);
-    //            }
-    //        };
-    //        tomcat.addAdditionalTomcatConnectors(redirectConnector());
-    //        return tomcat;
-    //    }
-    //
-    //    private Connector redirectConnector() {
-    //        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-    //        connector.setScheme("http");
-    //        connector.setPort(8080);
-    //        connector.setSecure(false);
-    //        connector.setRedirectPort(8443);
-    //        return connector;
-    //    }
-    //File Storage
     @Bean
     fun init(@Qualifier("fileSystemStorage") storageService: StorageService): CommandLineRunner {
         return CommandLineRunner {
@@ -52,7 +25,6 @@ class WebConfig : WebMvcConfigurer {
         }
     }
 
-    //Locale
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(localeChangeInterceptor())
     }
@@ -79,10 +51,6 @@ class WebConfig : WebMvcConfigurer {
         return source
     }
 
-    //    @Override
-    //    public void addCorsMappings(CorsRegistry registry) {
-    //        registry.addMapping("/**");
-    //    }
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
@@ -101,7 +69,6 @@ class WebConfig : WebMvcConfigurer {
             "authorization"
         )
 
-        // This allow us to expose the headers
         configuration.exposedHeaders = listOf(
             "Access-Control-Allow-Headers",
             "Authorization",
@@ -121,6 +88,4 @@ class WebConfig : WebMvcConfigurer {
         source.registerCorsConfiguration("/**", configuration)
         return source
     }
-
-
 }
