@@ -1,6 +1,11 @@
 support.email: extremelywealthnigerianprince@gmail.com
 ---
 application:
+  jwt:
+    secretKey: securesecuresecuresecuresecuresecuresecuresecuresecuresecuresecure
+    tokenPrefix: 'Bearer '
+    refreshTokenExpirationInDays: 10
+    accessTokenExpirationInHours: 12
   oauth:
     github:
       client-id: ${GITHUB_CLIENT_ID}
