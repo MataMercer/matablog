@@ -172,6 +172,11 @@ class PostService @Autowired constructor(
         return getPost(postId).toPostResponseDto()
     }
 
+    fun searchByContent(): List<PostResponseDto>{
+        return emptyList()
+    }
+
+
     private fun checkOwnership(post: Post) {
         val isAnon =
             SecurityContextHolder.getContext().authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ANONYMOUS"))

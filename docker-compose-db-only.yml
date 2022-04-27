@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   db:
+    container_name: matablog-db
     restart: always
     image: "postgres:alpine"
     environment:
@@ -9,3 +10,17 @@ services:
       POSTGRES_DB: microblog
     ports:
       - "5432:5432"
+  se:
+    container_name: matablog-se
+    image: "docker.elastic.co/elasticsearch/elasticsearch:8.1.2"
+    restart: always
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elast_data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=password
+volumes:
+  elast_data:

@@ -1,9 +1,12 @@
 package com.matamercer.microblog.models.entities
 
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed
 import javax.persistence.*
 
 @Entity
 @Table(name = "posts")
+@Indexed(index="idx_post")
 class Post(
     @JoinColumn(name = "blog_id", nullable = false)
     @ManyToOne
@@ -16,7 +19,9 @@ class Post(
 
     @Column(
         columnDefinition = "text"
-    ) var content: String? = null,
+    )
+    @FullTextField
+    var content: String? = null,
 
     @Column(nullable = false)
     var isCommunityTaggingEnabled: Boolean = false,

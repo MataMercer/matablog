@@ -11,7 +11,6 @@ import com.matamercer.microblog.services.FileService
 import com.matamercer.microblog.services.PostService
 import com.matamercer.microblog.services.PostTagService
 import com.matamercer.microblog.web.api.v1.dto.requests.PostRequestDto
-import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -32,6 +31,7 @@ class PostServiceTest {
 
     @MockK
     private lateinit var postRepository: PostRepository
+
 
     @MockK
     private lateinit var postTagService: PostTagService

@@ -32,6 +32,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        search:
+          backend:
+            protocol: http
+            hosts: 127.0.0.1:9200
+            username: elastic
+            password: UGH0lhuaF8OMWfWdz8aB
   jackson:
     default-property-inclusion: non_null
   cache:
@@ -52,6 +60,12 @@ spring:
       starttls:
         enable: true
       timeout: 8000
+  elasticsearch:
+    rest:
+      uris:
+        - http://localhost:9200
+      username: elastic
+      password: password
 ---
 spring:
   redis:

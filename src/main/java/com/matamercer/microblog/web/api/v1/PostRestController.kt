@@ -5,6 +5,7 @@ import com.matamercer.microblog.security.CurrentUser
 import com.matamercer.microblog.security.UserPrincipal
 import com.matamercer.microblog.services.LikeService
 import com.matamercer.microblog.services.PostService
+import com.matamercer.microblog.services.SearchService
 import com.matamercer.microblog.web.api.v1.dto.requests.PostRequestDto
 import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +27,8 @@ import javax.validation.Valid
 @RequestMapping("/api/v1/post")
 class PostRestController @Autowired constructor(
     private val postService: PostService,
-    private val likeService: LikeService
+    private val likeService: LikeService,
+    private val searchService: SearchService
 ) {
     @GetMapping("/{id}")
     fun getPost(@PathVariable id: String): ResponseEntity<PostResponseDto> {
@@ -121,5 +123,15 @@ class PostRestController @Autowired constructor(
     fun unlikePost(@PathVariable id: String, @CurrentUser userPrincipal: UserPrincipal): ResponseEntity<*> {
         likeService.unlikePost(userPrincipal.activeBlog, id.toLong())
         return ResponseEntity<Any>(HttpStatus.NO_CONTENT)
+    }
+
+    @GetMapping("/search")
+    fun searchPosts(
+        @RequestParam(name = "word") word: String,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") pageSize: Int,
+    ): ResponseEntity<*> {
+        val posts = searchService.searchPosts(PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"), word)
+        return ResponseEntity.ok(posts)
     }
 }
