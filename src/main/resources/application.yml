@@ -19,8 +19,8 @@ spring:
       location: banner.txt
   servlet:
     multipart:
-      max-file-size: 1MB
-      max-request-size: 1MB
+      max-file-size: 4MB
+      max-request-size: 4MB
   flyway:
     enabled: true
     locations: classpath:/db/migration,classpath:/db/testdata
