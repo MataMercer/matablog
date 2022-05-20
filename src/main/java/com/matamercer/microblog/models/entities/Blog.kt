@@ -1,16 +1,19 @@
 package com.matamercer.microblog.models.entities
 
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed
 import javax.persistence.*
 
 @Entity
 @Table(name = "blogs")
+@Indexed
 class Blog(
     @Column(nullable = false)
+    @FullTextField
     var blogName: String = "My Awesome Blog",
-    @Column(
-        nullable = false
-    )
-    var preferredBlogName: String ="My Even Awesome Blog",
+    @Column(nullable = false)
+    @FullTextField
+    var preferredBlogName: String = "My Even Awesome Blog",
 
     @Column(nullable = false)
     val isSensitive: Boolean = false,
@@ -32,5 +35,5 @@ class Blog(
 
     @OneToMany(mappedBy = "liker")
     var likes: MutableSet<Like> = HashSet(),
-    ) : BaseModel() {
+) : BaseModel() {
 }

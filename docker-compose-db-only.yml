@@ -21,6 +21,7 @@ services:
       - elast_data:/usr/share/elasticsearch/data
     environment:
       - discovery.type=single-node
-      - ELASTIC_PASSWORD=password
+      - ELASTIC_PASSWORD=changeme
+      - xpack.security.enabled=true
 volumes:
   elast_data:

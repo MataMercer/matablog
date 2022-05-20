@@ -8,5 +8,7 @@ fun Blog.toBlogResponseDto(): BlogResponseDto {
     dto.blogName = blogName
     dto.preferredBlogName = preferredBlogName
     dto.sensitive = isSensitive
+    dto.followers = followers.map { it.toFollowResponseDto() }
+    dto.following = following.map { it.toFollowResponseDto() }
     return dto
 }

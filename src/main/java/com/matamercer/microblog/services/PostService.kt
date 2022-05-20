@@ -14,11 +14,13 @@ import com.matamercer.microblog.web.api.v1.dto.mappers.toPost
 import com.matamercer.microblog.web.api.v1.dto.mappers.toPostResponseDto
 import com.matamercer.microblog.web.api.v1.dto.requests.PostRequestDto
 import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
+import org.hibernate.search.mapper.orm.Search
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.cache.annotation.Caching
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -26,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import javax.persistence.EntityManager
 
 @Service
 @Transactional
@@ -34,6 +37,7 @@ class PostService @Autowired constructor(
     private val postTagService: PostTagService,
     private val blogService: BlogService,
     private val fileService: FileService,
+    private val entityManager: EntityManager
 ) {
     @Caching(evict = [CacheEvict(value = arrayOf(CACHE_NAME_PAGE), allEntries = true)])
     fun createNewPost(postRequestDTO: PostRequestDto, files: Array<MultipartFile>, blog: Blog): PostResponseDto {
@@ -134,16 +138,16 @@ class PostService @Autowired constructor(
         deletePost(getPost(id))
     }
 
-    fun searchPosts(
-        optionalBlogName: String?,
+    fun getPosts(
+        optionalBlogNames: List<String>?,
         optionalCategory: String?,
         optionalTagNames: List<String>?,
         pageRequest: PageRequest?
     ): Page<PostResponseDto> {
         val postSearch = PostSearch()
-        if (!optionalBlogName.isNullOrEmpty()) {
-            val blog = blogService.getBlog(optionalBlogName)
-            postSearch.blog = blog
+        if (!optionalBlogNames.isNullOrEmpty()) {
+            val blogs = optionalBlogNames.mapNotNull { blogService.getBlog(it) }.toSet()
+            postSearch.blogs = blogs
         }
         if (optionalTagNames.isNullOrEmpty()) {
             val postTags = optionalTagNames?.let { postTagService.getTags(it) }
@@ -164,7 +168,6 @@ class PostService @Autowired constructor(
         val post = postRepository.findById(postId!!).orElseThrow {
             throw NotFoundException("Post with id $postId is not found.")
         }
-        checkOwnership(post)
         return post
     }
 
@@ -172,10 +175,23 @@ class PostService @Autowired constructor(
         return getPost(postId).toPostResponseDto()
     }
 
-    fun searchByContent(): List<PostResponseDto>{
-        return emptyList()
-    }
 
+    fun searchPosts(pageRequest: PageRequest, query: String): Page<PostResponseDto> {
+        val searchSession = Search.session(entityManager)
+        val res = searchSession.search(Post::class.java)
+            .where{it.match()
+                .fields("title",
+                    "content",
+                    "blog.blogName",
+                    "blog.preferredBlogName",
+                "postTags.name")
+                .matching(query)
+                .fuzzy(2)}
+            .fetch(pageRequest.offset.toInt(), pageRequest.pageSize)
+        val hits = res.hits() as List<Post>
+        return PageImpl<Post>(hits, pageRequest, res.total().hitCount())
+            .map { it.toPostResponseDto() }
+    }
 
     private fun checkOwnership(post: Post) {
         val isAnon =

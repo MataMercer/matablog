@@ -2,24 +2,24 @@ package com.matamercer.microblog.models.entities
 
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField
 import javax.persistence.*
 
 @Entity
 @Table(name = "posts")
-@Indexed(index="idx_post")
+@Indexed
 class Post(
     @JoinColumn(name = "blog_id", nullable = false)
     @ManyToOne
+    @IndexedEmbedded
     var blog: Blog? = null,
 
-    @Column(
-        nullable = true
-    )
+    @Column
+    @FullTextField
     var title: String? = null,
 
-    @Column(
-        columnDefinition = "text"
-    )
+    @Column
     @FullTextField
     var content: String? = null,
 
@@ -40,6 +40,7 @@ class Post(
         joinColumns = [JoinColumn(name = "post_id")],
         inverseJoinColumns = [JoinColumn(name = "posttag_id")]
     )
+    @IndexedEmbedded
     var postTags: MutableSet<PostTag> = HashSet(),
 
     @OneToMany(cascade = [

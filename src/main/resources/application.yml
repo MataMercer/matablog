@@ -35,11 +35,13 @@ spring:
     properties:
       hibernate:
         search:
+          schema_management:
+            strategy: drop-and-create
           backend:
             protocol: http
             hosts: 127.0.0.1:9200
             username: elastic
-            password: UGH0lhuaF8OMWfWdz8aB
+            password: changeme
   jackson:
     default-property-inclusion: non_null
   cache:

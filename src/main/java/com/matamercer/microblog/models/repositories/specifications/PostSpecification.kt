@@ -13,11 +13,13 @@ import javax.persistence.criteria.Root
 
 class PostSpecification(private val postSearch: PostSearch) : Specification<Post?> {
     override fun toPredicate(root: Root<Post?>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder): Predicate {
-        val blog = root.get<Blog>("blog")
         val postTags = root.get<Set<PostTag>>("postTags")
         val predicates: MutableList<Predicate> = ArrayList()
-        if (postSearch.blog != null) {
-            predicates.add(criteriaBuilder.equal(blog, postSearch.blog))
+        if (postSearch.blogs != null && postSearch.blogs!!.isNotEmpty()) {
+            for (blog in postSearch.blogs!!) {
+                val join = root.join<Post, Blog>("blog")
+                predicates.add(criteriaBuilder.equal(join.get<Any>("id"), blog.id))
+            }
         }
         if (postSearch.postTags != null && postSearch.postTags!!.isNotEmpty()) {
             for (pt in postSearch.postTags!!) {

@@ -5,7 +5,6 @@ import com.matamercer.microblog.security.CurrentUser
 import com.matamercer.microblog.security.UserPrincipal
 import com.matamercer.microblog.services.LikeService
 import com.matamercer.microblog.services.PostService
-import com.matamercer.microblog.services.SearchService
 import com.matamercer.microblog.web.api.v1.dto.requests.PostRequestDto
 import com.matamercer.microblog.web.api.v1.dto.responses.PostResponseDto
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
 import java.util.*
-import java.util.stream.Collectors
 import javax.validation.Valid
 
 @RestController
@@ -28,7 +26,6 @@ import javax.validation.Valid
 class PostRestController @Autowired constructor(
     private val postService: PostService,
     private val likeService: LikeService,
-    private val searchService: SearchService
 ) {
     @GetMapping("/{id}")
     fun getPost(@PathVariable id: String): ResponseEntity<PostResponseDto> {
@@ -39,12 +36,12 @@ class PostRestController @Autowired constructor(
     fun getPosts(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") pageSize: Int,
-        @RequestParam(name = "blogName", required = false) optionalBlogName: String?,
+        @RequestParam(name = "blogNames", required = false) optionalBlogNames: List<String>?,
         @RequestParam(name = "category", required = false) optionalCategory: String?,
         @RequestParam(name = "tags", required = false) optionalTagNames: List<String>?
     ): ResponseEntity<Page<PostResponseDto>> {
-        val posts = postService.searchPosts(
-            optionalBlogName,
+        val posts = postService.getPosts(
+            optionalBlogNames,
             optionalCategory,
             optionalTagNames,
             PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt")
@@ -127,11 +124,11 @@ class PostRestController @Autowired constructor(
 
     @GetMapping("/search")
     fun searchPosts(
-        @RequestParam(name = "word") word: String,
+        @RequestParam(name = "query") query: String,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") pageSize: Int,
     ): ResponseEntity<*> {
-        val posts = searchService.searchPosts(PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"), word)
+        val posts = postService.searchPosts(PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"), query)
         return ResponseEntity.ok(posts)
     }
 }

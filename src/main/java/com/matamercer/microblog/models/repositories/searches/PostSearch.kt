@@ -5,7 +5,7 @@ import com.matamercer.microblog.models.enums.PostCategory
 import com.matamercer.microblog.models.entities.PostTag
 
 class PostSearch {
-    var blog: Blog? = null
+    var blogs: Set<Blog>? = null
     var postCategory: PostCategory? = null
     var postTags: Set<PostTag>? = null
 }

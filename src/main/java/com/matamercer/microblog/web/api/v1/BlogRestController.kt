@@ -8,6 +8,8 @@ import com.matamercer.microblog.services.FollowService
 import com.matamercer.microblog.web.api.v1.dto.requests.FollowRequestDto
 import com.matamercer.microblog.web.api.v1.dto.responses.BlogResponseDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -43,5 +45,15 @@ class BlogRestController @Autowired constructor(
     fun unfollowBlog(@PathVariable id: String, @CurrentUser userPrincipal: UserPrincipal): ResponseEntity<*> {
         followService.unfollowBlog(userPrincipal.activeBlog, id.toLong())
         return ResponseEntity<Any>(HttpStatus.NO_CONTENT)
+    }
+
+    @GetMapping("/search")
+    fun searchBlogs(
+        @RequestParam(name = "query") query: String,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") pageSize: Int,
+    ): ResponseEntity<*> {
+        val blogs = blogService.searchBlogs(PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"), query)
+        return ResponseEntity.ok(blogs)
     }
 }
