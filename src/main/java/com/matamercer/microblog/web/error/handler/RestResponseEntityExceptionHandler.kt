@@ -1,10 +1,7 @@
 package com.matamercer.microblog.web.error.handler
 
 import com.matamercer.microblog.utilities.GenericResponse
-import com.matamercer.microblog.web.error.exceptions.AlreadyExistsException
-import com.matamercer.microblog.web.error.exceptions.RevokedRefreshTokenException
-import com.matamercer.microblog.web.error.exceptions.UserAlreadyExistsException
-import com.matamercer.microblog.web.error.exceptions.UserNotFoundException
+import com.matamercer.microblog.web.error.exceptions.*
 import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpHeaders
@@ -119,6 +116,18 @@ class RestResponseEntityExceptionHandler(val messageSource: MessageSource) : Res
         )
         return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.CONFLICT, request)
     }
+
+    @ExceptionHandler(CircularException::class)
+    fun handleCircularOperation(ex: RuntimeException?, request: WebRequest): ResponseEntity<Any> {
+        logger.error("409 Status Code", ex)
+        val bodyOfResponse = GenericResponse(
+            messageSource.getMessage("message.regError", null, request.locale),
+            "ResourceAlreadyExist"
+        )
+        return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.CONFLICT, request)
+    }
+
+
 
     // 500
     @ExceptionHandler(MailAuthenticationException::class)

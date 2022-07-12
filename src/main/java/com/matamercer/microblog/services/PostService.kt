@@ -163,6 +163,25 @@ class PostService @Autowired constructor(
         return posts.map { it.toPostResponseDto() }
     }
 
+    fun getFollowedPosts(
+        activeBlog: Blog,
+        optionalCategory: String?,
+        optionalTagNames: List<String>?,
+        pageRequest: PageRequest?
+    ): Page<PostResponseDto>{
+        val followingBlogNames = blogService
+            .getBlog(activeBlog.id)
+            ?.following
+            ?.mapNotNull { it.followee?.blogName }
+        if(followingBlogNames.isNullOrEmpty()){
+            return Page.empty()
+        }
+       return getPosts(followingBlogNames,
+           optionalCategory,
+           optionalTagNames,
+           pageRequest)
+    }
+
     @Cacheable(CACHE_NAME)
     fun getPost(postId: Long?): Post {
         val post = postRepository.findById(postId!!).orElseThrow {

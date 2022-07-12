@@ -16,10 +16,10 @@ class PostSpecification(private val postSearch: PostSearch) : Specification<Post
         val postTags = root.get<Set<PostTag>>("postTags")
         val predicates: MutableList<Predicate> = ArrayList()
         if (postSearch.blogs != null && postSearch.blogs!!.isNotEmpty()) {
-            for (blog in postSearch.blogs!!) {
-                val join = root.join<Post, Blog>("blog")
-                predicates.add(criteriaBuilder.equal(join.get<Any>("id"), blog.id))
-            }
+            val join = root.join<Post, Blog>("blog")
+            val blogPreds = postSearch.blogs!!.map { criteriaBuilder.equal(join.get<Any>("id"), it.id) }.toTypedArray()
+            val blogPred = criteriaBuilder.or(*blogPreds)
+            predicates.add(blogPred)
         }
         if (postSearch.postTags != null && postSearch.postTags!!.isNotEmpty()) {
             for (pt in postSearch.postTags!!) {

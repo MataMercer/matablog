@@ -5,6 +5,7 @@ import com.matamercer.microblog.security.CurrentUser
 import com.matamercer.microblog.security.UserPrincipal
 import com.matamercer.microblog.services.BlogService
 import com.matamercer.microblog.services.FollowService
+import com.matamercer.microblog.web.api.v1.dto.mappers.toFollowResponseDto
 import com.matamercer.microblog.web.api.v1.dto.requests.FollowRequestDto
 import com.matamercer.microblog.web.api.v1.dto.responses.BlogResponseDto
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,10 +32,34 @@ class BlogRestController @Autowired constructor(
         return ResponseEntity.ok(blogService.getBlogResponseDto(id))
     }
 
+    @GetMapping("/{id}/followers")
+    fun getBlogFollowers(
+        @PathVariable id: String,
+        @CurrentUser userPrincipal: UserPrincipal,
+        @RequestParam(defaultValue = "0") page: Int,
+    @RequestParam(defaultValue = "20") pageSize: Int,
+    ): ResponseEntity<*>{
+        val followerResponseDtos = followService.getFollowers(PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"), userPrincipal.activeBlog)
+            .map { it.toFollowResponseDto() }
+        return ResponseEntity.ok(followerResponseDtos)
+    }
+
+    @GetMapping("/{id}/following")
+    fun getBlogFollowing(
+        @PathVariable id: String,
+        @CurrentUser userPrincipal: UserPrincipal,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") pageSize: Int,
+    ): ResponseEntity<*>{
+        val followingResponseDtos = followService.getFollowing(PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt"), userPrincipal.activeBlog)
+            .map { it.toFollowResponseDto() }
+        return ResponseEntity.ok(followingResponseDtos)
+    }
+
     @PostMapping("/{id}/follow")
     fun followBlog(
+        @RequestBody followRequestDTO: @Valid FollowRequestDto,
         @PathVariable id: String,
-        followRequestDTO: @Valid FollowRequestDto,
         @CurrentUser userPrincipal: UserPrincipal
     ): ResponseEntity<*> {
         followService.followBlog(userPrincipal.activeBlog, id.toLong(), followRequestDTO)

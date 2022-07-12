@@ -4,6 +4,8 @@ class BlogResponseDto : BaseModelResponseDto() {
     var blogName: String? = null
     var preferredBlogName: String? = null
     var sensitive = false
-    var followers: List<FollowResponseDto>? = null
-    var following: List<FollowResponseDto>? = null
+    var followerCount = 0
+    var followingCount = 0
+    var following: Boolean? = null
+    var follower: Boolean? = null
 }

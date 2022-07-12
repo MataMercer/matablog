@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
+import java.security.Principal
 import java.util.*
 import javax.validation.Valid
 
@@ -38,15 +39,29 @@ class PostRestController @Autowired constructor(
         @RequestParam(defaultValue = "20") pageSize: Int,
         @RequestParam(name = "blogNames", required = false) optionalBlogNames: List<String>?,
         @RequestParam(name = "category", required = false) optionalCategory: String?,
-        @RequestParam(name = "tags", required = false) optionalTagNames: List<String>?
+        @RequestParam(name = "tags", required = false) optionalTagNames: List<String>?,
+        @RequestParam(name = "following", required = false) optionalFollowing: Boolean,
+        @CurrentUser userPrincipal: UserPrincipal?
     ): ResponseEntity<Page<PostResponseDto>> {
-        val posts = postService.getPosts(
-            optionalBlogNames,
-            optionalCategory,
-            optionalTagNames,
-            PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt")
-        )
-        return ResponseEntity.ok(posts)
+        if (userPrincipal == null || !optionalFollowing){
+            val posts = postService.getPosts(
+                optionalBlogNames,
+                optionalCategory,
+                optionalTagNames,
+                PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt")
+            )
+            return ResponseEntity.ok(posts)
+        }else{
+            val posts = postService.getFollowedPosts(
+                userPrincipal.activeBlog,
+                optionalCategory,
+                optionalTagNames,
+                PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt")
+            )
+            return ResponseEntity.ok(posts)
+        }
+
+
     }
 
     //    @GetMapping("/{id}/replies")

@@ -90,7 +90,7 @@ class JwtUtil @Autowired constructor(
     private fun addHoursToCurrentDate(hours: Int): java.util.Date {
         val calendar = Calendar.getInstance()
         calendar.time = Date()
-        calendar.add(Calendar.SECOND, hours)
+        calendar.add(Calendar.HOUR, hours)
         return calendar.time
     }
 

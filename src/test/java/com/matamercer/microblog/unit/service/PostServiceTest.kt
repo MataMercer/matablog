@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.multipart.MultipartFile
+import javax.persistence.EntityManager
 
 @ExtendWith(MockKExtension::class)
 @ActiveProfiles("Test")
@@ -41,6 +42,10 @@ class PostServiceTest {
 
     @MockK
     private lateinit var fileService: FileService
+
+    @MockK
+    private lateinit var entityManager: EntityManager
+
     private lateinit var post: Post
     private var user: User? = null
 
@@ -67,6 +72,7 @@ class PostServiceTest {
             postTagService,
             blogService,
             fileService,
+            entityManager
         )
     }
 

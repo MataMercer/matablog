@@ -6,7 +6,8 @@ class PostResponseDto : BaseModelResponseDto() {
     var title: String? = null
     var postTags: List<PostTagResponseDto>? = null
     var attachments: List<FileResponseDto>? = null
-    var likes: List<LikeResponseDto>? = null
+    var likeCount: Int = 0
+    var isLiked: Boolean? = null
     var replies: List<PostResponseDto>? = null
     var communityTaggingEnabled = false
     var sensitive = false

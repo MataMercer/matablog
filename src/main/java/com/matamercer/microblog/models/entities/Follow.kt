@@ -3,7 +3,7 @@ package com.matamercer.microblog.models.entities
 import javax.persistence.*
 
 @Entity
-@Table(name = "follows")
+@Table(name = "follows", uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("fk_follower_blog", "fk_followee_blog"))])
 class Follow(
     @ManyToOne
     @JoinColumn(name = "fk_follower_blog")

@@ -10,7 +10,7 @@ abstract class BaseModel : Comparable<BaseModel>, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var id: Long? = null
+    var id: Long = 0
 
     @Column(nullable = false)
     var createdAt: ZonedDateTime = ZonedDateTime.now()
